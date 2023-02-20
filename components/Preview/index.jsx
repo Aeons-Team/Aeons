@@ -10,4 +10,10 @@ export default function Preview({ url, type }) {
             <source src={url} />
         </video>
     }
+
+    if (type.match("audio/*")) {
+        return <audio width="200" controls>
+            <source src={url} />
+        </audio>
+    }
 }

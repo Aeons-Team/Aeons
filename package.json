@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@bundlr-network/client": "^0.10.3",
+    "ethers": "5.7",
+    "filereader-stream": "^2.0.0",
     "next": "13.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0"

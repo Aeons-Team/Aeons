@@ -1,5 +1,5 @@
 export default function Preview({ url, type }) {
-    if (!url) return <></>
+    if (!url || !type) return <></>
 
     if (type.match("image/*")) {
         return <img src={url} width="100px" height="100px"></img>

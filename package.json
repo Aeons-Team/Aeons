@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.8",
     "@bundlr-network/client": "^0.10.3",
+    "arweave": "^1.13.0",
     "ethers": "5.7",
     "filereader-stream": "^2.0.0",
+    "graphql": "^16.6.0",
     "next": "13.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0"

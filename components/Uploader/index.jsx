@@ -1,29 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import Preview from '../Preview'
-import BundlrClient from '../../lib/BundlrClient'
+import { useBundlrContext } from "../../contexts/BundlrContext";
 
 export default function Uploader() {
+  const bundlrClient = useBundlrContext()
   const [uploadFile, setUploadFile] = useState("");
   const [url, setUrl] = useState("");
-  const bundlrClientRef = useRef()
-
-  useEffect(() => {
-    async function initialize() {
-      const bundlrClient = new BundlrClient()
-      await bundlrClient.initialize()
-
-      bundlrClientRef.current = bundlrClient
-    }
-
-    initialize()
-  }, [])
 
   useEffect(() => {
     if (uploadFile) setUrl(URL.createObjectURL(uploadFile));
   }, [uploadFile]);
 
   async function onUpload() {
-    const bundlrClient = bundlrClientRef.current 
     await bundlrClient.upload(uploadFile) 
   }
 

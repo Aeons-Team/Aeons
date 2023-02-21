@@ -4,9 +4,9 @@ import Uploader from "../Uploader";
 import Funder from "../Funder";
 
 export default function Drive() {
-  const bundlrClient = useBundlrContext();
+  const { client } = useBundlrContext();
 
-  if (bundlrClient) {
+  if (client) {
     return (
       <>
         <Funder />

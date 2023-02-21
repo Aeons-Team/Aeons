@@ -1,24 +1,30 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import BundlrClient from "../lib/BundlrClient";
+import BundlrFileSystem from "../lib/BundlrFileSystem";
 
 const BundlrContext = createContext();
 
 export function BundlrContextProvider({ children }) {
-    const [client, setClient] = useState();
+    const [contextData, setContextData] = useState({});
 
     useEffect(() => {
         async function initialize() {
-            const client = new BundlrClient()
-            await client.initialize()
+            const client = new BundlrClient();
+            await client.initialize();
 
-            setClient(client)
-        } 
+            const fileSystem = new BundlrFileSystem(client);
+            
+            setContextData({
+                client,
+                fileSystem
+            });
+        }
 
-        initialize()
+        initialize();
     }, [])
 
     return (
-        <BundlrContext.Provider value={client}>
+        <BundlrContext.Provider value={contextData}>
             {children}
         </BundlrContext.Provider>
     )

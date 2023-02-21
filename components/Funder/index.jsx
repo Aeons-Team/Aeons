@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 export default function Funder() {
   const [amount, setAmount] = useState("");
   const [balance, setBalance] = useState();
-  const bundlrClient = useBundlrContext();
+  const { client } = useBundlrContext();
 
   useEffect(() => {
     async function fetchBalance() {
-      const bal = await bundlrClient.getBalance();
+      const bal = await client.getBalance();
       setBalance(bal);
     }
     fetchBalance();
@@ -21,10 +21,11 @@ export default function Funder() {
         type="number"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
-      ></input>
+      />
+      
       <button
         onClick={() => {
-          amount && bundlrClient.fund(amount);
+          amount && client.fund(amount);
         }}
       >
         Fund

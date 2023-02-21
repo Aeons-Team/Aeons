@@ -3,7 +3,7 @@ import Preview from "../Preview";
 import { useBundlrContext } from "../../contexts/BundlrContext";
 
 export default function Uploader() {
-  const bundlrClient = useBundlrContext();
+  const { fileSystem } = useBundlrContext();
   const [uploadFile, setUploadFile] = useState("");
   const [url, setUrl] = useState("");
   const [folderName, setFolderName] = useState("");
@@ -14,32 +14,25 @@ export default function Uploader() {
   }, [uploadFile]);
 
   async function onUpload() {
-
-    
-    const tx = await bundlrClient.upload(uploadFile);
+    const tx = await fileSystem.createFile(uploadFile);
     setLastUploadTx(tx.id)
-  
   }
 
   async function createFolder() {
-    const tx = await bundlrClient.createFolder(folderName);
-
+    const tx = await fileSystem.createFolder(folderName);
     console.log(tx);
   }
 
   return (
     <>
-
       <label>Create folder : </label>
       <input
         onInput={(e)=> {
             setFolderName(e.target.value)
-        }
-        }
+        }}
       />
       
       <button onClick={createFolder}>NEW FOLDER</button>
-      
 
       <input
         type="file"
@@ -57,6 +50,7 @@ export default function Uploader() {
       </button>
 
       <Preview url={url} type={uploadFile?.type} />
+      
       {lastUploadTx}
     </>
   );

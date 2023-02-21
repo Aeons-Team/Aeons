@@ -4,11 +4,11 @@ import { useBundlrContext } from '../../contexts/BundlrContext'
 
 export default function Explorer() {
   const [transactions, setTransactions] = useState()
-  const bundlrClient = useBundlrContext()
+  const { fileSystem } = useBundlrContext()
 
   useEffect(() => {
     async function fetchTransactions() {
-      let transactions = await bundlrClient.getTransactions();
+      let transactions = await fileSystem.getTransactions();
       
       transactions = transactions.map(tx => ({ 
         src: `https://arweave.net/${tx.id}`, 

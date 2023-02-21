@@ -1,18 +1,16 @@
 import { useBundlrContext } from "../../contexts/BundlrContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Funder() {
   const [amount, setAmount] = useState("");
-  const [balance, setBalance] = useState();
-  const { client } = useBundlrContext();
+  const { client, balance, fetchBalance } = useBundlrContext();
 
-  useEffect(() => {
-    async function fetchBalance() {
-      const bal = await client.getBalance();
-      setBalance(bal);
+  async function onFund() {
+    if (amount) {
+      await client.fund(amount);   
+      await fetchBalance()
     }
-    fetchBalance();
-  }, []);
+  }
 
   return (
     <div>
@@ -24,9 +22,7 @@ export default function Funder() {
       />
       
       <button
-        onClick={() => {
-          amount && client.fund(amount);
-        }}
+        onClick={onFund}
       >
         Fund
       </button>

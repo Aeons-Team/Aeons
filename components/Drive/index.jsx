@@ -5,9 +5,9 @@ import Funder from "../Funder";
 import style from './style.module.css'
 
 export default function Drive() {
-  const { client } = useBundlrContext();
+  const { initialized } = useBundlrContext();
 
-  if (client) {
+  if (initialized) {
     return (
       <div className={style.drive}>
         <Funder />

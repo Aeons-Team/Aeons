@@ -5,21 +5,23 @@ import BundlrFileSystem from "../lib/BundlrFileSystem";
 const BundlrContext = createContext();
 
 export function BundlrContextProvider({ children }) {
+    const [initialized, setInitialized] = useState(false);
+    const [client, setClient] = useState(new BundlrClient());
+    const [fileSystem, setFileSystem] = useState(new BundlrFileSystem(client));
+    const [balance, setBalance] = useState();
     const [currentFolder, setCurrentFolder] = useState('root');
-    const [contextData, setContextData] = useState({});
+
+    async function fetchBalance() {
+        const balance = await client.getBalance();
+        setBalance(balance);
+    }
 
     useEffect(() => {
         async function initialize() {
-            const client = new BundlrClient();
             await client.initialize();
-
-            const fileSystem = new BundlrFileSystem(client);
-            await fileSystem.initialize()
-            
-            setContextData({
-                client,
-                fileSystem
-            });
+            await fileSystem.initialize();
+            await fetchBalance();
+            setInitialized(true);
         }
 
         initialize();
@@ -27,9 +29,13 @@ export function BundlrContextProvider({ children }) {
 
     return (
         <BundlrContext.Provider value={{
+            initialized,
+            client,
+            fileSystem,
+            balance,
+            fetchBalance,
             currentFolder,
-            setCurrentFolder,
-            ...contextData
+            setCurrentFolder
         }}>
             {children}
         </BundlrContext.Provider>

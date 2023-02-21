@@ -3,7 +3,7 @@ import { useBundlrContext } from "../../contexts/BundlrContext";
 import FilePreview from "../FilePreview";
 
 export default function Uploader() {
-  const { fileSystem } = useBundlrContext();
+  const { fileSystem, fetchBalance } = useBundlrContext();
   const [uploadFile, setUploadFile] = useState();
   const [url, setUrl] = useState();
   const [folderName, setFolderName] = useState();
@@ -12,11 +12,12 @@ export default function Uploader() {
   async function onUpload() {
     const tx = await fileSystem.createFile(uploadFile);
     setLastUploadTx(tx.id);
+    await fetchBalance()
   }
 
   async function createFolder() {
     const tx = await fileSystem.createFolder(folderName);
-    console.log(tx);
+    await fetchBalance()
   }
 
   return (

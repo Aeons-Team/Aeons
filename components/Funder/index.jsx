@@ -15,7 +15,7 @@ export default function Funder() {
   }, []);
 
   return (
-    <>
+    <div>
       Balance : {balance} ETH
       <input
         type="number"
@@ -30,6 +30,6 @@ export default function Funder() {
       >
         Fund
       </button>
-    </>
+    </div>
   );
 }

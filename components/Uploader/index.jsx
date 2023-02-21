@@ -24,7 +24,7 @@ export default function Uploader() {
   }
 
   return (
-    <>
+    <div>
       <label>Create folder : </label>
       <input
         onInput={(e)=> {
@@ -52,6 +52,6 @@ export default function Uploader() {
       <Preview url={url} type={uploadFile?.type} />
       
       {lastUploadTx}
-    </>
+    </div>
   );
 }

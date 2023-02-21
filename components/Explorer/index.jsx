@@ -24,10 +24,10 @@ export default function Explorer() {
   }, [])
 
   return (
-    <>
+    <div>
       {transactions && transactions.map((tx, i) => (
         <Preview key={i} {...tx} />
       ))}
-    </>
+    </div>
   );
 }

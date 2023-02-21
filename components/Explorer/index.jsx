@@ -1,33 +1,45 @@
 import { useState, useEffect } from "react";
 import Preview from "./../Preview";
-import { useBundlrContext } from '../../contexts/BundlrContext'
+import { useBundlrContext } from "../../contexts/BundlrContext";
+import style from "./style.module.css";
 
 export default function Explorer() {
-  const [transactions, setTransactions] = useState()
-  const { fileSystem } = useBundlrContext()
+  const [transactions, setTransactions] = useState();
+  const { fileSystem } = useBundlrContext();
 
   useEffect(() => {
     async function fetchTransactions() {
       let transactions = await fileSystem.getTransactions();
-      
-      transactions = transactions.map(tx => ({ 
-        src: `https://arweave.net/${tx.id}`, 
-        name: tx.tags.find(tag => tag.name == 'name')?.value,
-        type: tx.tags.find(tag => tag.name == 'type')?.value,
-        contentType: tx.tags.find(tag => tag.name == 'Content-Type')?.value
+
+      transactions = transactions.map((tx) => ({
+        src: `https://arweave.net/${tx.id}`,
+        name: tx.tags.find((tag) => tag.name == "name")?.value,
+        type: tx.tags.find((tag) => tag.name == "type")?.value,
+        contentType: tx.tags.find((tag) => tag.name == "Content-Type")?.value,
       }));
 
       setTransactions(transactions);
     }
 
     fetchTransactions();
-  }, [])
+  }, []);
 
   return (
     <div>
-      {transactions && transactions.map((tx, i) => (
-        <Preview key={i} {...tx} />
-      ))}
+      Folders:
+      <div className={style.folders}>
+        {transactions &&
+          transactions
+            .filter((x) => x.type == "folder")
+            .map((tx, i) => <Preview key={i} {...tx} />)}
+      </div>
+      Files :
+      <div className={style.files}>
+        {transactions &&
+          transactions
+            .filter((x) => x.type == "file")
+            .map((tx, i) => <Preview key={i} {...tx} />)}
+      </div>
     </div>
   );
 }

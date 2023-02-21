@@ -15,7 +15,7 @@ export default function Uploader() {
 
   async function onUpload() {
     const tx = await fileSystem.createFile(uploadFile);
-    setLastUploadTx(tx.id)
+    setLastUploadTx(tx.id);
   }
 
   async function createFolder() {
@@ -25,14 +25,13 @@ export default function Uploader() {
 
   return (
     <div>
-      <label>Create folder : </label>
       <input
-        onInput={(e)=> {
-            setFolderName(e.target.value)
+        onInput={(e) => {
+          setFolderName(e.target.value);
         }}
       />
-      
-      <button onClick={createFolder}>NEW FOLDER</button>
+
+      <button onClick={createFolder}>Create Folder</button>
 
       <input
         type="file"
@@ -50,7 +49,7 @@ export default function Uploader() {
       </button>
 
       <Preview url={url} type={uploadFile?.type} />
-      
+
       {lastUploadTx}
     </div>
   );

@@ -13,6 +13,7 @@ export function BundlrContextProvider({ children }) {
             await client.initialize();
 
             const fileSystem = new BundlrFileSystem(client);
+            await fileSystem.initialize()
             
             setContextData({
                 client,

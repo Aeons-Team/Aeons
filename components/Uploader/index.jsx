@@ -49,7 +49,7 @@ export default function Uploader() {
         Upload
       </button>
 
-      <Preview url={url} type={uploadFile?.type} />
+      <Preview file={{ url, type: uploadFile.type }} />
       
       {lastUploadTx}
     </div>

@@ -5,6 +5,7 @@ import BundlrFileSystem from "../lib/BundlrFileSystem";
 const BundlrContext = createContext();
 
 export function BundlrContextProvider({ children }) {
+    const [currentFolder, setCurrentFolder] = useState('root');
     const [contextData, setContextData] = useState({});
 
     useEffect(() => {
@@ -25,7 +26,11 @@ export function BundlrContextProvider({ children }) {
     }, [])
 
     return (
-        <BundlrContext.Provider value={contextData}>
+        <BundlrContext.Provider value={{
+            currentFolder,
+            setCurrentFolder,
+            ...contextData
+        }}>
             {children}
         </BundlrContext.Provider>
     )

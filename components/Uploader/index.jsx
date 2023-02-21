@@ -1,21 +1,17 @@
-import { useState, useEffect, useRef } from "react";
-import Preview from "../Preview";
+import { useState } from "react";
 import { useBundlrContext } from "../../contexts/BundlrContext";
+import FilePreview from "../FilePreview";
 
 export default function Uploader() {
   const { fileSystem } = useBundlrContext();
-  const [uploadFile, setUploadFile] = useState("");
-  const [url, setUrl] = useState("");
-  const [folderName, setFolderName] = useState("");
+  const [uploadFile, setUploadFile] = useState();
+  const [url, setUrl] = useState();
+  const [folderName, setFolderName] = useState();
   const [lastUploadTx, setLastUploadTx] = useState();
-
-  useEffect(() => {
-    if (uploadFile) setUrl(URL.createObjectURL(uploadFile));
-  }, [uploadFile]);
 
   async function onUpload() {
     const tx = await fileSystem.createFile(uploadFile);
-    setLastUploadTx(tx.id)
+    setLastUploadTx(tx.id);
   }
 
   async function createFolder() {
@@ -25,19 +21,20 @@ export default function Uploader() {
 
   return (
     <div>
-      <label>Create folder : </label>
       <input
-        onInput={(e)=> {
-            setFolderName(e.target.value)
+        onInput={(e) => {
+          setFolderName(e.target.value);
         }}
       />
-      
-      <button onClick={createFolder}>NEW FOLDER</button>
+
+      <button onClick={createFolder}>Create Folder</button>
 
       <input
         type="file"
         onChange={(e) => {
-          setUploadFile(e.target.files[0]);
+          const file = e.target.files[0]
+          setUploadFile(file);
+          setUrl(URL.createObjectURL(file));
         }}
       />
 
@@ -49,8 +46,10 @@ export default function Uploader() {
         Upload
       </button>
 
-      <Preview file={{ url, type: uploadFile.type }} />
-      
+      {
+        url && <FilePreview src={url} type={uploadFile.type} />
+      }
+
       {lastUploadTx}
     </div>
   );

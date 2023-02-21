@@ -1,19 +1,25 @@
-export default function Preview({ url, type }) {
-    if (!url || !type) return <></>
-
-    if (type.match("image/*")) {
-        return <img src={url} width="100px" height="100px"></img>
+export default function Preview({ src, name, type, contentType }) {    
+    if (type == 'file') {
+        if (contentType.match("image/*")) {
+            return <img src={src} width="100px" height="100px"></img>
+        }
+    
+        if (contentType.match("video/*")) {
+            return <video width="200" controls>
+                <source src={src} />
+            </video>
+        }
+    
+        if (contentType.match("audio/*")) {
+            return <audio width="200" controls>
+                <source src={src} />
+            </audio>
+        }
     }
 
-    if (type.match("video/*")) {
-        return <video width="200" controls>
-            <source src={url} />
-        </video>
-    }
-
-    if (type.match("audio/*")) {
-        return <audio width="200" controls>
-            <source src={url} />
-        </audio>
-    }
+    else if (type == 'folder') {
+        return (
+            <div>{name}</div>
+        )
+    };
 }

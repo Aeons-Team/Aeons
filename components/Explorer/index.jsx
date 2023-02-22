@@ -10,6 +10,14 @@ export default function Explorer() {
   const fileData = fileSystem.hierarchy.getFile(currentFile);
   const children = fileData.children;
 
+  if (!children) {
+    return (
+      <div className={style.fileView}>
+        <File data={fileData} enableControls />
+      </div>
+    )
+  }
+
   return (
     <div 
       className={style.explorer} 
@@ -19,36 +27,27 @@ export default function Explorer() {
           type: 'explorer'
         })
       }}>
-      {
-        children 
-        ? <>        
-          <div className={style.section}>
-            <h1 className={style.sectionTitle}>Folders</h1>
-            <div className={style.folders}>
-              {
-                children
-                .filter((x) => x.type == "folder")
-                .map(x => <Folder key={x.id} data={x} />)
-              }
-            </div>
-          </div>
+      <div className={style.section}>
+        <h1 className={style.sectionTitle}>Folders</h1>
+        <div className={style.folders}>
+          {
+            children
+              .filter((x) => x.type == "folder")
+              .map(x => <Folder key={x.id} data={x} />)
+          }
+        </div>
+      </div>
           
-          <div className={style.section}>
-            <h1 className={style.sectionTitle}>Files</h1>
-            <div className={style.files}>
-              {
-                children
-                  .filter((x) => x.type == "file")
-                  .map(x => <File key={x.id} data={x} />)
-              }
-            </div>
-          </div>
-        </> 
-
-        : <>
-          <File data={fileData} enableControls />
-        </>
-      }
+      <div className={style.section}>
+        <h1 className={style.sectionTitle}>Files</h1>
+        <div className={style.files}>
+          {
+            children
+              .filter((x) => x.type == "file")
+              .map(x => <File key={x.id} data={x} />)
+          }
+        </div>
+      </div>
     </div>
   );
 }

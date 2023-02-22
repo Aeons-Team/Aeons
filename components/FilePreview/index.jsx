@@ -15,9 +15,9 @@ export default function FilePreview({ src, type, className, enableControls }) {
 
   if (type.match("audio/*")) {
     return (
-      <audio className={className} controls={enableControls}>
+      <audio className={className} controls>
         <source src={src} />
       </audio>
     );
   }
-}
+};

@@ -1,6 +1,7 @@
 .hierarchy {
   background-color: var(--color-primary);
   color: var(--color-secondary);
+  overflow: auto;
 }
 
 .item {
@@ -18,6 +19,14 @@
 .itemHead {
   display: inline-flex;
   align-items: center;
+  width: 100%;
+}
+
+.itemName {
+  width: 80%;
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .arrowHead {

@@ -12,7 +12,7 @@ function HierarchyItem({ item, depth }) {
     if (currentFileAncestors.includes(item.id)) {
       setCollapsed(false)
     }
-  }, [...currentFileAncestors])
+  }, [currentFileAncestors])
 
   return (
     <div>
@@ -64,7 +64,7 @@ function HierarchyItem({ item, depth }) {
             </div>
           }
 
-          <span>
+          <span className={style.itemName}>
             {item.name}
           </span>
         </div>

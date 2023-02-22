@@ -19,18 +19,32 @@ export default function File({ data, enableControls }) {
           data
         })
       }}>
+      
       <FilePreview src={`https://arweave.net/${data.id}`} type={data.contentType} className={style.filePreview} enableControls={enableControls} />
 
       <div className={style.fileDetails}>
-        <span>
+        <span className={style.fileDetail}>
           {data.name}
         </span>
+
+        {
+          data.pending &&
+          <span className={style.fileDetail}
+            style={{
+              gridRow: 2,
+              gridColumn: 1
+            }} >
+            <span className={style.pending} />
+            pending
+          </span>
+        }
         
-        <span>
-          {data.contentType}
-        </span>
-        
-        <span>
+        <span className={style.fileDetail}
+          style={{
+            gridRow: 2,
+            gridColumn: 2,
+            textAlign: 'right'
+          }} >
           {data.size && Utility.formatSize(data.size)}
         </span>
       </div>

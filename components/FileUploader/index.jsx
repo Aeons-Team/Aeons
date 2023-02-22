@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { useBundlrContext } from "../../contexts/BundlrContext";
+import { useAppContext } from "../../contexts/AppContext";
 import FilePreview from "../FilePreview";
 import Button from '../Button';
 import style from "./style.module.css";
 
 export default function Uploader() {
   const { fileSystem, fetchBalance } = useBundlrContext();
+  const { currentFile } = useAppContext();
   const [uploadFile, setUploadFile] = useState();
   const [url, setUrl] = useState();
   const [lastUploadTx, setLastUploadTx] = useState();
 
   async function onUpload() {
-    const tx = await fileSystem.createFile(uploadFile);
+    const tx = await fileSystem.createFile(uploadFile, (currentFile == 'root' ? null : currentFile));
+
     setLastUploadTx(tx.id);
     await fetchBalance()
   }

@@ -8,7 +8,7 @@ export default function Wallet() {
     <div className={style.wallet}>
       <div className={style.walletSegment}>
         <span>Wallet</span>
-        {client.address.substring(0, 6) + '...' + client.address.substring(client.address.length - 5)}
+        {client.address.substring(0, 6) + '...' + client.address.substring(client.address.length - 3)}
       </div>
 
       <div className={style.walletSegment}>
@@ -18,8 +18,8 @@ export default function Wallet() {
 
       <div className={style.walletSegment}>
         <span>Balance</span>
-        {balance}
+        {Number(balance).toFixed(6)}
       </div>
     </div>
-  )
+  );
 }

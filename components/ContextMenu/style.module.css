@@ -1,0 +1,21 @@
+.contextMenu {
+  position: absolute;
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  font-size: 0.8rem;
+  box-shadow: 0 0 1px 0 #666;
+  z-index: 5;
+}
+
+.contextMenuButton {
+  width: 12rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  padding-left: 2rem;
+}
+
+.contextMenuButton:hover {
+  cursor: pointer;
+  background-color: var(--color-active-low);
+}

@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useBundlrContext } from "../../contexts/BundlrContext";
 import FilePreview from "../FilePreview";
+import Button from '../Button';
+import style from "./style.module.css";
 
 export default function Uploader() {
   const { fileSystem, fetchBalance } = useBundlrContext();
   const [uploadFile, setUploadFile] = useState();
   const [url, setUrl] = useState();
-  const [folderName, setFolderName] = useState();
   const [lastUploadTx, setLastUploadTx] = useState();
 
   async function onUpload() {
@@ -14,22 +15,9 @@ export default function Uploader() {
     setLastUploadTx(tx.id);
     await fetchBalance()
   }
-
-  async function createFolder() {
-    const tx = await fileSystem.createFolder(folderName);
-    await fetchBalance()
-  }
-
+  
   return (
-    <div>
-      <input
-        onInput={(e) => {
-          setFolderName(e.target.value);
-        }}
-      />
-
-      <button onClick={createFolder}>Create Folder</button>
-
+    <div className={style.uploader}>
       <input
         type="file"
         onChange={(e) => {
@@ -39,16 +27,16 @@ export default function Uploader() {
         }}
       />
 
-      <button
+      <Button
         onClick={() => {
           uploadFile && onUpload();
         }}
       >
         Upload
-      </button>
+      </Button>
 
       {
-        url && <FilePreview src={url} type={uploadFile.type} />
+        url && <FilePreview src={url} type={uploadFile.type} className={style.uploaderPreview} />
       }
 
       {lastUploadTx}

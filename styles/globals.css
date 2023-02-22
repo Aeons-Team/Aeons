@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --color-background: #0c0c0c; 
+  --color-primary: #000000;
+  --color-secondary: #ffffff; 
+  --color-active-low: #121218;
+  --color-active-high: #c3eeff;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter';
+}
+
+body {
+  background-color: var(--color-background);
+}
+
+body::-webkit-scrollbar {
+  background-color: var(--color-background);
+  width: 10px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-active-low);
+}

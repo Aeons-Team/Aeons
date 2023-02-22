@@ -1,0 +1,28 @@
+.file {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  padding-bottom: 1rem;
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  cursor: pointer;
+}
+
+.filePreview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.fileDetails {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  gap: 0.2rem;
+  margin-top: 0.75rem;
+}
+
+.fileDetails span:nth-child(3) {
+  text-align: right;
+  margin-top: 0.5rem;
+}

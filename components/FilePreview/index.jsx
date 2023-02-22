@@ -1,13 +1,13 @@
-export default function FilePreview({ src, type }) {
+export default function FilePreview({ src, type, className, enableControls }) {
   if (!type) return <></>
 
   if (type.match("image/*")) {
-    return <img src={src} width="100px" height="100px"></img>;
+    return <img src={src} className={className} />;
   }
 
   if (type.match("video/*")) {
     return (
-      <video width="200" controls>
+      <video className={className} controls={enableControls}>
         <source src={src} />
       </video>
     );
@@ -15,7 +15,7 @@ export default function FilePreview({ src, type }) {
 
   if (type.match("audio/*")) {
     return (
-      <audio width="200" controls>
+      <audio className={className} controls={enableControls}>
         <source src={src} />
       </audio>
     );

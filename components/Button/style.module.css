@@ -1,0 +1,5 @@
+.button {
+  background-color: var(--color-secondary);
+  padding: 0.5rem;
+  border: none;
+}

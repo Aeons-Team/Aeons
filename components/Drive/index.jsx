@@ -1,8 +1,9 @@
 import { useBundlrContext } from "../../contexts/BundlrContext";
+import Wallet from '../Wallet'
 import Explorer from "../Explorer";
-import Uploader from "../Uploader";
-import Funder from "../Funder";
-import style from './style.module.css'
+import ContextMenu from "../ContextMenu";
+import Hierarchy from '../Hierarchy';
+import style from './style.module.css';
 
 export default function Drive() {
   const { initialized } = useBundlrContext();
@@ -10,9 +11,16 @@ export default function Drive() {
   if (initialized) {
     return (
       <div className={style.drive}>
-        <Funder />
-        <Uploader />
-        <Explorer />
+        <ContextMenu />
+
+        <div className={style.driveGrid}>
+          <Wallet />
+          <div />
+          <div />
+          <Hierarchy />
+          <Explorer />
+          <div />
+        </div>
       </div>
     );
   }

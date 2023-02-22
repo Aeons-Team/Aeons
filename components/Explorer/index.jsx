@@ -1,33 +1,54 @@
+import { useAppContext } from '../../contexts/AppContext';
 import { useBundlrContext } from '../../contexts/BundlrContext';
-import FilePreview from '../FilePreview';
-import FolderPreview from '../FolderPreview';
+import Folder from '../Folder';
+import File from '../File';
 import style from './style.module.css';
 
 export default function Explorer() {
-  const { fileSystem, currentFolder, setCurrentFolder } = useBundlrContext()
-  const children = fileSystem.hierarchy.getChildren(currentFolder)
+  const { activateContextMenu, currentFile } = useAppContext();
+  const { fileSystem } = useBundlrContext();
+  const fileData = fileSystem.hierarchy.getFile(currentFile);
+  const children = fileData.children;
 
   return (
-    <div>
-      Folders:
-      <div className={style.folders}>
-        {
-          children
-          .filter((x) => x.type == "folder")
-          .map((x, i) => 
-            <FolderPreview key={i} name={x.name} onClick={() => setCurrentFolder(x.id)} />
-          )
-        }
-      </div>
-      
-      Files :
-      <div className={style.files}>
-        {
-          children
-            .filter((x) => x.type == "file")
-            .map((x, i) => <FilePreview key={i} src={`https://arweave.net/${x.id}`} type={x.contentType} />)
-        }
-      </div>
+    <div 
+      className={style.explorer} 
+      onContextMenu={(e) => {
+        e.preventDefault()
+        activateContextMenu(true, {
+          type: 'explorer'
+        })
+      }}>
+      {
+        children 
+        ? <>        
+          <div className={style.section}>
+            <h1 className={style.sectionTitle}>Folders</h1>
+            <div className={style.folders}>
+              {
+                children
+                .filter((x) => x.type == "folder")
+                .map(x => <Folder key={x.id} data={x} />)
+              }
+            </div>
+          </div>
+          
+          <div className={style.section}>
+            <h1 className={style.sectionTitle}>Files</h1>
+            <div className={style.files}>
+              {
+                children
+                  .filter((x) => x.type == "file")
+                  .map(x => <File key={x.id} data={x} />)
+              }
+            </div>
+          </div>
+        </> 
+
+        : <>
+          <File data={fileData} enableControls />
+        </>
+      }
     </div>
   );
 }

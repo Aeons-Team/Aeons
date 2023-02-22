@@ -1,5 +1,27 @@
-.files {
+.explorer {
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.sectionTitle {
+  font-size: 0.85rem;
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+  color: var(--color-secondary);
 }
 
 .folders {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.files {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
 }

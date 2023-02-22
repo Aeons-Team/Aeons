@@ -1,0 +1,19 @@
+.wallet {
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+  gap: 1.5rem;
+  font-size: 0.75rem;
+}
+
+.walletSegment {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.walletSegment span {
+
+}

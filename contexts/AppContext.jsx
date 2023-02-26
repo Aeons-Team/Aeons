@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { useBundlrContext } from "./BundlrContext";
-import Vector2 from '../lib/Vector2';
+import Vector2 from "../lib/Vector2";
 
 const AppContext = createContext();
 
@@ -9,43 +9,46 @@ export function AppContextProvider({ children }) {
   const [contextMenuActivated, setContextMenuActivated] = useState(false);
   const [contextMenuOpts, setContextMenuOpts] = useState({});
   const [contextMenuPosition, setContextMenuPosition] = useState(new Vector2());
-	const [currentFile, setCurrentFile] = useState('root');
-  const [currentFileAncestors, setCurrentFileAncestors] = useState(['root'])
+  const [currentFile, setCurrentFile] = useState("root");
+  const [currentFileAncestors, setCurrentFileAncestors] = useState(["root"]);
   const { fileSystem } = useBundlrContext();
 
   useEffect(() => {
     if (fileSystem.hierarchy) {
-      setCurrentFileAncestors(fileSystem.hierarchy.getAncestors(currentFile))
+      setCurrentFileAncestors(fileSystem.hierarchy.getAncestors(currentFile));
     }
-  }, [currentFile])
+  }, [currentFile]);
 
   useEffect(() => {
     if (!contextMenuActivated) {
       setContextMenuOpts({});
     }
-  }, [contextMenuActivated])
+  }, [contextMenuActivated]);
 
   useEffect(() => {
     const onDocumentMouseMove = (e) => {
-      setCursorPosition(new Vector2(e.clientX, e.clientY + document.documentElement.scrollTop));
-    }
+      setCursorPosition(
+        new Vector2(e.clientX, e.clientY + document.documentElement.scrollTop)
+      );
+    };
 
-    document.addEventListener('mousemove', onDocumentMouseMove);
+    document.addEventListener("mousemove", onDocumentMouseMove);
 
     return () => {
-      document.removeEventListener('mousemove', onDocumentMouseMove)
-    }
-  }, [])
+      document.removeEventListener("mousemove", onDocumentMouseMove);
+    };
+  }, []);
 
   return (
-      <AppContext.Provider value={{
+    <AppContext.Provider
+      value={{
         cursorPosition,
         activateContextMenu: (flag, opts) => {
-          setContextMenuActivated(flag)
+          setContextMenuActivated(flag);
 
           if (flag) {
-            setContextMenuPosition(cursorPosition)
-            setContextMenuOpts(opts)
+            setContextMenuPosition(cursorPosition);
+            setContextMenuOpts(opts);
           }
         },
         contextMenuActivated,
@@ -53,11 +56,12 @@ export function AppContextProvider({ children }) {
         contextMenuOpts,
         currentFile,
         setCurrentFile,
-        currentFileAncestors
-      }}>
-          {children}
-      </AppContext.Provider>
-  )
-};
+        currentFileAncestors,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+}
 
 export const useAppContext = () => useContext(AppContext);

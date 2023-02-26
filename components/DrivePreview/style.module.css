@@ -1,0 +1,25 @@
+.preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 4rem;
+  padding: 0 1rem;
+  font-size: 0.8rem;
+  gap: 0.6rem;
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  cursor: pointer;
+}
+
+.preview svg {
+  width: 1rem;
+  transform: translateY(-1px);
+  stroke: var(--color-secondary);
+  fill: var(--color-secondary);
+}
+
+.preview span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

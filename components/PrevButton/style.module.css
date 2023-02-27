@@ -1,0 +1,10 @@
+.button {
+    background-color: var(--color-primary);
+  }
+
+.button svg {
+    fill:  var(--color-secondary);
+    height: 40px;
+    width: 40px;
+
+}

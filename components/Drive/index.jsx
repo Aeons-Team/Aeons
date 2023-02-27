@@ -4,6 +4,7 @@ import Explorer from "../Explorer";
 import ContextMenu from "../ContextMenu";
 import Hierarchy from '../Hierarchy';
 import style from './style.module.css';
+import PrevButton from '../PrevButton'
 
 export default function Drive() {
   const { initialized } = useBundlrContext();
@@ -15,7 +16,7 @@ export default function Drive() {
 
         <div className={style.driveGrid}>
           <Wallet />
-          <div />
+          <PrevButton />
           <div />
           <Hierarchy />
           <Explorer />

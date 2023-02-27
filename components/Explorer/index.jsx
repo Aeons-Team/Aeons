@@ -12,7 +12,7 @@ export default function Explorer() {
   const files = fileSystem.hierarchy.getFiles();
   const children = fileData?.children;
 
-  if (!children) {
+  if (fileData && fileData.type == "file") {
     return (
       <div className={style.fileView}>
         <File data={fileData} enableControls />

@@ -11,12 +11,12 @@ function HierarchyItem({ item, depth }) {
     setCurrentFile,
     currentFileAncestors,
   } = useAppContext();
-  const isFolder = item.type == "folder";
-  const isDrive = item.type == "drive";
+  
+  const expandable = item.type == "folder" || item.type == "drive" || item.name == "root";
 
   useEffect(() => {
     if (currentFileAncestors.includes(item.id)) {
-      setCollapsed(true);
+      setCollapsed(false);
     }
   }, [currentFileAncestors]);
 
@@ -43,10 +43,10 @@ function HierarchyItem({ item, depth }) {
         <div
           className={style.itemHead}
           style={{
-            transform: `translateX(${0.9 * depth + (!isFolder ? 0.5 : 0)}rem)`,
+            transform: `translateX(${0.9 * depth + (!expandable ? 0.5 : 0)}rem)`,
           }}
         >
-          {(isDrive || isFolder) && (
+          {expandable && (
             <div className={style.arrowHead}>
               <svg
                 style={{
@@ -75,7 +75,7 @@ function HierarchyItem({ item, depth }) {
         </div>
       </div>
 
-      {(isDrive || isFolder) && (
+      {expandable && (
         <div
           className={style.children}
           style={{
@@ -83,7 +83,7 @@ function HierarchyItem({ item, depth }) {
           }}
         >
           {item.children
-            .filter((child) => child.type == "folder")
+            .filter((child) => child.type == "folder" || child.type == "drive")
             .map((child) => (
               <HierarchyItem key={child.id} item={child} depth={depth + 1} />
             ))}
@@ -101,26 +101,11 @@ function HierarchyItem({ item, depth }) {
 
 export default function Hierarchy() {
   const { fileSystem } = useBundlrContext();
-  let files = fileSystem.hierarchy.getFiles();
-  const { setCurrentFile } = useAppContext();
+  let root = fileSystem.hierarchy.getFile('root')
+
   return (
-    <div>
-      <div
-        className={style.item}
-        style={{
-          color: "var(--color-active-high)",
-        }}
-        onClick={() => setCurrentFile("root")}
-      >
-        <span className={style.itemName}>Home</span>
-      </div>
-      <div className={style.hierarchy}>
-        {files
-          .filter((x) => x.type == "drive")
-          .map((x) => (
-            <HierarchyItem key={x.id} item={x} depth={0} />
-          ))}
-      </div>
+    <div className={style.hierarchy}>
+      <HierarchyItem item={root} depth={0} />
     </div>
   );
 }

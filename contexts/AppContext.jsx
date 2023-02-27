@@ -11,7 +11,19 @@ export function AppContextProvider({ children }) {
   const [contextMenuPosition, setContextMenuPosition] = useState(new Vector2());
   const [currentFile, setCurrentFile] = useState("root");
   const [currentFileAncestors, setCurrentFileAncestors] = useState(["root"]);
+  const [currentFileData, setCurrentFileData] = useState()
   const { fileSystem } = useBundlrContext();
+
+  useEffect(() => {
+    if (fileSystem.hierarchy) {
+      setCurrentFileData(fileSystem.hierarchy.getFile(currentFile))
+    }
+
+  }, [fileSystem.hierarchy, currentFile])
+
+  const refreshCurrentFileData = () => {
+    setCurrentFileData({ ...fileSystem.hierarchy.getFile(currentFile) })
+  }
 
   useEffect(() => {
     if (fileSystem.hierarchy) {
@@ -55,8 +67,10 @@ export function AppContextProvider({ children }) {
         contextMenuPosition,
         contextMenuOpts,
         currentFile,
+        currentFileData,
         setCurrentFile,
         currentFileAncestors,
+        refreshCurrentFileData
       }}
     >
       {children}

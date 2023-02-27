@@ -7,7 +7,7 @@ import style from "./style.module.css";
 
 export default function Uploader() {
   const { fileSystem, fetchBalance } = useBundlrContext();
-  const { currentFile } = useAppContext();
+  const { currentFile, refreshCurrentFileData } = useAppContext();
   const [uploadFile, setUploadFile] = useState();
   const [url, setUrl] = useState();
   const [lastUploadTx, setLastUploadTx] = useState();
@@ -16,7 +16,8 @@ export default function Uploader() {
     const tx = await fileSystem.createFile(uploadFile, (currentFile == 'root' ? null : currentFile));
 
     setLastUploadTx(tx.id);
-    await fetchBalance()
+    refreshCurrentFileData();
+    await fetchBalance();
   }
   
   return (

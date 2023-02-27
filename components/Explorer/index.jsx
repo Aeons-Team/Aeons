@@ -6,16 +6,15 @@ import style from "./style.module.css";
 import DrivePreview from "../DrivePreview";
 
 export default function Explorer() {
-  const { activateContextMenu, currentFile } = useAppContext();
+  const { activateContextMenu, currentFile, currentFileData } = useAppContext();
   const { fileSystem } = useBundlrContext();
-  const fileData = fileSystem.hierarchy.getFile(currentFile);
   const files = fileSystem.hierarchy.getFiles();
-  const children = fileData?.children;
+  const children = currentFileData?.children;
 
-  if (fileData && fileData.type == "file") {
+  if (currentFileData && currentFileData.type == "file") {
     return (
       <div className={style.fileView}>
-        <File data={fileData} enableControls />
+        <File data={currentFileData} enableControls />
       </div>
     );
   }

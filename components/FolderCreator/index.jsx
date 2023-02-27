@@ -6,11 +6,12 @@ import style from "./style.module.css"
 
 export default function FolderCreator() {
   const { fileSystem, fetchBalance } = useBundlrContext();
-  const { currentFile } = useAppContext();
+  const { currentFile, refreshCurrentFileData } = useAppContext();
   const [folderName, setFolderName] = useState();
 
   async function onCreate() {
     await fileSystem.createFolder(folderName, (currentFile == 'root' ? null : currentFile));
+    refreshCurrentFileData()
     await fetchBalance()
   }
 

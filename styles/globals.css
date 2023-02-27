@@ -28,6 +28,10 @@
   background-color: var(--color-active-low);
 }
 
+body {
+  overflow-x: hidden;
+}
+
 body::-webkit-scrollbar {
   background-color: var(--color-background);
 }

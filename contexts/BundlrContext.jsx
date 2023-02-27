@@ -34,7 +34,7 @@ export function BundlrContextProvider({ children }) {
 			balance,
 			fetchBalance
 		}}>
-				{children}
+			{children}
 		</BundlrContext.Provider>
 	)
 };

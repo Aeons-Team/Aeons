@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import copy from "clipboard-copy";
 import { motion } from "framer-motion";
@@ -9,6 +10,7 @@ import style from "./style.module.css";
 import DriveCreator from "../DriveCreator";
 
 export default function ContextMenu() {
+  const router = useRouter()
   const menuRef = useRef();
   const {
     contextMenuActivated,
@@ -110,7 +112,7 @@ export default function ContextMenu() {
                 className={style.contextMenuButton}
                 onClick={() => {
                   activateContextMenu(false);
-                  setCurrentFile(contextMenuOpts.data.id);
+                  router.push(`/drive/${contextMenuOpts.data.id}`);
                 }}
               >
                 open

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useAppContext } from "../../contexts/AppContext";
 import FilePreview from "../FilePreview";
 import Utility from "../../lib/Utility";
@@ -7,9 +8,9 @@ export default function File({ data, enableControls }) {
   const { activateContextMenu, setCurrentFile } = useAppContext();
 
   return (
-    <div
+    <Link
       className={style.file}
-      onClick={() => setCurrentFile(data.id)}
+      href={`/drive/${data.id}`}
       onContextMenu={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -54,6 +55,6 @@ export default function File({ data, enableControls }) {
           {data.size && Utility.formatSize(data.size)}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }

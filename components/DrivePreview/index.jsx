@@ -1,11 +1,9 @@
-import { useAppContext } from "../../contexts/AppContext";
+import Link from "next/link";
 import style from "./style.module.css";
 
 export default function DrivePreview({ data }) {
-  const { setCurrentFile } = useAppContext();
-
   return (
-    <div className={style.preview} onClick={() => setCurrentFile(data.id)}>
+    <Link className={style.preview} href={`/drive/${data.id}`}>
       <svg
         viewBox="0 0 16 16"
         xmlns="http://www.w3.org/2000/svg"
@@ -16,6 +14,6 @@ export default function DrivePreview({ data }) {
       </svg>
 
       <span>{data.name}</span>
-    </div>
+    </Link>
   );
 }

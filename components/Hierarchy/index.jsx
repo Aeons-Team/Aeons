@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { useAppContext } from "../../contexts/AppContext";
 import { useBundlrContext } from "../../contexts/BundlrContext";
+import { useRouter } from "next/router";
 import style from "./style.module.css";
 
 function HierarchyItem({ item, depth }) {
+  const router = useRouter()
+
   const [collapsed, setCollapsed] = useState(true);
   const {
     activateContextMenu,
     currentFile,
-    setCurrentFile,
     currentFileAncestors,
   } = useAppContext();
   
@@ -31,7 +33,7 @@ function HierarchyItem({ item, depth }) {
               }
             : {}
         }
-        onClick={() => setCurrentFile(item.id)}
+        onClick={() => router.push(`/drive/${item.id}`)}
         onContextMenu={(e) => {
           e.preventDefault();
           activateContextMenu(true, {

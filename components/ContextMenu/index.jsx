@@ -8,6 +8,7 @@ import FolderCreator from "../FolderCreator";
 import Funder from "../Funder";
 import style from "./style.module.css";
 import DriveCreator from "../DriveCreator";
+import MoveFile from "../MoveFile"
 
 export default function ContextMenu() {
   const router = useRouter()
@@ -55,6 +56,10 @@ export default function ContextMenu() {
     case "fundingWallet":
       var contextMenuInner = <Funder />;
       break;
+     
+    case "moveFile":
+      var contextMenuInner = <MoveFile />
+      break;  
 
     default:
       switch (contextMenuOpts.type) {
@@ -67,6 +72,8 @@ export default function ContextMenu() {
               >
                 Create Drive
               </div>
+
+
 
               <div
                 className={style.contextMenuButton}
@@ -134,6 +141,17 @@ export default function ContextMenu() {
                 }}
               >
                 Copy url
+              </div>
+
+              <div
+                className={style.contextMenuButton}
+                onClick={() => {
+                  setAction(
+                    'moveFile'
+                  ) 
+                }}
+              >
+                  Move
               </div>
             </>
           );

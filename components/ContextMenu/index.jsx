@@ -131,17 +131,21 @@ export default function ContextMenu() {
         case "file":
           var contextMenuInner = (
             <>
-              <div
-                className={style.contextMenuButton}
-                onClick={() => {
-                  activateContextMenu(false);
-                  copy(
-                    `${process.env.NEXT_PUBLIC_ARWEAVE_URL}${contextMenuOpts.data.id}`
-                  );
-                }}
-              >
-                Copy url
-              </div>
+              {
+                contextMenuOpts.copy && 
+                <div
+                  className={style.contextMenuButton}
+                  onClick={() => {
+                    activateContextMenu(false);
+                    copy(
+                      `${process.env.NEXT_PUBLIC_ARWEAVE_URL}${contextMenuOpts.data.id}`
+                    );
+                  }}
+                >
+                  
+                  Copy url
+                </div>
+              }
 
               <div
                 className={style.contextMenuButton}

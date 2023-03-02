@@ -5,7 +5,7 @@ import Utility from "../../lib/Utility";
 import style from "./style.module.css";
 
 export default function File({ data, enableControls }) {
-  const { activateContextMenu, setCurrentFile } = useAppContext();
+  const { activateContextMenu } = useAppContext();
 
   return (
     <Link
@@ -17,6 +17,7 @@ export default function File({ data, enableControls }) {
 
         activateContextMenu(true, {
           type: "file",
+          copy: true,
           data,
         });
       }}

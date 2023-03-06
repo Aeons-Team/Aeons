@@ -1,20 +1,20 @@
-import { useEffect } from 'react'
+import { useEffect } from "react";
 import { useRouter } from "next/router";
-import Drive from '../../components/Drive';
-import { useAppContext } from "../../contexts/AppContext";
+import { useBundlrState } from "../../stores/BundlrStore";
+import Drive from "../../components/Drive";
 
 function DrivePage() {
     const router = useRouter()
     const { id } = router.query
-    const { setCurrentFile } = useAppContext()
+    const [initialized, setCurrentFile] = useBundlrState(state => [state.initialized, state.setCurrentFile])
 
     useEffect(() => {
-        setCurrentFile(id)
-    }, [id])
+        if (initialized) setCurrentFile(id)
+    }, [id, initialized])
 
-    return (
-        <Drive />
-    )
+    if (initialized) {
+        return <Drive />
+    }
 }
 
 export default DrivePage

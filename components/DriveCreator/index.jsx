@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { useBundlrContext } from "../../contexts/BundlrContext";
-import { useAppContext } from "../../contexts/AppContext";
+import { useBundlrState } from '../../stores/BundlrStore'
 import Button from "../Button";
 import style from "./style.module.css";
 
 export default function DriveCreator() {
-  const { refreshCurrentFileData } = useAppContext()
-  const { fileSystem, fetchBalance } = useBundlrContext();
+  const [fileSystem, fetchBalance, refreshCurrentFileData] = useBundlrState(state => [state.fileSystem, state.fetchBalance, state.refreshCurrentFileData]);
   const [driveName, setDriveName] = useState();
 
   async function onCreate() {

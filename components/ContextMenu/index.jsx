@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import copy from "clipboard-copy";
 import { motion } from "framer-motion";
-import { useAppContext } from "../../contexts/AppContext";
+import { useAppState } from "../../stores/AppStore";
 import FileUploader from "../FileUploader";
 import FolderCreator from "../FolderCreator";
 import Funder from "../Funder";
@@ -13,32 +13,21 @@ import MoveFile from "../MoveFile"
 export default function ContextMenu() {
   const router = useRouter()
   const menuRef = useRef();
-  const {
-    contextMenuActivated,
-    contextMenuPosition,
-    contextMenuOpts,
-    setCurrentFile,
-    activateContextMenu,
-  } = useAppContext();
+  const [contextMenuActivated, contextMenuPosition, contextMenuOpts, activateContextMenu] = useAppState(state => [state.contextMenuActivated, state.contextMenuPosition, state.contextMenuOpts, state.activateContextMenu]);
   const [action, setAction] = useState();
 
   useEffect(() => {
-    const onDocumentClick = (e) => {
+    const onClick = (e) => {
       activateContextMenu(false);
+      setAction();
     };
 
-    document.addEventListener("click", onDocumentClick);
+    document.addEventListener("click", onClick);
 
     return () => {
-      document.removeEventListener("click", onDocumentClick);
+      document.removeEventListener("click", onClick);
     };
   }, []);
-
-  useEffect(() => {
-    if (!contextMenuActivated) {
-      setAction("");
-    }
-  }, [contextMenuActivated]);
 
   switch (action) {
     case "uploadingFile":
@@ -119,6 +108,7 @@ export default function ContextMenu() {
                 className={style.contextMenuButton}
                 onClick={() => {
                   activateContextMenu(false);
+                  setAction();
                   router.push(`/drive/${contextMenuOpts.data.id}`);
                 }}
               >
@@ -137,9 +127,8 @@ export default function ContextMenu() {
                   className={style.contextMenuButton}
                   onClick={() => {
                     activateContextMenu(false);
-                    copy(
-                      `${process.env.NEXT_PUBLIC_ARWEAVE_URL}${contextMenuOpts.data.id}`
-                    );
+                    setAction();
+                    copy(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}${contextMenuOpts.data.id}`);
                   }}
                 >
                   
@@ -149,11 +138,7 @@ export default function ContextMenu() {
 
               <div
                 className={style.contextMenuButton}
-                onClick={() => {
-                  setAction(
-                    'moveFile'
-                  ) 
-                }}
+                onClick={() => setAction('moveFile')}
               >
                   Move
               </div>

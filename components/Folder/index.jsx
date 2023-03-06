@@ -1,9 +1,9 @@
 import Link from "next/link";
 import style from "./style.module.css";
-import { useAppContext } from "../../contexts/AppContext";
+import { useAppStore } from "../../stores/AppStore";
 
 export default function FolderPreview({ data }) {
-  const { activateContextMenu } = useAppContext();
+  const activateContextMenu = useAppStore(state => state.activateContextMenu);
   return (
     <Link
       onContextMenu={(e) => {

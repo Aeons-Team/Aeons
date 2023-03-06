@@ -1,11 +1,13 @@
-import { useAppContext } from "../../contexts/AppContext";
+import { useAppStore } from "../../stores/AppStore";
+import { useBundlrStore } from "../../stores/BundlrStore";
 import Folder from "../Folder";
 import File from "../File";
 import style from "./style.module.css";
 import DrivePreview from "../DrivePreview";
 
 export default function Explorer() {
-  const { activateContextMenu, currentFile, currentFileData } = useAppContext();
+  const activateContextMenu = useAppStore(state => state.activateContextMenu);
+  const [currentFile, currentFileData] = useBundlrStore(state => [state.currentFile, state.currentFileData]);
   const children = currentFileData?.children;
 
   if (currentFileData && currentFileData.type == "file") {

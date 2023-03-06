@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { useAppContext } from "../../contexts/AppContext";
+import { useAppStore } from "../../stores/AppStore";
 import FilePreview from "../FilePreview";
 import Utility from "../../lib/Utility";
 import style from "./style.module.css";
 
 export default function File({ data, enableControls }) {
-  const { activateContextMenu } = useAppContext();
+  const activateContextMenu = useAppStore(state => state.activateContextMenu);
 
   return (
     <Link

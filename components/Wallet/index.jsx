@@ -1,8 +1,8 @@
-import { useBundlrContext } from "../../contexts/BundlrContext";
+import { useBundlrState } from '../../stores/BundlrStore'
 import style from './style.module.css';
 
 export default function Wallet() {
-  const { client, balance } = useBundlrContext();
+  const [client, balance] = useBundlrState(state => [state.client, state.balance]);
 
   return (
     <div className={style.wallet}>

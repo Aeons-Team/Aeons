@@ -1,11 +1,11 @@
-import { useBundlrContext } from "../../contexts/BundlrContext";
+import { useBundlrState } from '../../stores/BundlrStore'
 import { useState } from "react";
 import Button from "../Button";
 import style from "./style.module.css";
 
 export default function Funder() {
   const [amount, setAmount] = useState("");
-  const { client, fetchBalance } = useBundlrContext();
+  const [client, fetchBalance] = useBundlrState(state => [state.client, state.fetchBalance]);
 
   async function onFund() {
     if (amount) {

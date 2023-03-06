@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
-import { useAppContext } from "../../contexts/AppContext";
-import { useBundlrContext } from "../../contexts/BundlrContext";
+import { useBundlrState, useBundlrStore } from "../../stores/BundlrStore";
+import { useAppStore } from "../../stores/AppStore";
 import { useRouter } from "next/router";
 import style from "./style.module.css";
 
 function HierarchyItem({ item, depth }) {
   const router = useRouter()
-
   const [collapsed, setCollapsed] = useState(true);
-  const {
-    activateContextMenu,
-    currentFile,
-    currentFileAncestors,
-  } = useAppContext();
+  const [currentFile, currentFileAncestors] = useBundlrState(state => [state.currentFile, state.currentFileAncestors]);
+  const activateContextMenu = useAppStore(state => state.activateContextMenu);
   
   const expandable = item.type == "folder" || item.type == "drive" || item.name == "root";
 
@@ -102,7 +98,7 @@ function HierarchyItem({ item, depth }) {
 }
 
 export default function Hierarchy() {
-  const { fileSystem } = useBundlrContext();
+  const fileSystem = useBundlrStore(state => state.fileSystem);
   let root = fileSystem.hierarchy.getFile('root')
 
   return (

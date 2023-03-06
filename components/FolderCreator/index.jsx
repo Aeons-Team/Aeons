@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { useBundlrContext } from "../../contexts/BundlrContext";
-import { useAppContext } from "../../contexts/AppContext";
+import { useBundlrState } from '../../stores/BundlrStore'
 import Button from "../Button";
 import style from "./style.module.css"
 
 export default function FolderCreator() {
-  const { fileSystem, fetchBalance } = useBundlrContext();
-  const { currentFile, refreshCurrentFileData } = useAppContext();
+  const [fileSystem, fetchBalance, currentFile, refreshCurrentFileData] = useBundlrState(state => [state.fileSystem, state.fetchBalance, state.currentFile, state.refreshCurrentFileData]);
   const [folderName, setFolderName] = useState();
 
   async function onCreate() {

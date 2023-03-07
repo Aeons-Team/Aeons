@@ -4,13 +4,13 @@ import Button from "../Button";
 import style from "./style.module.css"
 
 export default function FolderCreator() {
-  const [fileSystem, fetchBalance, currentFile, refreshCurrentFileData] = useBundlrState(state => [state.fileSystem, state.fetchBalance, state.currentFile, state.refreshCurrentFileData]);
+  const [fileSystem, fetchLoadedBalance, currentFile, refreshCurrentFileData] = useBundlrState(state => [state.fileSystem, state.fetchLoadedBalance, state.currentFile, state.refreshCurrentFileData]);
   const [folderName, setFolderName] = useState();
 
   async function onCreate() {
     await fileSystem.createFolder(folderName, (currentFile == 'root' ? null : currentFile));
     refreshCurrentFileData()
-    await fetchBalance()
+    await fetchLoadedBalance()
   }
 
   return (

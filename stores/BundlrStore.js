@@ -10,20 +10,20 @@ export const useBundlrStore = create((set, get) => ({
     initialized: false, 
     client,
     fileSystem,
-    balance: null,
+    loadedBalance: null,
     currentFile: "root",
     currentFileData: null,
     currentFileAncestors: ["root"],
-    fetchBalance: async () => {
+    fetchLoadedBalance: async () => {
         const client = get().client
-        const balance = await client.getBalance();
-        set({ balance })
+        const loadedBalance = await client.getLoadedBalance();
+        set({ loadedBalance })
     },
-    initialize: async () => {
-        const { client, fileSystem, fetchBalance, currentFile } = get()
-        await client.initialize();
+    initialize: async (provider) => {
+        const { client, fileSystem, fetchLoadedBalance, currentFile } = get()
+        await client.initialize(provider);
 		await fileSystem.initialize();
-        await fetchBalance();
+        await fetchLoadedBalance();
         
         set({ 
             initialized: true,

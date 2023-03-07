@@ -5,7 +5,7 @@ import Button from "../Button";
 import style from "./style.module.css";
 
 export default function Uploader() {
-  const [fileSystem, fetchBalance, currentFile, refreshCurrentFileData] = useBundlrState(state => [state.fileSystem, state.fetchBalance, state.currentFile, state.refreshCurrentFileData]);
+  const [fileSystem, fetchLoadedBalance, currentFile, refreshCurrentFileData] = useBundlrState(state => [state.fileSystem, state.fetchLoadedBalance, state.currentFile, state.refreshCurrentFileData]);
   const [uploadFile, setUploadFile] = useState();
   const [url, setUrl] = useState();
   const [lastUploadTx, setLastUploadTx] = useState();
@@ -15,7 +15,7 @@ export default function Uploader() {
 
     setLastUploadTx(tx.id);
     refreshCurrentFileData();
-    await fetchBalance();
+    await fetchLoadedBalance();
   }
   
   return (

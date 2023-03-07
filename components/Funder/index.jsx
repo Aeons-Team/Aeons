@@ -5,12 +5,12 @@ import style from "./style.module.css";
 
 export default function Funder() {
   const [amount, setAmount] = useState("");
-  const [client, fetchBalance] = useBundlrState(state => [state.client, state.fetchBalance]);
+  const [client, fetchLoadedBalance] = useBundlrState(state => [state.client, state.fetchLoadedBalance]);
 
   async function onFund() {
     if (amount) {
       await client.fund(amount);   
-      await fetchBalance()
+      await fetchLoadedBalance()
     }
   }
 

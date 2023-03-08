@@ -4,15 +4,15 @@ import Button from "../Button";
 import style from "./style.module.css";
 
 export default function Rename({ fileId }) {
-  const [fileSystem, refreshCurrentFileData] = useBundlrState((state) => [
+  const [fileSystem, rerender] = useBundlrState((state) => [
     state.fileSystem,
-    state.refreshCurrentFileData,
+    state.rerender,
   ]);
   const [newName, setNewName] = useState();
 
   async function onRename() {
     await fileSystem.rename(fileId, newName);
-    refreshCurrentFileData();
+    rerender();
   }
 
   return (

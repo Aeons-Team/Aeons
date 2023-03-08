@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Web3Auth } from "@web3auth/modal";
-import { CHAIN_NAMESPACES } from "@web3auth/base";
 import { useBundlrStore } from "../stores/BundlrStore";
 import { useAppStore } from "../stores/AppStore";
 import "../styles/globals.css";

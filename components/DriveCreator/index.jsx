@@ -4,13 +4,13 @@ import Button from "../Button";
 import style from "./style.module.css";
 
 export default function DriveCreator() {
-  const [fileSystem, fetchLoadedBalance, refreshCurrentFileData] = useBundlrState(state => [state.fileSystem, state.fetchLoadedBalance, state.refreshCurrentFileData]);
+  const [fileSystem, fetchLoadedBalance, rerender] = useBundlrState(state => [state.fileSystem, state.fetchLoadedBalance, state.rerender]);
   const [driveName, setDriveName] = useState();
 
   async function onCreate() {
     await fileSystem.createDrive(driveName);
-    refreshCurrentFileData();
     await fetchLoadedBalance();
+    await rerender()
   }
 
   return (

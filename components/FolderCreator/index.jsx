@@ -1,16 +1,12 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useBundlrState } from "../../stores/BundlrStore";
 import Button from "../Button";
 import style from "./style.module.css";
 
 export default function FolderCreator() {
-  const [fileSystem, fetchLoadedBalance, currentFile, refreshCurrentFileData] =
-    useBundlrState((state) => [
-      state.fileSystem,
-      state.fetchLoadedBalance,
-      state.currentFile,
-      state.refreshCurrentFileData,
-    ]);
+  const { id: currentFile } = useRouter().query;
+  const [fileSystem, fetchLoadedBalance, rerender] = useBundlrState((state) => [state.fileSystem, state.fetchLoadedBalance, state.currentFile, state.rerender]);
   const [folderName, setFolderName] = useState();
 
   async function onCreate() {
@@ -18,7 +14,7 @@ export default function FolderCreator() {
       folderName,
       currentFile == "root" ? null : currentFile
     );
-    refreshCurrentFileData();
+    rerender();
     await fetchLoadedBalance();
   }
 

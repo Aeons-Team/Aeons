@@ -14,17 +14,7 @@ import Rename from "../Rename";
 export default function ContextMenu() {
   const router = useRouter();
   const menuRef = useRef();
-  const [
-    contextMenuActivated,
-    contextMenuPosition,
-    contextMenuOpts,
-    activateContextMenu,
-  ] = useAppState((state) => [
-    state.contextMenuActivated,
-    state.contextMenuPosition,
-    state.contextMenuOpts,
-    state.activateContextMenu,
-  ]);
+  const [contextMenuActivated,contextMenuPosition,contextMenuOpts,activateContextMenu] = useAppState((state) => [state.contextMenuActivated, state.contextMenuPosition, state.contextMenuOpts, state.activateContextMenu]);
   const [action, setAction] = useState();
   const [fileId, setFileId] = useState();
 

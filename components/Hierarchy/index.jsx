@@ -1,27 +1,18 @@
-import { useEffect, useState } from "react";
-import { useBundlrState, useBundlrStore } from "../../stores/BundlrStore";
-import { useAppStore } from "../../stores/AppStore";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useBundlrState } from "../../stores/BundlrStore";
+import { useAppStore } from "../../stores/AppStore";
 import style from "./style.module.css";
 
 function HierarchyItem({ item, depth, fileId }) {
   const router = useRouter();
+  const { id: currentFile } = router.query;
   const [collapsed, setCollapsed] = useState(false);
-  const [
-    fileSystem,
-    currentFile,
-    currentFileAncestors,
-    refreshCurrentFileData,
-  ] = useBundlrState((state) => [
-    state.fileSystem,
-    state.currentFile,
-    state.currentFileAncestors,
-    state.refreshCurrentFileData,
-  ]);
+  const [fileSystem, rerender] = useBundlrState((state) => [state.fileSystem, state.currentFile, state.rerender]);
   const activateContextMenu = useAppStore((state) => state.activateContextMenu);
+  const currentFileAncestors = fileSystem.hierarchy.getAncestors(currentFile)
 
-  const expandable =
-    item.type == "folder" || item.type == "drive" || item.name == "root";
+  const expandable = item.type == "folder" || item.type == "drive" || !item.type
 
   useEffect(() => {
     if (currentFileAncestors.includes(item.id)) {
@@ -32,7 +23,7 @@ function HierarchyItem({ item, depth, fileId }) {
   async function onMove(destination) {
     if (destination !== "root") {
       await fileSystem.moveFile(fileId, destination);
-      refreshCurrentFileData();
+      rerender();
     }
   }
   if (fileId && item.id == currentFile) return;
@@ -130,7 +121,7 @@ function HierarchyItem({ item, depth, fileId }) {
 }
 
 export default function Hierarchy({ fileId }) {
-  const fileSystem = useBundlrStore((state) => state.fileSystem);
+  const [fileSystem, render] = useBundlrState((state) => [state.fileSystem, state.render]);
   let root = fileSystem.hierarchy.getFile("root");
   return (
     <div className={style.hierarchy}>

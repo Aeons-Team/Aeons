@@ -1,21 +1,30 @@
 import { useState } from "react";
-import { useBundlrState } from '../../stores/BundlrStore'
+import { useBundlrState } from "../../stores/BundlrStore";
 import Button from "../Button";
-import style from "./style.module.css"
+import style from "./style.module.css";
 
 export default function FolderCreator() {
-  const [fileSystem, fetchLoadedBalance, currentFile, refreshCurrentFileData] = useBundlrState(state => [state.fileSystem, state.fetchLoadedBalance, state.currentFile, state.refreshCurrentFileData]);
+  const [fileSystem, fetchLoadedBalance, currentFile, refreshCurrentFileData] =
+    useBundlrState((state) => [
+      state.fileSystem,
+      state.fetchLoadedBalance,
+      state.currentFile,
+      state.refreshCurrentFileData,
+    ]);
   const [folderName, setFolderName] = useState();
 
   async function onCreate() {
-    await fileSystem.createFolder(folderName, (currentFile == 'root' ? null : currentFile));
-    refreshCurrentFileData()
-    await fetchLoadedBalance()
+    await fileSystem.createFolder(
+      folderName,
+      currentFile == "root" ? null : currentFile
+    );
+    refreshCurrentFileData();
+    await fetchLoadedBalance();
   }
 
   return (
     <div className={style.creator}>
-      <label>File name: </label>
+      <label>Folder name: </label>
 
       <input
         onInput={(e) => {
@@ -25,5 +34,5 @@ export default function FolderCreator() {
 
       <Button onClick={onCreate}>Create Folder</Button>
     </div>
-  )
+  );
 }

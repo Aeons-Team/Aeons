@@ -4,13 +4,24 @@ import { useAppStore } from "../../stores/AppStore";
 import { useRouter } from "next/router";
 import style from "./style.module.css";
 
-function HierarchyItem({ item, depth }) {
-  const router = useRouter()
-  const [collapsed, setCollapsed] = useState(true);
-  const [currentFile, currentFileAncestors] = useBundlrState(state => [state.currentFile, state.currentFileAncestors]);
-  const activateContextMenu = useAppStore(state => state.activateContextMenu);
-  
-  const expandable = item.type == "folder" || item.type == "drive" || item.name == "root";
+function HierarchyItem({ item, depth, fileId }) {
+  const router = useRouter();
+  const [collapsed, setCollapsed] = useState(false);
+  const [
+    fileSystem,
+    currentFile,
+    currentFileAncestors,
+    refreshCurrentFileData,
+  ] = useBundlrState((state) => [
+    state.fileSystem,
+    state.currentFile,
+    state.currentFileAncestors,
+    state.refreshCurrentFileData,
+  ]);
+  const activateContextMenu = useAppStore((state) => state.activateContextMenu);
+
+  const expandable =
+    item.type == "folder" || item.type == "drive" || item.name == "root";
 
   useEffect(() => {
     if (currentFileAncestors.includes(item.id)) {
@@ -18,18 +29,27 @@ function HierarchyItem({ item, depth }) {
     }
   }, [currentFileAncestors]);
 
+  async function onMove(destination) {
+    if (destination !== "root") {
+      await fileSystem.moveFile(fileId, destination);
+      refreshCurrentFileData();
+    }
+  }
+  if (fileId && item.id == currentFile) return;
   return (
     <div>
       <div
         className={style.item}
         style={
-          item.id == currentFile
+          !fileId && item.id == currentFile
             ? {
                 color: "var(--color-active-high)",
               }
             : {}
         }
-        onClick={() => router.push(`/drive/${item.id}`)}
+        onClick={() =>
+          fileId ? onMove(item.id) : router.push(`/drive/${item.id}`)
+        }
         onContextMenu={(e) => {
           e.preventDefault();
           activateContextMenu(true, {
@@ -41,7 +61,9 @@ function HierarchyItem({ item, depth }) {
         <div
           className={style.itemHead}
           style={{
-            transform: `translateX(${0.9 * depth + (!expandable ? 0.5 : 0)}rem)`,
+            transform: `translateX(${
+              0.9 * depth + (!expandable ? 0.5 : 0)
+            }rem)`,
           }}
         >
           {expandable && (
@@ -72,7 +94,6 @@ function HierarchyItem({ item, depth }) {
           <span className={style.itemName}>{item.name}</span>
         </div>
       </div>
-
       {expandable && (
         <div
           className={style.children}
@@ -83,27 +104,37 @@ function HierarchyItem({ item, depth }) {
           {item.children
             .filter((child) => child.type == "folder" || child.type == "drive")
             .map((child) => (
-              <HierarchyItem key={child.id} item={child} depth={depth + 1} />
+              <HierarchyItem
+                key={child.id}
+                item={child}
+                depth={depth + 1}
+                fileId={fileId}
+              />
             ))}
 
-          {item.children
-            .filter((child) => child.type == "file")
-            .map((child) => (
-              <HierarchyItem key={child.id} item={child} depth={depth + 1} />
-            ))}
+          {!fileId &&
+            item.children
+              .filter((child) => child.type == "file")
+              .map((child) => (
+                <HierarchyItem
+                  key={child.id}
+                  item={child}
+                  depth={depth + 1}
+                  fileId={fileId}
+                />
+              ))}
         </div>
       )}
     </div>
   );
 }
 
-export default function Hierarchy() {
-  const fileSystem = useBundlrStore(state => state.fileSystem);
-  let root = fileSystem.hierarchy.getFile('root')
-
+export default function Hierarchy({ fileId }) {
+  const fileSystem = useBundlrStore((state) => state.fileSystem);
+  let root = fileSystem.hierarchy.getFile("root");
   return (
     <div className={style.hierarchy}>
-      <HierarchyItem item={root} depth={0} />
+      <HierarchyItem item={root} depth={0} fileId={fileId} />
     </div>
   );
 }

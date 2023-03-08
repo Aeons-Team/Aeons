@@ -8,13 +8,25 @@ import FolderCreator from "../FolderCreator";
 import Funder from "../Funder";
 import style from "./style.module.css";
 import DriveCreator from "../DriveCreator";
-import MoveFile from "../MoveFile"
+import Hierarchy from "../Hierarchy";
+import Rename from "../Rename";
 
 export default function ContextMenu() {
-  const router = useRouter()
+  const router = useRouter();
   const menuRef = useRef();
-  const [contextMenuActivated, contextMenuPosition, contextMenuOpts, activateContextMenu] = useAppState(state => [state.contextMenuActivated, state.contextMenuPosition, state.contextMenuOpts, state.activateContextMenu]);
+  const [
+    contextMenuActivated,
+    contextMenuPosition,
+    contextMenuOpts,
+    activateContextMenu,
+  ] = useAppState((state) => [
+    state.contextMenuActivated,
+    state.contextMenuPosition,
+    state.contextMenuOpts,
+    state.activateContextMenu,
+  ]);
   const [action, setAction] = useState();
+  const [fileId, setFileId] = useState();
 
   useEffect(() => {
     const onClick = (e) => {
@@ -45,10 +57,14 @@ export default function ContextMenu() {
     case "fundingWallet":
       var contextMenuInner = <Funder />;
       break;
-     
+
     case "moveFile":
-      var contextMenuInner = <MoveFile />
-      break;  
+      var contextMenuInner = <Hierarchy fileId={fileId} />;
+      break;
+
+    case "rename":
+      var contextMenuInner = <Rename fileId={fileId} />;
+      break;
 
     default:
       switch (contextMenuOpts.type) {
@@ -61,8 +77,6 @@ export default function ContextMenu() {
               >
                 Create Drive
               </div>
-
-
 
               <div
                 className={style.contextMenuButton}
@@ -121,26 +135,38 @@ export default function ContextMenu() {
         case "file":
           var contextMenuInner = (
             <>
-              {
-                contextMenuOpts.copy && 
+              {contextMenuOpts.copy && (
                 <div
                   className={style.contextMenuButton}
                   onClick={() => {
                     activateContextMenu(false);
                     setAction();
-                    copy(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}${contextMenuOpts.data.id}`);
+                    copy(
+                      `${process.env.NEXT_PUBLIC_ARWEAVE_URL}${contextMenuOpts.data.id}`
+                    );
                   }}
                 >
-                  
                   Copy url
                 </div>
-              }
+              )}
 
               <div
                 className={style.contextMenuButton}
-                onClick={() => setAction('moveFile')}
+                onClick={() => {
+                  setAction("moveFile");
+                  setFileId(contextMenuOpts.data.id);
+                }}
               >
-                  Move
+                Move
+              </div>
+              <div
+                className={style.contextMenuButton}
+                onClick={() => {
+                  setAction("rename");
+                  setFileId(contextMenuOpts.data.id);
+                }}
+              >
+                Rename
               </div>
             </>
           );

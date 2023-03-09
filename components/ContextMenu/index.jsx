@@ -4,7 +4,6 @@ import copy from "clipboard-copy";
 import { motion } from "framer-motion";
 import { useAppState } from "../../stores/AppStore";
 import FileUploader from "../FileUploader";
-import Funder from "../Funder";
 import style from "./style.module.css";
 import Hierarchy from "../Hierarchy";
 import Creator from "../Creator";
@@ -53,7 +52,7 @@ export default function ContextMenu() {
       break;
 
     case "fundingWallet":
-      var contextMenuInner = <Funder />;
+      var contextMenuInner = <Creator type="Fund" />;
       break;
 
     case "moveFile":

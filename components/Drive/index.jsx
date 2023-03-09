@@ -1,9 +1,8 @@
-import Wallet from '../Wallet'
+import Wallet from "../Wallet";
 import Explorer from "../Explorer";
 import ContextMenu from "../ContextMenu";
-import Hierarchy from '../Hierarchy';
-import style from './style.module.css';
-import PrevButton from '../PrevButton'
+import Hierarchy from "../Hierarchy";
+import style from "./style.module.css";
 
 export default function Drive() {
   return (
@@ -12,7 +11,7 @@ export default function Drive() {
 
       <div className={style.driveGrid}>
         <Wallet />
-        <PrevButton />
+        <div />
         <div />
         <Hierarchy />
         <Explorer />

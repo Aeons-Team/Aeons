@@ -16,6 +16,7 @@ export default function Creator({ type, fileId }) {
   const [name, setName] = useState();
 
   async function onCreate() {
+    activateContextMenu(false);
     switch (type) {
       case "Drive":
         await fileSystem.createDrive(name);
@@ -29,16 +30,16 @@ export default function Creator({ type, fileId }) {
       case "New":
         await fileSystem.rename(fileId, name);
         break;
+      case "Fund":
+        if (name && !isNaN(Number(name))) await client.fund(name);
+        break;
     }
-    activateContextMenu(false);
     rerender();
     await fetchLoadedBalance();
   }
-
   return (
     <div className={style.creator}>
-      <label>{type} name: </label>
-
+      {type === "Fund" ? <label>Amount: </label> : <label>{type} name: </label>}
       <input
         type="text"
         onInput={(e) => {

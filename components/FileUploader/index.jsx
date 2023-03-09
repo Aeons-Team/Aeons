@@ -4,6 +4,7 @@ import { useBundlrState } from "../../stores/BundlrStore";
 import FilePreview from "../FilePreview";
 import Button from "../Button";
 import style from "./style.module.css";
+import { useAppStore } from "../../stores/AppStore";
 
 export default function Uploader() {
   const { id: currentFileId } = useRouter().query;
@@ -12,12 +13,14 @@ export default function Uploader() {
     state.fetchLoadedBalance,
     state.rerender,
   ]);
+  const activateContextMenu = useAppStore((state) => state.activateContextMenu);
   const [uploadFile, setUploadFile] = useState();
   const [fileName, setFileName] = useState();
   const [url, setUrl] = useState();
   const [lastUploadTx, setLastUploadTx] = useState();
 
   async function onUpload() {
+    activateContextMenu(false);
     const tx = await fileSystem.createFile(
       uploadFile,
       currentFileId == "root" ? null : currentFileId,
@@ -41,7 +44,7 @@ export default function Uploader() {
       />
       <input
         type="text"
-        placeholder="File Name"
+        placeholder="File Name (optional)"
         onChange={(e) => {
           setFileName(e.target.value);
         }}

@@ -23,12 +23,14 @@ function HierarchyItem({ item, depth, fileId }) {
     if (currentFileAncestors.includes(item.id)) {
       setCollapsed(false);
     }
-  }, [currentFileAncestors]);
+  }, [currentFile]);
 
   async function onMove(destination) {
-    if (!["root", currentFileId].includes(destination)) {
-      await fileSystem.moveFile(fileId, destination);
+    if (
+      !["root", fileId, currentFile, currentFile.parent].includes(destination)
+    ) {
       activateContextMenu(false);
+      await fileSystem.moveFile(fileId, destination);
       rerender();
     }
   }
@@ -127,10 +129,7 @@ function HierarchyItem({ item, depth, fileId }) {
 }
 
 export default function Hierarchy({ fileId }) {
-  const [fileSystem, render] = useBundlrState((state) => [
-    state.fileSystem,
-    state.render,
-  ]);
+  const [fileSystem] = useBundlrState((state) => [state.fileSystem]);
   let root = fileSystem.hierarchy.getFile("root");
   return (
     <div className={style.hierarchy}>

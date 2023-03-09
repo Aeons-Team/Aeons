@@ -8,11 +8,15 @@ function HierarchyItem({ item, depth, fileId }) {
   const router = useRouter();
   const { id: currentFile } = router.query;
   const [collapsed, setCollapsed] = useState(false);
-  const [fileSystem, rerender] = useBundlrState((state) => [state.fileSystem, state.currentFile, state.rerender]);
+  const [fileSystem, rerender] = useBundlrState((state) => [
+    state.fileSystem,
+    state.rerender,
+  ]);
   const activateContextMenu = useAppStore((state) => state.activateContextMenu);
-  const currentFileAncestors = fileSystem.hierarchy.getAncestors(currentFile)
+  const currentFileAncestors = fileSystem.hierarchy.getAncestors(currentFile);
 
-  const expandable = item.type == "folder" || item.type == "drive" || !item.type
+  const expandable =
+    item.type == "folder" || item.type == "drive" || !item.type;
 
   useEffect(() => {
     if (currentFileAncestors.includes(item.id)) {
@@ -21,12 +25,13 @@ function HierarchyItem({ item, depth, fileId }) {
   }, [currentFileAncestors]);
 
   async function onMove(destination) {
-    if (destination !== "root") {
+    if (!["root", currentFile].includes(destination)) {
       await fileSystem.moveFile(fileId, destination);
+      activateContextMenu(false);
       rerender();
     }
   }
-  if (fileId && item.id == currentFile) return;
+
   return (
     <div>
       <div
@@ -121,7 +126,10 @@ function HierarchyItem({ item, depth, fileId }) {
 }
 
 export default function Hierarchy({ fileId }) {
-  const [fileSystem, render] = useBundlrState((state) => [state.fileSystem, state.render]);
+  const [fileSystem, render] = useBundlrState((state) => [
+    state.fileSystem,
+    state.render,
+  ]);
   let root = fileSystem.hierarchy.getFile("root");
   return (
     <div className={style.hierarchy}>

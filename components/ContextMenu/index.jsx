@@ -4,17 +4,25 @@ import copy from "clipboard-copy";
 import { motion } from "framer-motion";
 import { useAppState } from "../../stores/AppStore";
 import FileUploader from "../FileUploader";
-import FolderCreator from "../FolderCreator";
 import Funder from "../Funder";
 import style from "./style.module.css";
-import DriveCreator from "../DriveCreator";
 import Hierarchy from "../Hierarchy";
-import Rename from "../Rename";
+import Creator from "../Creator";
 
 export default function ContextMenu() {
   const router = useRouter();
   const menuRef = useRef();
-  const [contextMenuActivated,contextMenuPosition,contextMenuOpts,activateContextMenu] = useAppState((state) => [state.contextMenuActivated, state.contextMenuPosition, state.contextMenuOpts, state.activateContextMenu]);
+  const [
+    contextMenuActivated,
+    contextMenuPosition,
+    contextMenuOpts,
+    activateContextMenu,
+  ] = useAppState((state) => [
+    state.contextMenuActivated,
+    state.contextMenuPosition,
+    state.contextMenuOpts,
+    state.activateContextMenu,
+  ]);
   const [action, setAction] = useState();
   const [fileId, setFileId] = useState();
 
@@ -37,11 +45,11 @@ export default function ContextMenu() {
       break;
 
     case "creatingFolder":
-      var contextMenuInner = <FolderCreator />;
+      var contextMenuInner = <Creator type="Folder" />;
       break;
 
     case "creatingDrive":
-      var contextMenuInner = <DriveCreator />;
+      var contextMenuInner = <Creator type="Drive" />;
       break;
 
     case "fundingWallet":
@@ -53,7 +61,7 @@ export default function ContextMenu() {
       break;
 
     case "rename":
-      var contextMenuInner = <Rename fileId={fileId} />;
+      var contextMenuInner = <Creator type="New" fileId={fileId} />;
       break;
 
     default:

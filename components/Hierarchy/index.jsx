@@ -8,9 +8,10 @@ function HierarchyItem({ item, depth, fileId }) {
   const router = useRouter();
   const { id: currentFileId } = router.query;
   const [collapsed, setCollapsed] = useState(false);
-  const [fileSystem, rerender] = useBundlrState((state) => [
+  const [fileSystem, rerender, render] = useBundlrState((state) => [
     state.fileSystem,
     state.rerender,
+    state.render
   ]);
 
   const activateContextMenu = useAppStore((state) => state.activateContextMenu);

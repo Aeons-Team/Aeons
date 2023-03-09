@@ -6,7 +6,7 @@ import Button from "../Button";
 import style from "./style.module.css";
 
 export default function Uploader() {
-  const { id: currentFile } = useRouter().query;
+  const { id: currentFileId } = useRouter().query;
   const [fileSystem, fetchLoadedBalance, rerender] = useBundlrState((state) => [
     state.fileSystem,
     state.fetchLoadedBalance,
@@ -20,7 +20,7 @@ export default function Uploader() {
   async function onUpload() {
     const tx = await fileSystem.createFile(
       uploadFile,
-      currentFile == "root" ? null : currentFile,
+      currentFileId == "root" ? null : currentFileId,
       fileName ?? uploadFile.name
     );
 

@@ -6,17 +6,18 @@ import style from "./style.module.css";
 
 function HierarchyItem({ item, depth, fileId }) {
   const router = useRouter();
-  const { id: currentFile } = router.query;
+  const { id: currentFileId } = router.query;
   const [collapsed, setCollapsed] = useState(false);
   const [fileSystem, rerender] = useBundlrState((state) => [
     state.fileSystem,
     state.rerender,
   ]);
-  const activateContextMenu = useAppStore((state) => state.activateContextMenu);
-  const currentFileAncestors = fileSystem.hierarchy.getAncestors(currentFile);
 
-  const expandable =
-    item.type == "folder" || item.type == "drive" || !item.type;
+  const activateContextMenu = useAppStore((state) => state.activateContextMenu);
+  const currentFile = fileSystem.hierarchy.getFile(currentFileId);
+  const currentFileAncestors = currentFile.getAncestors()
+
+  const expandable = item.type == "folder" || item.type == "drive" || !item.type;
 
   useEffect(() => {
     if (currentFileAncestors.includes(item.id)) {
@@ -25,7 +26,7 @@ function HierarchyItem({ item, depth, fileId }) {
   }, [currentFileAncestors]);
 
   async function onMove(destination) {
-    if (!["root", currentFile].includes(destination)) {
+    if (!["root", currentFileId].includes(destination)) {
       await fileSystem.moveFile(fileId, destination);
       activateContextMenu(false);
       rerender();
@@ -37,7 +38,7 @@ function HierarchyItem({ item, depth, fileId }) {
       <div
         className={style.item}
         style={
-          !fileId && item.id == currentFile
+          !fileId && item.id == currentFileId
             ? {
                 color: "var(--color-active-high)",
               }
@@ -97,7 +98,7 @@ function HierarchyItem({ item, depth, fileId }) {
             height: collapsed ? 0 : "auto",
           }}
         >
-          {item.children
+          {item.getChildren()
             .filter((child) => child.type == "folder" || child.type == "drive")
             .map((child) => (
               <HierarchyItem
@@ -109,7 +110,7 @@ function HierarchyItem({ item, depth, fileId }) {
             ))}
 
           {!fileId &&
-            item.children
+            item.getChildren()
               .filter((child) => child.type == "file")
               .map((child) => (
                 <HierarchyItem

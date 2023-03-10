@@ -11,14 +11,15 @@ function HierarchyItem({ item, depth, fileId }) {
   const [fileSystem, rerender, render] = useBundlrState((state) => [
     state.fileSystem,
     state.rerender,
-    state.render
+    state.render,
   ]);
 
   const activateContextMenu = useAppStore((state) => state.activateContextMenu);
   const currentFile = fileSystem.hierarchy.getFile(currentFileId);
-  const currentFileAncestors = currentFile.getAncestors()
+  const currentFileAncestors = currentFile.getAncestors();
 
-  const expandable = item.type == "folder" || item.type == "drive" || !item.type;
+  const expandable =
+    item.type == "folder" || item.type == "drive" || !item.type;
 
   useEffect(() => {
     if (currentFileAncestors.includes(item.id)) {
@@ -28,7 +29,9 @@ function HierarchyItem({ item, depth, fileId }) {
 
   async function onMove(destination) {
     if (
-      !["root", fileId, currentFile, currentFile.parent].includes(destination)
+      !["root", fileId, currentFile, currentFile.parent.id].includes(
+        destination
+      )
     ) {
       activateContextMenu(false);
       await fileSystem.moveFile(fileId, destination);
@@ -101,7 +104,8 @@ function HierarchyItem({ item, depth, fileId }) {
             height: collapsed ? 0 : "auto",
           }}
         >
-          {item.getChildren()
+          {item
+            .getChildren()
             .filter((child) => child.type == "folder" || child.type == "drive")
             .map((child) => (
               <HierarchyItem
@@ -113,7 +117,8 @@ function HierarchyItem({ item, depth, fileId }) {
             ))}
 
           {!fileId &&
-            item.getChildren()
+            item
+              .getChildren()
               .filter((child) => child.type == "file")
               .map((child) => (
                 <HierarchyItem

@@ -7,10 +7,13 @@ import style from "./style.module.css";
 import DrivePreview from "../DrivePreview";
 
 export default function Explorer() {
-  const { id: currentFileId } = useRouter().query
-  const activateContextMenu = useAppStore(state => state.activateContextMenu);
-  const [fileSystem, render] = useBundlrState(state => [state.fileSystem, state.render]);
-  const currentFile = fileSystem.hierarchy.getFile(currentFileId)
+  const { id: currentFileId } = useRouter().query;
+  const activateContextMenu = useAppStore((state) => state.activateContextMenu);
+  const [fileSystem, render] = useBundlrState((state) => [
+    state.fileSystem,
+    state.render,
+  ]);
+  const currentFile = fileSystem.hierarchy.getFile(currentFileId);
   const currentFileChildren = currentFile?.getChildren();
 
   if (currentFile && currentFile.type == "file") {
@@ -28,46 +31,43 @@ export default function Explorer() {
         onContextMenu={(e) => {
           e.preventDefault();
           activateContextMenu(true, {
-            type: currentFileId == "root" ? "explorer" : "drive",
+            type: currentFileId == "root" ? "explorer" : "drives",
           });
         }}
       >
-        {
-          currentFileId == 'root'
-          ? <div className={style.section}>
+        {currentFileId == "root" ? (
+          <div className={style.section}>
             <h1 className={style.sectionTitle}>Drives</h1>
             <div className={style.drives}>
-              {currentFileChildren && currentFileChildren
-                .map((x) => (
+              {currentFileChildren &&
+                currentFileChildren.map((x) => (
                   <DrivePreview key={x.id} data={x} />
                 ))}
             </div>
           </div>
-
-          : <>
+        ) : (
+          <>
             <div className={style.section}>
               <h1 className={style.sectionTitle}>Folders</h1>
               <div className={style.folders}>
-                {currentFileChildren && currentFileChildren
-                  .filter((x) => x.type == "folder")
-                  .map((x) => (
-                    <Folder key={x.id} data={x} />
-                  ))}
+                {currentFileChildren &&
+                  currentFileChildren
+                    .filter((x) => x.type == "folder")
+                    .map((x) => <Folder key={x.id} data={x} />)}
               </div>
             </div>
 
             <div className={style.section}>
               <h1 className={style.sectionTitle}>Files</h1>
               <div className={style.files}>
-                {currentFileChildren && currentFileChildren
-                  .filter((x) => x.type == "file")
-                  .map((x) => (
-                    <File key={x.id} data={x} />
-                  ))}
+                {currentFileChildren &&
+                  currentFileChildren
+                    .filter((x) => x.type == "file")
+                    .map((x) => <File key={x.id} data={x} />)}
               </div>
             </div>
           </>
-        }
+        )}
       </div>
     </div>
   );

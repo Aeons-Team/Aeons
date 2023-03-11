@@ -1,9 +1,23 @@
 import Link from "next/link";
 import style from "./style.module.css";
+import { useAppStore } from "../../stores/AppStore";
 
 export default function DrivePreview({ data }) {
+  const activateContextMenu = useAppStore((state) => state.activateContextMenu);
   return (
-    <Link className={style.preview} href={`/drive/${data.id}`}>
+    <Link
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        activateContextMenu(true, {
+          type: "drive",
+          data,
+        });
+      }}
+      className={style.preview}
+      href={`/drive/${data.id}`}
+    >
       <svg
         viewBox="0 0 16 16"
         xmlns="http://www.w3.org/2000/svg"

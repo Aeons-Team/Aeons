@@ -85,7 +85,7 @@ export default function ContextMenu() {
           );
 
           break;
-        case "drive":
+        case "drives":
           var contextMenuInner = (
             <>
               <div
@@ -110,7 +110,20 @@ export default function ContextMenu() {
               </div>
             </>
           );
-
+        case "drive":
+          var contextMenuInner = (
+            <>
+              <div
+                className={style.contextMenuButton}
+                onClick={() => {
+                  setAction("rename");
+                  setFileId(contextMenuOpts.data.id);
+                }}
+              >
+                Rename
+              </div>
+            </>
+          );
           break;
         case "hierarchy":
           var contextMenuInner = (

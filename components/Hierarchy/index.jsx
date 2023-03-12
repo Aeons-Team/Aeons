@@ -18,8 +18,7 @@ function HierarchyItem({ item, depth, fileId }) {
   const currentFile = fileSystem.hierarchy.getFile(currentFileId);
   const currentFileAncestors = currentFile.getAncestors();
 
-  const expandable =
-    item.type == "folder" || item.type == "drive" || !item.type;
+  const expandable = item.type == "folder" || !item.type;
 
   useEffect(() => {
     if (currentFileAncestors.includes(item.id)) {
@@ -29,9 +28,11 @@ function HierarchyItem({ item, depth, fileId }) {
 
   async function onMove(destination) {
     if (
-      !["root", fileId, currentFile, currentFile.parent.id].includes(
-        destination
-      )
+      ![
+        fileId,
+        currentFile.id,
+        currentFile.type == "file" && currentFile.parent.id,
+      ].includes(destination)
     ) {
       activateContextMenu(false);
       await fileSystem.moveFile(fileId, destination);
@@ -106,7 +107,7 @@ function HierarchyItem({ item, depth, fileId }) {
         >
           {item
             .getChildren()
-            .filter((child) => child.type == "folder" || child.type == "drive")
+            .filter((child) => child.type == "folder")
             .map((child) => (
               <HierarchyItem
                 key={child.id}

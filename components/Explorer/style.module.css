@@ -15,12 +15,6 @@
   color: var(--color-secondary);
 }
 
-.drives {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(100px, 1fr));
-  gap: 1rem;
-}
-
 .folders {
   display: grid;
   grid-template-columns: repeat(4, minmax(100px, 1fr));

@@ -18,9 +18,6 @@ export default function Creator({ type, fileId }) {
   async function onCreate() {
     activateContextMenu(false);
     switch (type) {
-      case "Drive":
-        await fileSystem.createDrive(name);
-        break;
       case "Folder":
         await fileSystem.createFolder(
           name,

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import style from "./style.module.css";
 import { useBundlrState } from "../../stores/BundlrStore";
 import Button from "../Button"
 
@@ -38,7 +37,7 @@ export default function Encrypt() {
   };
 
   return (
-    <div className={style.wallet}>
+    <div>
       
       <Button
         onClick={() => {

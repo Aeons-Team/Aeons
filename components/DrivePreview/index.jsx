@@ -29,5 +29,6 @@ export default function DrivePreview({ data }) {
 
       <span>{data.name}</span>
     </Link>
+    
   );
 }

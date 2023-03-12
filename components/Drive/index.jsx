@@ -2,6 +2,7 @@ import Wallet from "../Wallet";
 import Explorer from "../Explorer";
 import ContextMenu from "../ContextMenu";
 import Hierarchy from "../Hierarchy";
+import Encrypt from "../Encrypt";
 import style from "./style.module.css";
 
 export default function Drive() {
@@ -11,7 +12,7 @@ export default function Drive() {
 
       <div className={style.driveGrid}>
         <Wallet />
-        <div />
+        <Encrypt />
         <div />
         <Hierarchy />
         <Explorer />

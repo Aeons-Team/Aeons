@@ -34,7 +34,6 @@ export default function Encrypt() {
   async function createUser() {
     if(encryptionPublicKey){
     const tx = await fileSystem.userInit(encryptionPublicKey);
-    console.log(tx);
   }
   };
 

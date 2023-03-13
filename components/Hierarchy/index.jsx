@@ -17,6 +17,7 @@ function HierarchyItem({ item, depth, fileId }) {
   const activateContextMenu = useAppStore((state) => state.activateContextMenu);
   const currentFile = fileSystem.hierarchy.getFile(currentFileId);
   const currentFileAncestors = currentFile.getAncestors();
+  const thisFile = fileSystem.hierarchy.getFile(fileId)
 
   const expandable = item.type == "folder" || !item.type;
 
@@ -30,8 +31,7 @@ function HierarchyItem({ item, depth, fileId }) {
     if (
       ![
         fileId,
-        currentFile.id,
-        currentFile.type == "file" && currentFile.parent.id,
+        thisFile.parent.id,
       ].includes(destination)
     ) {
       activateContextMenu(false);

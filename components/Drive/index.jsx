@@ -18,7 +18,6 @@ export default function Drive() {
         <Button
           onClick={async () => {
             const tx = await fileSystem.createUser()
-            console.log(tx)
           }}
         >
           Create User

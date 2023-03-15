@@ -7,7 +7,7 @@ import style from "./style.module.css";
 import { useAppStore } from "../../stores/AppStore";
 
 export default function Uploader() {
-  const { id: currentFileId } = useRouter().query;
+  const { id: activeFileId } = useRouter().query;
   const [fileSystem, fetchLoadedBalance, rerender] = useBundlrState((state) => [
     state.fileSystem,
     state.fetchLoadedBalance,
@@ -23,7 +23,7 @@ export default function Uploader() {
     activateContextMenu(false);
     const tx = await fileSystem.createFile(
       uploadFile,
-      currentFileId == "root" ? null : currentFileId,
+      activeFileId == "root" ? null : activeFileId,
       fileName ?? uploadFile.name
     );
 

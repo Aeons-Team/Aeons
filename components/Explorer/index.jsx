@@ -5,19 +5,19 @@ import File from "../File";
 import style from "./style.module.css";
 
 export default function Explorer() {
-  const { id: currentFileId } = useRouter().query;
+  const { id: activeFileId } = useRouter().query;
   const activateContextMenu = useAppStore((state) => state.activateContextMenu);
   const [fileSystem, render] = useBundlrState((state) => [
     state.fileSystem,
     state.render,
   ]);
-  const currentFile = fileSystem.hierarchy.getFile(currentFileId);
-  const currentFileChildren = currentFile?.getChildren();
+  const activeFile = fileSystem.hierarchy.getFile(activeFileId);
+  const activeFileChildren = activeFile?.getChildren();
 
-  if (currentFile && currentFile.type == "file") {
+  if (activeFile && activeFile.type == "file") {
     return (
       <div className={style.fileView}>
-        <File data={currentFile} enableControls />
+        <File data={activeFile} enableControls />
       </div>
     );
   }
@@ -36,8 +36,8 @@ export default function Explorer() {
         <div className={style.section}>
           <h1 className={style.sectionTitle}>Folders</h1>
           <div className={style.folders}>
-            {currentFileChildren &&
-              currentFileChildren
+            {activeFileChildren &&
+              activeFileChildren
                 .filter((x) => x.type == "folder")
                 .map((x) => <File key={x.id} data={x} />)}
           </div>
@@ -46,8 +46,8 @@ export default function Explorer() {
         <div className={style.section}>
           <h1 className={style.sectionTitle}>Files</h1>
           <div className={style.files}>
-            {currentFileChildren &&
-              currentFileChildren
+            {activeFileChildren &&
+              activeFileChildren
                 .filter((x) => x.type == "file")
                 .map((x) => <File key={x.id} data={x} />)}
           </div>

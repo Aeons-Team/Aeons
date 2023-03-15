@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { useBundlrState } from "../../stores/BundlrStore";
 import { useAppStore } from "../../stores/AppStore";
 import style from "./style.module.css";
+import Utility from "../../lib/Utility";
 
 function HierarchyItem({ item, depth, fileId }) {
   const router = useRouter();
-  const { id: currentFileId } = router.query;
+  const { id: activeFileId } = router.query;
   const [collapsed, setCollapsed] = useState(false);
   const [fileSystem, rerender, render] = useBundlrState((state) => [
     state.fileSystem,
@@ -15,27 +16,22 @@ function HierarchyItem({ item, depth, fileId }) {
   ]);
 
   const activateContextMenu = useAppStore((state) => state.activateContextMenu);
-  const currentFile = fileSystem.hierarchy.getFile(currentFileId);
-  const currentFileAncestors = currentFile.getAncestors();
-  const thisFile = fileSystem.hierarchy.getFile(fileId)
+  const activeFile = fileSystem.hierarchy.getFile(activeFileId);
+  const activeFileAncestors = activeFile.getAncestors();
+  const currentFile = fileSystem.hierarchy.getFile(fileId)
 
   const expandable = item.type == "folder" || !item.type;
 
   useEffect(() => {
-    if (currentFileAncestors.includes(item.id)) {
+    if (activeFileAncestors.includes(item.id)) {
       setCollapsed(false);
     }
-  }, [currentFile]);
+  }, [activeFile]);
 
   async function onMove(destination) {
-    if (
-      ![
-        fileId,
-        thisFile.parent.id,
-      ].includes(destination)
-    ) {
+    if (currentFile.movableTo(destination)) {
       activateContextMenu(false);
-      await fileSystem.moveFile(fileId, destination);
+      await fileSystem.moveFile(fileId, destination.id);
       rerender();
     }
   }
@@ -45,14 +41,14 @@ function HierarchyItem({ item, depth, fileId }) {
       <div
         className={style.item}
         style={
-          !fileId && item.id == currentFileId
+          !fileId && item.id == activeFileId
             ? {
                 color: "var(--color-active-high)",
               }
             : {}
         }
         onClick={() =>
-          fileId ? onMove(item.id) : router.push(`/drive/${item.id}`)
+          fileId ? onMove(item) : router.push(`/drive/${item.id}`)
         }
         onContextMenu={(e) => {
           e.preventDefault();

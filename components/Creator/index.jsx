@@ -6,7 +6,7 @@ import style from "./style.module.css";
 import { useAppStore } from "../../stores/AppStore";
 
 export default function Creator({ type, fileId }) {
-  const { id: currentFileId } = useRouter().query;
+  const { id: activeFileId } = useRouter().query;
   const [fileSystem, fetchLoadedBalance, rerender] = useBundlrState((state) => [
     state.fileSystem,
     state.fetchLoadedBalance,
@@ -21,7 +21,7 @@ export default function Creator({ type, fileId }) {
       case "Folder":
         await fileSystem.createFolder(
           name,
-          currentFileId == "root" ? null : currentFileId
+          activeFileId == "root" ? null : activeFileId
         );
         break;
       case "New":

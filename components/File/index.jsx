@@ -8,6 +8,18 @@ export default function File({ data, enableControls }) {
   const activateContextMenu = useAppStore(state => state.activateContextMenu);
   const isFolder = data.type == 'folder'
 
+  const onFileDrag = (e) => {
+
+  }
+
+  const onFileDrop = (e) => {
+    console.log('xd')
+  }
+
+  const onFileDragOver = (e) => {
+    e.preventDefault()
+  }
+
   return (
     <Link
       className={isFolder ? style.folder : style.file}
@@ -22,6 +34,10 @@ export default function File({ data, enableControls }) {
           data,
         });
       }}
+      draggable
+      onDrag={onFileDrag}
+      onDrop={onFileDrop}
+      onDragOver={onFileDragOver}
     >
       {
         isFolder 

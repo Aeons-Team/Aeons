@@ -7,9 +7,8 @@ import { useAppStore } from "../../stores/AppStore";
 
 export default function Creator({ type, fileId }) {
   const { id: activeFileId } = useRouter().query;
-  const [fileSystem, fetchLoadedBalance, rerender] = useBundlrState((state) => [
+  const [fileSystem, rerender] = useBundlrState((state) => [
     state.fileSystem,
-    state.fetchLoadedBalance,
     state.rerender,
   ]);
   const activateContextMenu = useAppStore((state) => state.activateContextMenu);
@@ -31,8 +30,8 @@ export default function Creator({ type, fileId }) {
         if (name && !isNaN(Number(name))) await client.fund(name);
         break;
     }
+    
     rerender();
-    await fetchLoadedBalance();
   }
   return (
     <div className={style.creator}>

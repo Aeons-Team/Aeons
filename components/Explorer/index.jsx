@@ -7,9 +7,8 @@ import style from "./style.module.css";
 export default function Explorer() {
   const { id: activeFileId } = useRouter().query;
   const activateContextMenu = useAppStore((state) => state.activateContextMenu);
-  const [fileSystem, fetchLoadedBalance, rerender, render] = useBundlrState((state) => [
+  const [fileSystem, rerender, render] = useBundlrState((state) => [
     state.fileSystem,
-    state.fetchLoadedBalance,
     state.rerender,
     state.render,
   ]);
@@ -33,7 +32,6 @@ export default function Explorer() {
     }
 
     await Promise.all(promises)
-    await fetchLoadedBalance()
   }
 
   const onExplorerDragOver = (e) => {

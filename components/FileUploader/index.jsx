@@ -8,9 +8,8 @@ import { useAppStore } from "../../stores/AppStore";
 
 export default function Uploader() {
   const { id: activeFileId } = useRouter().query;
-  const [fileSystem, fetchLoadedBalance, rerender] = useBundlrState((state) => [
+  const [fileSystem, rerender] = useBundlrState((state) => [
     state.fileSystem,
-    state.fetchLoadedBalance,
     state.rerender,
   ]);
   const activateContextMenu = useAppStore((state) => state.activateContextMenu);
@@ -29,7 +28,6 @@ export default function Uploader() {
 
     setLastUploadTx(tx.id);
     rerender();
-    await fetchLoadedBalance();
   }
 
   return (

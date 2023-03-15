@@ -13,21 +13,24 @@ export const useBundlrStore = create((set, get) => ({
     loadedBalance: null,
     render: false,
     fetchLoadedBalance: async () => {
-        const client = get().client
-        const loadedBalance = await client.getLoadedBalance();
+        const loadedBalance = await get().client.getLoadedBalance();
         set({ loadedBalance })
     },
     initialize: async (provider) => {
         const { client, fileSystem, fetchLoadedBalance } = get()
         await client.initialize(provider);
 		await fileSystem.initialize();
-        await fetchLoadedBalance();
         
         set({ 
             initialized: true
         })
+
+        fetchLoadedBalance();
     },
-    rerender: () => set(state => ({ render: !get().render }))
+    rerender: () => {
+        set(state => ({ render: !get().render }))
+        get().fetchLoadedBalance()
+    }
 }));
 
 export const useBundlrState = (func) => useBundlrStore(func, shallow);

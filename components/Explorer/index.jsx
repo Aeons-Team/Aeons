@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { useAppStore } from "../../stores/AppStore";
 import { useBundlrState } from "../../stores/BundlrStore";
-import Folder from "../Folder";
 import File from "../File";
 import style from "./style.module.css";
 
@@ -40,7 +39,7 @@ export default function Explorer() {
             {currentFileChildren &&
               currentFileChildren
                 .filter((x) => x.type == "folder")
-                .map((x) => <Folder key={x.id} data={x} />)}
+                .map((x) => <File key={x.id} data={x} />)}
           </div>
         </div>
 

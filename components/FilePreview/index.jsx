@@ -1,23 +1,60 @@
-export default function FilePreview({ src, type, className, enableControls }) {
-  if (!type) return <></>
+import Utility from "../../lib/Utility";
+import style from './style.module.css'
 
-  if (type.match("image/*")) {
-    return <img src={src} className={className} />;
+export default function FilePreview({ data, className, enableControls }) {
+  let preview
+  let src = `https://arweave.net/${data.id}`
+
+  if (data.contentType.match("image/*")) {
+    preview = <img src={src} className={className} />;
   }
 
-  if (type.match("video/*")) {
-    return (
+  if (data.contentType.match("video/*")) {
+    preview = (
       <video className={className} controls={enableControls}>
         <source src={src} />
       </video>
     );
   }
 
-  if (type.match("audio/*")) {
-    return (
+  if (data.contentType.match("audio/*")) {
+    preview = (
       <audio className={className} controls>
         <source src={src} />
       </audio>
     );
   }
+
+  return (
+    <>    
+      {preview}
+      <div className={style.fileDetails}>
+        <span className={style.fileDetail}>{data.name}</span>
+
+        {data.pending && (
+          <span
+            className={style.fileDetail}
+            style={{
+              gridRow: 2,
+              gridColumn: 1,
+            }}
+          >
+            <span className={style.pending} />
+            pending
+          </span>
+        )}
+
+        <span
+          className={style.fileDetail}
+          style={{
+            gridRow: 2,
+            gridColumn: 2,
+            textAlign: "right",
+          }}
+        >
+          {data.size && Utility.formatSize(data.size)}
+        </span>
+      </div>
+    </>
+  )
 };

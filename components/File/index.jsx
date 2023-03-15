@@ -1,19 +1,27 @@
 import Link from "next/link";
 import { useAppStore } from "../../stores/AppStore";
+import { useBundlrState } from "../../stores/BundlrStore";
 import FilePreview from "../FilePreview";
 import FolderPreview from "../FolderPreview";
 import style from "./style.module.css";
 
-export default function File({ data, enableControls }) {
+export default function File({ file, enableControls }) {
   const activateContextMenu = useAppStore(state => state.activateContextMenu);
-  const isFolder = data.type == 'folder'
+  const [fileSystem, rerender] = useBundlrState(state => [state.fileSystem, state.rerender]);
+  const isFolder = file.type == 'folder'
 
-  const onFileDrag = (e) => {
-
+  const onFileDragStart = (e) => {
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', file.id)
   }
 
-  const onFileDrop = (e) => {
-    console.log('xd')
+  const onFileDrop = async (e) => {
+    const dragFileId = e.dataTransfer.getData('text/plain')
+    
+    if (fileSystem.fileMovableTo(dragFileId, file.id)) {
+      await fileSystem.moveFile(dragFileId, file.id)
+      rerender()
+    }
   }
 
   const onFileDragOver = (e) => {
@@ -23,7 +31,7 @@ export default function File({ data, enableControls }) {
   return (
     <Link
       className={isFolder ? style.folder : style.file}
-      href={`/drive/${data.id}`}
+      href={`/drive/${file.id}`}
       onContextMenu={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -31,19 +39,19 @@ export default function File({ data, enableControls }) {
         activateContextMenu(true, {
           type: "file",
           copy: !isFolder,
-          data,
+          file,
         });
       }}
       draggable
-      onDrag={onFileDrag}
+      onDragStart={onFileDragStart}
       onDrop={onFileDrop}
       onDragOver={onFileDragOver}
     >
       {
         isFolder 
-        ? <FolderPreview data={data} />
+        ? <FolderPreview file={file} />
         : <FilePreview
-            data={data}
+            file={file}
             className={style.filePreview}
             enableControls={enableControls}
           />

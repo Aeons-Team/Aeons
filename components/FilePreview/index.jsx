@@ -1,15 +1,15 @@
 import Utility from "../../lib/Utility";
 import style from './style.module.css'
 
-export default function FilePreview({ data, className, enableControls }) {
+export default function FilePreview({ file, className, enableControls }) {
   let preview
-  let src = `https://arweave.net/${data.id}`
+  let src = `https://arweave.net/${file.id}`
 
-  if (data.contentType.match("image/*")) {
+  if (file.contentType.match("image/*")) {
     preview = <img src={src} className={className} />;
   }
 
-  if (data.contentType.match("video/*")) {
+  if (file.contentType.match("video/*")) {
     preview = (
       <video className={className} controls={enableControls}>
         <source src={src} />
@@ -17,7 +17,7 @@ export default function FilePreview({ data, className, enableControls }) {
     );
   }
 
-  if (data.contentType.match("audio/*")) {
+  if (file.contentType.match("audio/*")) {
     preview = (
       <audio className={className} controls>
         <source src={src} />
@@ -29,9 +29,9 @@ export default function FilePreview({ data, className, enableControls }) {
     <>    
       {preview}
       <div className={style.fileDetails}>
-        <span className={style.fileDetail}>{data.name}</span>
+        <span className={style.fileDetail}>{file.name}</span>
 
-        {data.pending && (
+        {file.pending && (
           <span
             className={style.fileDetail}
             style={{
@@ -52,7 +52,7 @@ export default function FilePreview({ data, className, enableControls }) {
             textAlign: "right",
           }}
         >
-          {data.size && Utility.formatSize(data.size)}
+          {file.size && Utility.formatSize(file.size)}
         </span>
       </div>
     </>

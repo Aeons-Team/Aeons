@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useBundlrState } from "../../stores/BundlrStore";
 import { useAppStore } from "../../stores/AppStore";
 import style from "./style.module.css";
-import Utility from "../../lib/Utility";
 
 function HierarchyItem({ item, depth, fileId }) {
   const router = useRouter();

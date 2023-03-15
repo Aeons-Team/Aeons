@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import copy from "clipboard-copy";
-import { motion } from "framer-motion";
 import { useAppState } from "../../stores/AppStore";
 import FileUploader from "../FileUploader";
 import style from "./style.module.css";
@@ -97,7 +96,7 @@ export default function ContextMenu() {
                 onClick={() => {
                   activateContextMenu(false);
                   setAction();
-                  router.push(`/drive/${contextMenuOpts.data.id}`);
+                  router.push(`/drive/${contextMenuOpts.file.id}`);
                 }}
               >
                 open
@@ -116,7 +115,7 @@ export default function ContextMenu() {
                     activateContextMenu(false);
                     setAction();
                     copy(
-                      `${process.env.NEXT_PUBLIC_ARWEAVE_URL}${contextMenuOpts.data.id}`
+                      `${process.env.NEXT_PUBLIC_ARWEAVE_URL}${contextMenuOpts.file.id}`
                     );
                   }}
                 >
@@ -128,7 +127,7 @@ export default function ContextMenu() {
                 className={style.contextMenuButton}
                 onClick={() => {
                   setAction("moveFile");
-                  setFileId(contextMenuOpts.data.id);
+                  setFileId(contextMenuOpts.file.id);
                 }}
               >
                 Move
@@ -137,7 +136,7 @@ export default function ContextMenu() {
                 className={style.contextMenuButton}
                 onClick={() => {
                   setAction("rename");
-                  setFileId(contextMenuOpts.data.id);
+                  setFileId(contextMenuOpts.file.id);
                 }}
               >
                 Rename
@@ -150,7 +149,7 @@ export default function ContextMenu() {
   }
 
   return (
-    <motion.div
+    <div
       onClick={(e) => {
         e.stopPropagation();
       }}
@@ -163,6 +162,6 @@ export default function ContextMenu() {
       }}
     >
       {contextMenuActivated && contextMenuInner}
-    </motion.div>
+    </div>
   );
 }

@@ -24,7 +24,7 @@ export default function Uploader() {
     const tx = await fileSystem.createFile(
       uploadFile,
       activeFileId == "root" ? null : activeFileId,
-      fileName ?? uploadFile.name
+      fileName
     );
 
     setLastUploadTx(tx.id);

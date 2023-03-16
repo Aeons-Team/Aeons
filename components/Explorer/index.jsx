@@ -7,9 +7,9 @@ import style from "./style.module.css";
 export default function Explorer() {
   const { id: activeFileId } = useRouter().query;
   const activateContextMenu = useAppStore((state) => state.activateContextMenu);
-  const [fileSystem, rerender, render] = useBundlrState((state) => [
+  const [fileSystem, uploadFiles, render] = useBundlrState((state) => [
     state.fileSystem,
-    state.rerender,
+    state.uploadFiles,
     state.render,
   ]);
   const activeFile = fileSystem.hierarchy.getFile(activeFileId);
@@ -19,19 +19,9 @@ export default function Explorer() {
   const onExplorerDrop = async (e) => {
     e.preventDefault()
 
-    const promises = []
-
-    for (const file of e.dataTransfer.files) {
-      promises.push(
-        fileSystem.createFile(
-          file, 
-          activeFileId == "root" ? null : activeFileId
-        )
-        .then(rerender)
-      )
+    if (e.dataTransfer.files.length) {
+      uploadFiles(e.dataTransfer.files, activeFileId)
     }
-
-    await Promise.all(promises)
   }
 
   const onExplorerDragOver = (e) => {

@@ -1,69 +1,74 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useBundlrState } from "../../stores/BundlrStore";
+import { useBundlrStore } from "../../stores/BundlrStore";
 import FilePreview from "../FilePreview";
 import Button from "../Button";
 import style from "./style.module.css";
-import { useAppStore } from "../../stores/AppStore";
 
 export default function Uploader() {
   const { id: activeFileId } = useRouter().query;
-  const [fileSystem, rerender] = useBundlrState((state) => [
-    state.fileSystem,
-    state.rerender,
+  const [
+    uploadFiles, 
+    uploading, 
+    uploadQueue, 
+    currentUpload, 
+    bytesUploaded, 
+    pauseOrResume 
+  ] = useBundlrStore((state) => [
+    state.uploadFiles,
+    state.uploading,
+    state.uploadQueue,
+    state.currentUpload,
+    state.bytesUploaded,
+    state.pauseOrResume
   ]);
-  const activateContextMenu = useAppStore((state) => state.activateContextMenu);
-  const [uploadFile, setUploadFile] = useState();
-  const [fileName, setFileName] = useState();
-  const [url, setUrl] = useState();
-  const [lastUploadTx, setLastUploadTx] = useState();
 
-  async function onUpload() {
-    activateContextMenu(false);
-    const tx = await fileSystem.createFile(
-      uploadFile,
-      activeFileId == "root" ? null : activeFileId,
-      fileName
-    );
-
-    setLastUploadTx(tx.id);
-    rerender();
-  }
+  const [files, setFiles] = useState();
 
   return (
     <div className={style.uploader}>
       <input
         type="file"
+        multiple
         onChange={(e) => {
-          const file = e.target.files[0];
-          setUploadFile(file);
-          setUrl(URL.createObjectURL(file));
+          setFiles(e.target.files);
         }}
       />
-      <input
-        type="text"
-        placeholder="File Name (optional)"
-        onChange={(e) => {
-          setFileName(e.target.value);
-        }}
-      />
+
       <Button
         onClick={() => {
-          uploadFile && onUpload();
+          uploadFiles(files, activeFileId)
         }}
       >
         Upload
       </Button>
 
-      {url && (
-        <FilePreview
-          src={url}
-          type={uploadFile.type}
-          className={style.uploaderPreview}
-        />
-      )}
+      {
+        uploading &&
+        <div>
+          <div>          
+            <FilePreview
+              src={URL.createObjectURL(currentUpload)}
+              type={currentUpload.type}
+              className={style.uploaderPreview}
+            />
+          </div>
 
-      {lastUploadTx}
+          <button onClick={pauseOrResume}>
+            pause / resume
+          </button>
+
+          {bytesUploaded / currentUpload.size * 100}%
+
+          {
+            uploadQueue.map(item => (
+              <div>
+                {item.file.name}
+              </div>
+            ))
+          }
+        </div>
+      }
     </div>
   );
 }

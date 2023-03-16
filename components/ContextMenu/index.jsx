@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import copy from "clipboard-copy";
 import { useAppState } from "../../stores/AppStore";
-import FileUploader from "../FileUploader";
+import Uploader from "../Uploader";
 import style from "./style.module.css";
 import Hierarchy from "../Hierarchy";
 import Creator from "../Creator";
@@ -39,7 +39,7 @@ export default function ContextMenu() {
 
   switch (action) {
     case "uploadingFile":
-      var contextMenuInner = <FileUploader />;
+      var contextMenuInner = <Uploader />;
       break;
 
     case "creatingFolder":

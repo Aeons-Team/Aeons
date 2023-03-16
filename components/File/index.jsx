@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { useAppStore } from "../../stores/AppStore";
 import { useBundlrState } from "../../stores/BundlrStore";
-import FilePreview from "../FilePreview";
-import FolderPreview from "../FolderPreview";
+import FileInfo from "../FileInfo";
+import FolderInfo from "../FolderInfo";
 import style from "./style.module.css";
 
 export default function File({ file, enableControls }) {
@@ -49,8 +49,8 @@ export default function File({ file, enableControls }) {
     >
       {
         isFolder 
-        ? <FolderPreview file={file} />
-        : <FilePreview
+        ? <FolderInfo file={file} />
+        : <FileInfo
             file={file}
             className={style.filePreview}
             enableControls={enableControls}

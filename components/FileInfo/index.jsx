@@ -6,7 +6,7 @@ export default function FileInfo({ file }) {
   return (
     <>    
       <FilePreview 
-        src={`https://arweave.net/${file.id}`} 
+        src={`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`} 
         type={file.contentType} />
         
       <div className={style.fileDetails}>

@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
-import { useAppStore } from "../../stores/AppStore";
+import { useAppState } from "../../stores/AppStore";
 import { useBundlrState } from "../../stores/BundlrStore";
 import File from "../File";
 import style from "./style.module.css";
 
 export default function Explorer() {
   const { id: activeFileId } = useRouter().query;
-  const activateContextMenu = useAppStore((state) => state.activateContextMenu);
+  const [activateContextMenu, clearSelection] = useAppState((state) => [state.activateContextMenu, state.clearSelection]);
   const [fileSystem, uploadFiles, render] = useBundlrState((state) => [
     state.fileSystem,
     state.uploadFiles,
@@ -29,17 +29,20 @@ export default function Explorer() {
     e.stopPropagation()
   }
 
+  const onExplorerContextMenu = (e) => {
+    e.preventDefault();
+    activateContextMenu(true, {
+      type: "explorer",
+    });
+  }
+
   return (
     <div
       className={isFileView ? style.fileView : style.explorer}
-      onContextMenu={(e) => {
-        e.preventDefault();
-        activateContextMenu(true, {
-          type: "explorer",
-        });
-      }}
       onDrop={onExplorerDrop}
       onDragOver={onExplorerDragOver}
+      onClick={clearSelection}
+      onContextMenu={onExplorerContextMenu}
     >
       {
         isFileView

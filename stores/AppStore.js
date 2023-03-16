@@ -7,6 +7,8 @@ export const useAppStore = create((set, get) => ({
   contextMenuActivated: false,
   contextMenuOpts: {},
   contextMenuPosition: new Vector2(),
+  selected: {},
+
   activateContextMenu: (flag, opts) => {
     const { cursorPosition, contextMenuPosition } = get();
     const partial = { contextMenuActivated: flag };
@@ -18,6 +20,20 @@ export const useAppStore = create((set, get) => ({
 
     set(partial);
   },
+
+  select: (item) => {
+    const selected = get().selected 
+    set({ selected: { ...selected, [item]: !selected[item] } })
+  },
+
+  clearSelection: () => {
+    set({ selected: {} })
+  },
+
+  getSelection: () => {
+    const selected = get().selected
+    return Object.keys(selected).filter(x => selected[x])
+  }
 }));
 
 export const useAppState = (func) => useAppStore(func, shallow);

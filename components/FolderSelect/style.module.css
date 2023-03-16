@@ -1,0 +1,9 @@
+.folder {
+  padding: 0.5rem 2rem;
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+}
+
+.selected {
+  background-color: var(--color-selected);
+}

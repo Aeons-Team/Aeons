@@ -42,3 +42,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.selected {
+  background-color: var(--color-selected);
+}

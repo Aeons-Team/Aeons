@@ -4,7 +4,7 @@ import copy from "clipboard-copy";
 import { useAppState } from "../../stores/AppStore";
 import Uploader from "../Uploader";
 import style from "./style.module.css";
-import Hierarchy from "../Hierarchy";
+import FolderSelect from "../FolderSelect";
 import Creator from "../Creator";
 
 export default function ContextMenu() {
@@ -14,15 +14,14 @@ export default function ContextMenu() {
     contextMenuActivated,
     contextMenuPosition,
     contextMenuOpts,
-    activateContextMenu,
+    activateContextMenu
   ] = useAppState((state) => [
     state.contextMenuActivated,
     state.contextMenuPosition,
     state.contextMenuOpts,
-    state.activateContextMenu,
+    state.activateContextMenu
   ]);
   const [action, setAction] = useState();
-  const [fileId, setFileId] = useState();
 
   useEffect(() => {
     const onClick = (e) => {
@@ -51,11 +50,11 @@ export default function ContextMenu() {
       break;
 
     case "moveFile":
-      var contextMenuInner = <Hierarchy fileId={fileId} />;
+      var contextMenuInner = <FolderSelect />;
       break;
 
     case "rename":
-      var contextMenuInner = <Creator type="New" fileId={fileId} />;
+      var contextMenuInner = <Creator type="New" fileId={contextMenuOpts.file.id} />;
       break;
 
     default:
@@ -127,7 +126,6 @@ export default function ContextMenu() {
                 className={style.contextMenuButton}
                 onClick={() => {
                   setAction("moveFile");
-                  setFileId(contextMenuOpts.file.id);
                 }}
               >
                 Move
@@ -136,7 +134,6 @@ export default function ContextMenu() {
                 className={style.contextMenuButton}
                 onClick={() => {
                   setAction("rename");
-                  setFileId(contextMenuOpts.file.id);
                 }}
               >
                 Rename

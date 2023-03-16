@@ -5,6 +5,5 @@
 .driveGrid {
   display: grid;
   grid-template-rows: 10vh calc(90vh - 1.5rem);
-  grid-template-columns: 1fr 2fr 0fr;
   gap: 1.5rem;
 }

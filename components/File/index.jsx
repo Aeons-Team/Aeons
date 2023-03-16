@@ -1,12 +1,13 @@
-import Link from "next/link";
-import { useAppStore } from "../../stores/AppStore";
+import { useRouter } from 'next/navigation'
+import { useAppState } from "../../stores/AppStore";
 import { useBundlrState } from "../../stores/BundlrStore";
 import FileInfo from "../FileInfo";
 import FolderInfo from "../FolderInfo";
 import style from "./style.module.css";
 
 export default function File({ file, enableControls }) {
-  const activateContextMenu = useAppStore(state => state.activateContextMenu);
+  const router = useRouter()
+  const [activateContextMenu, selected, select] = useAppState(state => [state.activateContextMenu, state.selected[file.id], state.select]);
   const [fileSystem, rerender] = useBundlrState(state => [state.fileSystem, state.rerender]);
   const isFolder = file.type == 'folder'
 
@@ -28,24 +29,36 @@ export default function File({ file, enableControls }) {
     e.preventDefault()
   }
 
-  return (
-    <Link
-      className={isFolder ? style.folder : style.file}
-      href={`/drive/${file.id}`}
-      onContextMenu={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
+  const onFileClick = (e) => {
+    e.stopPropagation();
+    select(file.id);
+  }
 
-        activateContextMenu(true, {
-          type: "file",
-          copy: !isFolder,
-          file,
-        });
-      }}
+  const onFileContextMenu = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!selected) {
+      select(file.id)
+    }
+
+    activateContextMenu(true, {
+      type: "file",
+      copy: !isFolder,
+      file,
+    });
+  }
+
+  return (
+    <div
+      className={`${isFolder ? style.folder : style.file} ${selected ? style.selected : ''}`}
       draggable
       onDragStart={onFileDragStart}
       onDrop={onFileDrop}
       onDragOver={onFileDragOver}
+      onDoubleClick={() => router.push(`/drive/${file.id}`)}
+      onClick={onFileClick}
+      onContextMenu={onFileContextMenu}
     >
       {
         isFolder 
@@ -56,6 +69,6 @@ export default function File({ file, enableControls }) {
             enableControls={enableControls}
           />
       }
-    </Link>
+    </div>
   );
 }

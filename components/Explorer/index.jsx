@@ -21,7 +21,6 @@ export default function Explorer() {
 
   const onExplorerDrop = async (e) => {
     e.preventDefault();
-
     if (e.dataTransfer.files.length) {
       uploadFiles(e.dataTransfer.files, activeFileId);
     }

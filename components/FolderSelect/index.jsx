@@ -49,14 +49,14 @@ export default function FolderSelect() {
           </div>
         ))}
 
-      <Button disabled={isMovable} onClick={onMoveButtonClick}>
-        move
-      </Button>
       <Button
         disabled={currentFile.parent == null}
         onClick={() => setCurrentFileId(currentFile.parent?.id ?? "root")}
       >
         back
+      </Button>
+      <Button disabled={isMovable} onClick={onMoveButtonClick}>
+        move
       </Button>
     </div>
   );

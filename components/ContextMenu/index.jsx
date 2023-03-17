@@ -92,14 +92,16 @@ export default function ContextMenu() {
         case "file":
           var contextMenuInner = (
             <>
-              {contextMenuOpts.copy && (
+              {contextMenuOpts.copy && getSelection().length < 2 && (
                 <div
                   className={style.contextMenuButton}
                   onClick={() => {
                     activateContextMenu(false);
                     setAction();
                     copy(
-                      `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${contextMenuOpts.file.id}`
+                      `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${
+                        getSelection()[0]
+                      }`
                     );
                   }}
                 >

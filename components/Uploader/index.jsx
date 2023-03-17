@@ -8,19 +8,19 @@ import style from "./style.module.css";
 export default function Uploader() {
   const { id: activeFileId } = useRouter().query;
   const [
-    uploadFiles, 
-    uploading, 
-    uploadQueue, 
-    currentUpload, 
-    bytesUploaded, 
-    pauseOrResume 
+    uploadFiles,
+    uploading,
+    uploadQueue,
+    currentUpload,
+    bytesUploaded,
+    pauseOrResume,
   ] = useBundlrStore((state) => [
     state.uploadFiles,
     state.uploading,
     state.uploadQueue,
     state.currentUpload,
     state.bytesUploaded,
-    state.pauseOrResume
+    state.pauseOrResume,
   ]);
 
   const [files, setFiles] = useState();
@@ -37,38 +37,28 @@ export default function Uploader() {
 
       <Button
         onClick={() => {
-          uploadFiles(files, activeFileId)
+          uploadFiles(files, activeFileId);
         }}
       >
         Upload
       </Button>
 
-      {
-        uploading &&
+      {uploading && (
         <div>
-          <div>          
+          <div>
             <FilePreview
               src={URL.createObjectURL(currentUpload)}
               type={currentUpload.type}
               className={style.uploaderPreview}
             />
           </div>
-
-          <button onClick={pauseOrResume}>
-            pause / resume
-          </button>
-
-          {bytesUploaded / currentUpload.size * 100}%
-
-          {
-            uploadQueue.map(item => (
-              <div>
-                {item.file.name}
-              </div>
-            ))
-          }
+          <button onClick={pauseOrResume}>pause / resume</button>
+          {(bytesUploaded / currentUpload.size) * 100}%
+          {uploadQueue.map((item) => (
+            <div key={item.file.name}>{item.file.name}</div>
+          ))}
         </div>
-      }
+      )}
     </div>
   );
 }

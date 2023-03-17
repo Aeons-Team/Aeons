@@ -6,7 +6,10 @@ import style from "./style.module.css";
 
 export default function Explorer() {
   const { id: activeFileId } = useRouter().query;
-  const [activateContextMenu, clearSelection] = useAppState((state) => [state.activateContextMenu, state.clearSelection]);
+  const [activateContextMenu, clearSelection] = useAppState((state) => [
+    state.activateContextMenu,
+    state.clearSelection,
+  ]);
   const [fileSystem, uploadFiles, render] = useBundlrState((state) => [
     state.fileSystem,
     state.uploadFiles,
@@ -14,27 +17,28 @@ export default function Explorer() {
   ]);
   const activeFile = fileSystem.hierarchy.getFile(activeFileId);
   const activeFileChildren = activeFile?.getChildren();
-  const isFileView = activeFile && activeFile.type == "file"
+  const isFileView = activeFile && activeFile.type == "file";
 
   const onExplorerDrop = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (e.dataTransfer.files.length) {
-      uploadFiles(e.dataTransfer.files, activeFileId)
+      uploadFiles(e.dataTransfer.files, activeFileId);
     }
-  }
+    clearSelection();
+  };
 
   const onExplorerDragOver = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
   const onExplorerContextMenu = (e) => {
     e.preventDefault();
     activateContextMenu(true, {
       type: "explorer",
     });
-  }
+  };
 
   return (
     <div
@@ -44,31 +48,31 @@ export default function Explorer() {
       onClick={clearSelection}
       onContextMenu={onExplorerContextMenu}
     >
-      {
-        isFileView
-          ? <File file={activeFile} enableControls />
-          : <>
-            <div className={style.section}>
-              <h1 className={style.sectionTitle}>Folders</h1>
-              <div className={style.folders}>
-                {activeFileChildren &&
-                  activeFileChildren
-                    .filter((x) => x.type == "folder")
-                    .map((x) => <File key={x.id} file={x} />)}
-              </div>
+      {isFileView ? (
+        <File file={activeFile} enableControls />
+      ) : (
+        <>
+          <div className={style.section}>
+            <h1 className={style.sectionTitle}>Folders</h1>
+            <div className={style.folders}>
+              {activeFileChildren &&
+                activeFileChildren
+                  .filter((x) => x.type == "folder")
+                  .map((x) => <File key={x.id} file={x} />)}
             </div>
+          </div>
 
-            <div className={style.section}>
-              <h1 className={style.sectionTitle}>Files</h1>
-              <div className={style.files}>
-                {activeFileChildren &&
-                  activeFileChildren
-                    .filter((x) => x.type == "file")
-                    .map((x) => <File key={x.id} file={x} />)}
-              </div>
+          <div className={style.section}>
+            <h1 className={style.sectionTitle}>Files</h1>
+            <div className={style.files}>
+              {activeFileChildren &&
+                activeFileChildren
+                  .filter((x) => x.type == "file")
+                  .map((x) => <File key={x.id} file={x} />)}
             </div>
-          </>
-      }
-      </div>
+          </div>
+        </>
+      )}
+    </div>
   );
 }

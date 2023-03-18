@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useBundlrState } from "../../stores/BundlrStore";
+import Button from "../Button";
 
 export default function Search() {
   const [searchItem, setSearchItem] = useState("");
@@ -31,6 +32,7 @@ export default function Search() {
           e.key === "Enter" && SearchQuery();
         }}
       />
+      <Button onClick={SearchQuery}>Search</Button>
     </div>
   );
 }

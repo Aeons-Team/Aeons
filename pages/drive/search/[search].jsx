@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useBundlrStore } from "../../../stores/BundlrStore";
-import SearchExplorer from "../../../components/SearchExplorer";
+import Drive from "../../../components/Drive";
 
 function SearchPage() {
   const { search } = useRouter().query;
@@ -10,7 +10,7 @@ function SearchPage() {
   if (initialized) {
     return (
       <div>
-        <SearchExplorer searchList={searchList} />
+        <Drive searchList={searchList} />
       </div>
     );
   }

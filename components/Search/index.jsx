@@ -9,24 +9,26 @@ export default function Search() {
   const [fileSystem] = useBundlrState((state) => [state.fileSystem]);
   const files = fileSystem.hierarchy.tree.nodes;
   const filesList = {};
-  const search = [];
+  const searchList = [];
 
   function SearchQuery() {
     if (searchItem == "") return;
     Object.values(files).map((file) => (filesList[file.id] = file.name));
-    for (let key in filesList) {
-      if (filesList[key].includes(searchItem)) {
-        search.push(key);
-      }
+    for (const key in filesList) {
+      filesList[key].includes(searchItem) && searchList.push(key);
     }
-    router.push(`/drive/search/${search.length ? search : "NoResults"}`);
+    setSearchItem("");
+    router.push(
+      `/drive/search/${searchList.length ? searchList : "NoResults"}`
+    );
   }
 
   return (
     <div>
       <input
         type="text"
-        placeholder="Search"
+        value={searchItem}
+        placeholder="Enter file name"
         onInput={(e) => setSearchItem(e.target.value)}
         onKeyUp={(e) => {
           e.key === "Enter" && SearchQuery();

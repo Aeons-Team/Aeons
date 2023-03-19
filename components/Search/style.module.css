@@ -1,0 +1,7 @@
+.search {
+  display: grid;
+  width: 25vw;
+  height: 4.3vh;
+  float: left;
+  gap: 1rem;
+}

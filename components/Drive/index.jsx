@@ -9,9 +9,9 @@ export default function Drive({ searchList }) {
   return (
     <div className={style.drive}>
       <ContextMenu />
-      <Search />
+      <Wallet />
       <div className={style.driveGrid}>
-        <Wallet />
+        <Search />
         {searchList ? <SearchExplorer searchList={searchList} /> : <Explorer />}
       </div>
     </div>

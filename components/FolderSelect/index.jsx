@@ -45,7 +45,7 @@ export default function FolderSelect() {
             onClick={() => setSelectedFileId(file.id)}
             onDoubleClick={() => {
               file.getChildren().filter((file) => file.type == "folder")
-                .length > 0 && setCurrentFileId(file.id);
+                .length && setCurrentFileId(file.id);
             }}
           >
             {file.name}

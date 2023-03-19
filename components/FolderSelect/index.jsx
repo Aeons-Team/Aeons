@@ -43,7 +43,13 @@ export default function FolderSelect() {
               file.id == selectedFileId ? style.selected : ""
             }`}
             onClick={() => setSelectedFileId(file.id)}
-            onDoubleClick={() => setCurrentFileId(file.id)}
+            onDoubleClick={() => {
+              fileSystem.hierarchy
+                .getFile(file.id)
+                .getChildren()
+                .filter((file) => file.type == "folder").length > 0 &&
+                setCurrentFileId(file.id);
+            }}
           >
             {file.name}
           </div>

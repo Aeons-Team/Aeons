@@ -30,7 +30,7 @@ export default function Search() {
       <input
         type="text"
         value={searchItem}
-        placeholder="Enter file name"
+        placeholder="Search"
         onInput={(e) => setSearchItem(e.target.value)}
         onKeyUp={(e) => {
           e.key === "Enter" && SearchQuery();

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useBundlrState } from "../../stores/BundlrStore";
-import Button from "../Button";
 import style from "./style.module.css";
 
 export default function Search() {
@@ -27,19 +26,16 @@ export default function Search() {
   }
 
   return (
-    <div>
-      <div className={style.search}>
-        <input
-          type="text"
-          value={searchItem}
-          placeholder="Enter file name"
-          onInput={(e) => setSearchItem(e.target.value)}
-          onKeyUp={(e) => {
-            e.key === "Enter" && SearchQuery();
-          }}
-        />
-      </div>
-      <Button onClick={SearchQuery}>Search</Button>
+    <div className={style.search}>
+      <input
+        type="text"
+        value={searchItem}
+        placeholder="Enter file name"
+        onInput={(e) => setSearchItem(e.target.value)}
+        onKeyUp={(e) => {
+          e.key === "Enter" && SearchQuery();
+        }}
+      />
     </div>
   );
 }

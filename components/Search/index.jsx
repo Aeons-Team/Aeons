@@ -35,8 +35,9 @@ export default function Search() {
         cacheOptions
         loadOptions={loadOptions}
         noOptionsMessage={() => null}
-        placeholder="Search"
+        loadingMessage={() => null}
         blurInputOnSelect={true}
+        placeholder="Search"
         onChange={(e) => {
           router.push(`/drive/search/${e.value}`);
         }}

@@ -12,6 +12,13 @@ export default function SearchExplorer({ searchList }) {
     searchItems[x] = fileSystem.hierarchy.getFile(x);
   });
 
+  if (searchList == "NoResults")
+    return (
+      <div className={style.sectionTitle}>
+        <h1>No Results Found</h1>
+      </div>
+    );
+
   return (
     <div className={style.explorer} onClick={() => clearSelection()}>
       <div className={style.section}>

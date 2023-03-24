@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-wasm": "wasm-pack build --target nodejs",
+    "build:wasm": "wasm-pack build --target nodejs",
     "test": "jest ./scripts/contract.test.ts",
-    "deploy": "ts-node ./scripts/contract.deploy.ts"
+    "deploy:test": "ts-node ./scripts/deployment/testnet.deploy.ts",
+    "deploy:prod": "ts-node ./scripts/deployment/mainnet.deploy.ts"
   },
   "keywords": [],
   "author": "",

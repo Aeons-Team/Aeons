@@ -14,12 +14,14 @@ export default function ContextMenu() {
     contextMenuActivated,
     contextMenuPosition,
     contextMenuOpts,
-    activateContextMenu
+    activateContextMenu,
+    getSelection,
   ] = useAppState((state) => [
     state.contextMenuActivated,
     state.contextMenuPosition,
     state.contextMenuOpts,
-    state.activateContextMenu
+    state.activateContextMenu,
+    state.getSelection,
   ]);
   const [action, setAction] = useState();
 
@@ -54,7 +56,7 @@ export default function ContextMenu() {
       break;
 
     case "rename":
-      var contextMenuInner = <Creator type="New" fileId={contextMenuOpts.file.id} />;
+      var contextMenuInner = <Creator type="New" />;
       break;
 
     default:
@@ -87,34 +89,19 @@ export default function ContextMenu() {
 
           break;
 
-        case "hierarchy":
-          var contextMenuInner = (
-            <>
-              <div
-                className={style.contextMenuButton}
-                onClick={() => {
-                  activateContextMenu(false);
-                  setAction();
-                  router.push(`/drive/${contextMenuOpts.file.id}`);
-                }}
-              >
-                open
-              </div>
-            </>
-          );
-          break;
-
         case "file":
           var contextMenuInner = (
             <>
-              {contextMenuOpts.copy && (
+              {contextMenuOpts.copy && getSelection().length < 2 && (
                 <div
                   className={style.contextMenuButton}
                   onClick={() => {
                     activateContextMenu(false);
                     setAction();
                     copy(
-                      `${process.env.NEXT_PUBLIC_ARWEAVE_URL}${contextMenuOpts.file.id}`
+                      `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${
+                        getSelection()[0]
+                      }`
                     );
                   }}
                 >
@@ -130,14 +117,16 @@ export default function ContextMenu() {
               >
                 Move
               </div>
-              <div
-                className={style.contextMenuButton}
-                onClick={() => {
-                  setAction("rename");
-                }}
-              >
-                Rename
-              </div>
+              {getSelection().length < 2 && (
+                <div
+                  className={style.contextMenuButton}
+                  onClick={() => {
+                    setAction("rename");
+                  }}
+                >
+                  Rename
+                </div>
+              )}
             </>
           );
 

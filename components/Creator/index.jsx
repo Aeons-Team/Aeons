@@ -3,15 +3,21 @@ import { useState } from "react";
 import { useBundlrState } from "../../stores/BundlrStore";
 import Button from "../Button";
 import style from "./style.module.css";
-import { useAppStore } from "../../stores/AppStore";
+import { useAppState } from "../../stores/AppStore";
 
-export default function Creator({ type, fileId }) {
+export default function Creator({ type }) {
   const { id: activeFileId } = useRouter().query;
   const [fileSystem, rerender] = useBundlrState((state) => [
     state.fileSystem,
     state.rerender,
   ]);
-  const activateContextMenu = useAppStore((state) => state.activateContextMenu);
+  const [activateContextMenu, getSelection, clearSelection] = useAppState(
+    (state) => [
+      state.activateContextMenu,
+      state.getSelection,
+      state.clearSelection,
+    ]
+  );
   const [name, setName] = useState();
 
   async function onCreate() {
@@ -24,13 +30,15 @@ export default function Creator({ type, fileId }) {
         );
         break;
       case "New":
+        const fileId = getSelection()[0];
         await fileSystem.rename(fileId, name);
+        clearSelection();
         break;
       case "Fund":
         if (name && !isNaN(Number(name))) await client.fund(name);
         break;
     }
-    
+
     rerender();
   }
   return (

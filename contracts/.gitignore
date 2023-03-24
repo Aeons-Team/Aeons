@@ -1,0 +1,6 @@
+/target
+/pkg
+/node_modules
+/data/wallet.json
+/data/contract_deployment.json
+logs

@@ -1,0 +1,12 @@
+{
+    "hierarchy": {
+        "files": {
+            "root": {
+                "id": "root",
+                "name": "root",
+                "content_type": "folder",
+                "children": []
+            }
+        }
+    }
+}

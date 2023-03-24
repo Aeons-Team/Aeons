@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 import { Warp } from 'warp-contracts'
-import { DeployPlugin } from 'warp-contracts-plugin-deploy'
+import { DeployPlugin, ArweaveSigner } from 'warp-contracts-plugin-deploy'
 
 const walletJwkPath = path.join(__dirname, '../../data/wallet.json')
 const initialStatePath = path.join(__dirname, '../../data/initialState.json')
@@ -18,7 +18,7 @@ async function deploy(warp: Warp) {
     const contractSrc = fs.readFileSync(contractSrcPath)
 
     const contractDeploy = await warp.deploy({
-        wallet: walletJwk,
+        wallet: new ArweaveSigner(walletJwk),
         initState: initialStateJson,
         src: contractSrc,
         wasmSrcCodeDir: wasmSrcCodeDirPath,

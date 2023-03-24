@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { ethers } from "ethers";
 import { useBundlrStore } from "../stores/BundlrStore";
 import { useAppStore } from "../stores/AppStore";
 import "../styles/globals.css";
@@ -10,10 +11,12 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     async function init() {
       await window.ethereum.request({ method: "eth_requestAccounts" });
-      initialize(window.ethereum);
+      
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      initialize(provider);
     }
 
-    init();
+    // init();
 
     const onMouseMove = (e) => {
       cursorPosition.set(

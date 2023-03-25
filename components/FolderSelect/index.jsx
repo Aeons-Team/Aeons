@@ -1,39 +1,41 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
-import { useBundlrState } from "../../stores/BundlrStore";
+import { useDriveState } from "../../stores/DriveStore";
 import { useAppState } from "../../stores/AppStore";
 import Button from "../Button";
 import style from "./style.module.css";
 
 export default function FolderSelect() {
-  const [fileSystem, rerender] = useBundlrState((state) => [
-    state.fileSystem,
-    state.rerender,
-  ]);
-  const [activateContextMenu, getSelection] = useAppState(
-    (state) => [
-      state.activateContextMenu,
-      state.getSelection,
-    ]
-  );
+  const { id: activeFileId } = useRouter().query;
+
+  const { contractState, relocateFiles } = useDriveState((state) => ({
+    contractState: state.contractState, 
+    relocateFiles: state.relocateFiles
+  }));
+  
+  const { activateContextMenu, getSelection } = useAppState((state) => ({
+    activateContextMenu: state.activateContextMenu,
+    getSelection: state.getSelection
+  }));
+  
   const [currentFileId, setCurrentFileId] = useState("root");
   const [selectedFileId, setSelectedFileId] = useState("root");
-  const currentFile = fileSystem.hierarchy.getFile(currentFileId);
+  const currentFile = contractState.getFile(currentFileId);
   const selection = getSelection();
   const isMovable = selection.filter(
-    (file) => !fileSystem.fileMovableTo(file, selectedFileId)
+    (file) => !contractState.isRelocatable(file, selectedFileId)
   ).length;
 
   async function onMoveButtonClick() {
     activateContextMenu(false);
-    await fileSystem.moveFiles(selection, selectedFileId);
-    rerender();
+    await relocateFiles(selection, activeFileId, selectedFileId);
   }
 
   return (
     <div>
-      {currentFile
-        .getChildren()
-        .filter((file) => file.type == "folder")
+      {contractState
+        .getChildren(currentFileId)
+        .filter((file) => file.content_type == "folder")
         .map((file) => (
           <div
             key={file.id}
@@ -42,7 +44,7 @@ export default function FolderSelect() {
             }`}
             onClick={() => setSelectedFileId(file.id)}
             onDoubleClick={() => {
-              file.getChildren().filter((file) => file.type == "folder")
+              contractState.getChildren(file.id).filter((file) => file.content_type == "folder")
                 .length && setCurrentFileId(file.id);
             }}
           >
@@ -51,8 +53,8 @@ export default function FolderSelect() {
         ))}
 
       <Button
-        disabled={currentFile.parent == null}
-        onClick={() => setCurrentFileId(currentFile.parent?.id ?? "root")}
+        disabled={currentFile.parent_id == null}
+        onClick={() => setCurrentFileId(currentFile.parent_id ?? "root")}
       >
         back
       </Button>

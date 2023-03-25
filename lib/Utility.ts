@@ -1,7 +1,7 @@
 import Vector2 from "./Vector2";
 
 export default class Utility {
-  static getElementPosition(elem) {
+  static getElementPosition(elem: Element): Vector2 {
     const elemBB = elem.getBoundingClientRect();
 
     return new Vector2(
@@ -10,7 +10,7 @@ export default class Utility {
     );
   }
 
-  static formatSize(size) {
+  static formatSize(size: number): string {
     if (size > 1e9) {
       return `${(size / 1e9).toFixed(2)} gB`;
     }

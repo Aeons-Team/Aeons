@@ -1,9 +1,9 @@
-import { useBundlrStore } from "../../stores/BundlrStore";
+import { useDriveStore } from "../../stores/DriveStore";
 import { useAppState } from "../../stores/AppStore";
 import Drive from "../../components/Drive";
 
 function DrivePage() {
-  const initialized = useBundlrStore((state) => state.initialized);
+  const initialized = useDriveStore((state) => state.initialized);
   const [ clearSelection ] = useAppState((state) => [state.clearSelection]);
   clearSelection();
 

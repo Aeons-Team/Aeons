@@ -1,23 +1,24 @@
 import { useRouter } from "next/router";
 import { useAppState } from "../../stores/AppStore";
-import { useBundlrState } from "../../stores/BundlrStore";
+import { useDriveState } from "../../stores/DriveStore";
 import File from "../File";
 import style from "./style.module.css";
 
 export default function Explorer() {
   const { id: activeFileId } = useRouter().query;
-  const [activateContextMenu, clearSelection] = useAppState((state) => [
-    state.activateContextMenu,
-    state.clearSelection,
-  ]);
-  const [fileSystem, uploadFiles, render] = useBundlrState((state) => [
-    state.fileSystem,
-    state.uploadFiles,
-    state.render,
-  ]);
-  const activeFile = fileSystem.hierarchy.getFile(activeFileId);
-  const activeFileChildren = activeFile?.getChildren();
-  const isFileView = activeFile && activeFile.type == "file";
+  const { activateContextMenu, clearSelection } = useAppState((state) => ({
+    activateContextMenu: state.activateContextMenu,
+    clearSelection: state.clearSelection,
+  }));
+  
+  const { contractState, uploadFiles } = useDriveState((state) => ({
+    contractState: state.contractState,
+    uploadFiles: state.uploadFiles
+  }));
+
+  const activeFile = contractState.getFile(activeFileId);
+  const activeFileChildren = contractState.getChildren(activeFileId);
+  const isFileView = activeFile.content_type != "folder";
 
   const onExplorerDrop = async (e) => {
     e.preventDefault();
@@ -56,7 +57,7 @@ export default function Explorer() {
             <div className={style.folders}>
               {activeFileChildren &&
                 activeFileChildren
-                  .filter((x) => x.type == "folder")
+                  .filter((x) => x.content_type == "folder")
                   .map((x) => <File key={x.id} file={x} />)}
             </div>
           </div>
@@ -66,7 +67,7 @@ export default function Explorer() {
             <div className={style.files}>
               {activeFileChildren &&
                 activeFileChildren
-                  .filter((x) => x.type == "file")
+                  .filter((x) => x.content_type != "folder")
                   .map((x) => <File key={x.id} file={x} />)}
             </div>
           </div>

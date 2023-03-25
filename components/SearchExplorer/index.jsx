@@ -1,15 +1,15 @@
-import { useAppState } from "../../stores/AppStore";
-import { useBundlrState } from "../../stores/BundlrStore";
+import { useAppStore } from "../../stores/AppStore";
+import { useDriveStore } from "../../stores/DriveStore";
 import File from "../File";
 import style from "./style.module.css";
 
 export default function SearchExplorer({ searchList }) {
-  const [clearSelection] = useAppState((state) => [state.clearSelection]);
-  const [fileSystem] = useBundlrState((state) => [state.fileSystem]);
+  const clearSelection = useAppStore((state) => state.clearSelection);
+  const contractState = useDriveStore((state) => state.contractState);
 
   let searchItems = {};
   searchList.map((x) => {
-    searchItems[x] = fileSystem.hierarchy.getFile(x);
+    searchItems[x] = contractState.getFile(x);
   });
 
   if (searchList == "NoResults")
@@ -25,7 +25,7 @@ export default function SearchExplorer({ searchList }) {
         <h1 className={style.sectionTitle}>Folders</h1>
         <div className={style.folders}>
           {Object.values(searchItems)
-            .filter((x) => x.type == "folder")
+            .filter((x) => x.content_type == "folder")
             .map((x) => (
               <File key={x.id} file={x} />
             ))}
@@ -35,7 +35,7 @@ export default function SearchExplorer({ searchList }) {
         <h1 className={style.sectionTitle}>Files</h1>
         <div className={style.folders}>
           {Object.values(searchItems)
-            .filter((x) => x.type == "file")
+            .filter((x) => x.content_type != "folder")
             .map((x) => (
               <File key={x.id} file={x} />
             ))}

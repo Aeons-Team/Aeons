@@ -1,29 +1,39 @@
 import { WebBundlr } from "@bundlr-network/client";
-import { ethers } from "ethers";
 import Arweave from "arweave";
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-import Transaction from "./Transaction";
+import { ethers } from "ethers";
+import internal from "stream";
+import { ApolloClient, InMemoryCache, NormalizedCacheObject, OperationVariables, QueryOptions } from "@apollo/client";
+import { CreateAndUploadOptions } from "@bundlr-network/client/build/common/types";
 
 export default class BundlrClient {
+  provider: ethers.providers.Web3Provider
+  address: string 
+  network: ethers.providers.Network
+  instance: WebBundlr
+  walletBalance: string 
+  owner: string 
+  apolloClient: ApolloClient<NormalizedCacheObject>
+
   async initialize(provider) {
-    this.provider = new ethers.providers.Web3Provider(provider);
+    this.provider = provider
     this.address = await this.provider.getSigner().getAddress();
     this.network = await this.provider.getNetwork();
 
     switch (process.env.NEXT_PUBLIC_MODE) {
       case "production":
         this.instance = new WebBundlr(
-          "https://node2.bundlr.network",
+          process.env.NEXT_PUBLIC_BUNDLR_NODE_URL ?? '',
           this.network.name,
           this.provider
         );
         break;
+        
       case "development":
         this.instance = new WebBundlr(
-          "https://devnet.bundlr.network",
-          "matic",
+          process.env.NEXT_PUBLIC_DEV_BUNDLR_NODE_URL ?? '',
+          process.env.NEXT_PUBLIC_DEV_BUNDLR_CURRENCY ?? '',
           this.provider,
-          { providerUrl: "https://rpc-mumbai.matic.today" }
+          { providerUrl: process.env.NEXT_PUBLIC_DEV_BUNDLR_PROVIDER_URL }
         );
         break;
     }
@@ -35,9 +45,9 @@ export default class BundlrClient {
       .unitConverter(atomicWalletBalance.toBigInt())
       .valueOf();
 
-    this.publicKey = this.instance.getSigner().publicKey;
-    this.ownerHash = await Arweave.crypto.hash(this.publicKey);
-    this.owner = Arweave.utils.bufferTob64Url(this.ownerHash);
+    const publicKey = this.instance.getSigner().publicKey;
+    const ownerHash = await Arweave.crypto.hash(publicKey);
+    this.owner = Arweave.utils.bufferTob64Url(ownerHash);
 
     this.apolloClient = new ApolloClient({
       uri: `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/graphql`,
@@ -45,16 +55,12 @@ export default class BundlrClient {
     });
   }
 
-  async upload(data, opts) {
+  async upload(data: string | Buffer | internal.Readable, opts: CreateAndUploadOptions) {
     const tx = await this.instance.upload(data, opts);
-    return new Transaction({
-      id: tx.id,
-      pending: true,
-      ...opts,
-    });
+    return tx;
   }
 
-  async fund(amount) {
+  async fund(amount: number) {
     const rate = this.instance.currencyConfig.base[1];
     const atomicAmount = BigInt(amount * rate);
     let response = await this.instance.fund(atomicAmount);
@@ -67,18 +73,18 @@ export default class BundlrClient {
     return convertedBalance.valueOf();
   }
 
-  async query(opts) {
+  async query(opts: QueryOptions<OperationVariables, any>) {
     const res = await this.apolloClient.query(opts);
     return res;
   }
 
-  async getPrice(bytes) {
+  async getPrice(bytes: number) {
     const atomicPrice = await this.instance.getPrice(bytes);
     let price = this.instance.utils.unitConverter(atomicPrice);
     return price.valueOf();
   }
 
-  uploadChunked(data, opts, events) {
+  uploadChunked(data: any, opts: any, events: any) {
     const uploader = this.instance.uploader.chunkedUploader;
     uploader.uploadData(data, opts);
 

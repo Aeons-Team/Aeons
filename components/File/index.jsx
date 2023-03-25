@@ -1,23 +1,25 @@
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { useAppState } from "../../stores/AppStore";
-import { useBundlrState } from "../../stores/BundlrStore";
+import { useDriveState } from "../../stores/DriveStore";
 import FileInfo from "../FileInfo";
 import FolderInfo from "../FolderInfo";
 import style from "./style.module.css";
 
 export default function File({ file, enableControls }) {
   const router = useRouter();
+  const { id: activeFileId } = router.query;
+  
   const [activateContextMenu, selected, select] = useAppState((state) => [
     state.activateContextMenu,
     state.selected[file.id],
     state.select,
   ]);
-  const [fileSystem, uploadFiles, rerender] = useBundlrState((state) => [
-    state.fileSystem,
+  const [contractState, uploadFiles, relocateFiles] = useDriveState((state) => [
+    state.contractState,
     state.uploadFiles,
-    state.rerender,
+    state.relocateFiles
   ]);
-  const isFolder = file.type == "folder";
+  const isFolder = file.content_type == "folder";
 
   const onFileDragStart = (e) => {
     e.dataTransfer.effectAllowed = "move";
@@ -30,9 +32,8 @@ export default function File({ file, enableControls }) {
     const dragFileId = e.dataTransfer.getData("text/plain");
     if (e.dataTransfer.files.length)
       await uploadFiles(e.dataTransfer.files, file.id);
-    else if (fileSystem.fileMovableTo(dragFileId, file.id)) {
-      await fileSystem.moveFile(dragFileId, file.id);
-      rerender();
+    else if (contractState.isRelocatable(dragFileId, file.id)) {
+      await relocateFiles([dragFileId], activeFileId, file.id);
     }
   };
 

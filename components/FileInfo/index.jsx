@@ -7,7 +7,7 @@ export default function FileInfo({ file }) {
     <>    
       <FilePreview 
         src={`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`} 
-        type={file.contentType} />
+        contentType={file.content_type} />
         
       <div className={style.fileDetails}>
         <span className={style.fileDetail}>{file.name}</span>

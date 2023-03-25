@@ -4,32 +4,27 @@ import { Warp } from 'warp-contracts'
 import { DeployPlugin, ArweaveSigner } from 'warp-contracts-plugin-deploy'
 
 const walletJwkPath = path.join(__dirname, '../../data/wallet.json')
-const initialStatePath = path.join(__dirname, '../../data/initialState.json')
 const contractSrcPath = path.join(__dirname, '../../pkg/xdrive_contract_bg.wasm')
 const wasmSrcCodeDirPath = path.join(__dirname, '../../src')
 const wasmGlueCodePath = path.join(__dirname, '../../pkg/xdrive_contract.js')
-const contractDeploymentPath = path.join(__dirname, '../../data/contract_deployment.json')
+const contractDeploymentPath = path.join(__dirname, '../../data/contract_deployment.txt')
 
 async function deploy(warp: Warp) {
     warp.use(new DeployPlugin())
 
     const walletJwk = JSON.parse(fs.readFileSync(walletJwkPath, 'utf8'))
-    const initialStateJson = fs.readFileSync(initialStatePath, 'utf8')
     const contractSrc = fs.readFileSync(contractSrcPath)
 
-    const contractDeploy = await warp.deploy({
-        wallet: new ArweaveSigner(walletJwk),
-        initState: initialStateJson,
+    const deployedSource = await warp.createSource({
         src: contractSrc,
         wasmSrcCodeDir: wasmSrcCodeDirPath,
-        wasmGlueCode: wasmGlueCodePath
-    })
+        wasmGlueCode: wasmGlueCodePath,
+    }, new ArweaveSigner(walletJwk))
 
-    console.log(`contract deployed successfully`)
-    console.log(`contract id: ${contractDeploy.contractTxId}`)
-    console.log(`contract source id: ${contractDeploy.srcTxId}`)
+    await warp.saveSource(deployedSource)
 
-    fs.writeFileSync(contractDeploymentPath, JSON.stringify(contractDeploy))
+    console.log(`contract source id: ${deployedSource.id}`)
+    fs.writeFileSync(contractDeploymentPath, deployedSource.id)
 }
 
 export default deploy

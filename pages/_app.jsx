@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { ethers } from "ethers";
-import { useBundlrStore } from "../stores/BundlrStore";
+import { useDriveStore } from "../stores/DriveStore";
 import { useAppStore } from "../stores/AppStore";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
-  const initialize = useBundlrStore((state) => state.initialize);
+  const initialize = useDriveStore((state) => state.initialize);
   const cursorPosition = useAppStore((state) => state.cursorPosition);
 
   useEffect(() => {

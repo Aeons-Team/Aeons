@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
-import { useBundlrState } from "../../stores/BundlrStore";
+import { useDriveStore } from "../../stores/DriveStore";
 import style from "./style.module.css";
 import Select from "react-select";
 import { useState } from "react";
 
 export default function Search() {
   const router = useRouter();
-  const [fileSystem] = useBundlrState((state) => [state.fileSystem]);
-  const files = fileSystem.hierarchy.tree.nodes;
+  const contractState = useDriveStore((state) => state.contractState);
+  const files = contractState.getFiles();
   const filesList = {};
   Object.values(files).map((file) => {
     file.id !== "root" && (filesList[file.id] = file.name);

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useBundlrStore } from "../../stores/BundlrStore";
+import { useDriveStore } from "../../stores/DriveStore";
 import FilePreview from "../FilePreview";
 import Button from "../Button";
 import style from "./style.module.css";
@@ -14,7 +14,7 @@ export default function Uploader() {
     currentUpload,
     bytesUploaded,
     pauseOrResume,
-  ] = useBundlrStore((state) => [
+  ] = useDriveStore((state) => [
     state.uploadFiles,
     state.uploading,
     state.uploadQueue,
@@ -48,7 +48,7 @@ export default function Uploader() {
           <div>
             <FilePreview
               src={URL.createObjectURL(currentUpload)}
-              type={currentUpload.type}
+              contentType={currentUpload.type}
               className={style.uploaderPreview}
             />
           </div>

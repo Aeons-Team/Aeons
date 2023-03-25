@@ -1,17 +1,15 @@
 import { create } from "zustand";
 import { shallow } from "zustand/shallow";
+import fileReaderStream from "filereader-stream";
 import BundlrClient from "../lib/BundlrClient";
-import BundlrFileSystem from "../lib/BundlrFileSystem";
+import UserContract from "../lib/UserContract";
 
-const client = new BundlrClient()
-const fileSystem = new BundlrFileSystem(client)
-
-export const useBundlrStore = create((set, get) => ({
+export const useDriveStore = create((set, get) => ({
     initialized: false, 
-    client,
-    fileSystem,
+    client: new BundlrClient(),
+    contract: new UserContract(),
+    contractState: null,
     loadedBalance: null,
-    render: false,
     uploading: false,
     paused: false,
     uploadQueue: [],
@@ -25,24 +23,20 @@ export const useBundlrStore = create((set, get) => ({
     },
 
     initialize: async (provider) => {
-        const { client, fileSystem, fetchLoadedBalance } = get()
+        const { client, contract, fetchLoadedBalance } = get()
         await client.initialize(provider);
-		await fileSystem.initialize();
+        await contract.initialize(provider, client);
         
         set({ 
-            initialized: true
+            initialized: true,
+            contractState: contract.state
         })
 
         fetchLoadedBalance();
     },
-
-    rerender: () => {
-        set(state => ({ render: !get().render }))
-        get().fetchLoadedBalance()
-    },
     
     uploadNext: async () => {
-        const { fileSystem, rerender, uploadQueue } = get()
+        const { client, contract, fetchLoadedBalance, uploadQueue } = get()
         const first = uploadQueue[0]
 
         set({ 
@@ -52,16 +46,18 @@ export const useBundlrStore = create((set, get) => ({
             currentUpload: first.file
         })    
 
-        const uploader = fileSystem.createFile(
-            first.file, 
+        const uploader = client.uploadChunked(
+            fileReaderStream(first.file), 
             {
-                parent: first.parent
+                tags: [
+                    { name: 'Content-Type', value: first.file.type }
+                ]
             }, 
             {
                 chunkUpload: (info) => {
                     set({ bytesUploaded: info.totalUploaded })   
                 },
-                done: () => {
+                done: (result) => {
                     const queue = get().uploadQueue
 
                     if (queue.length == 0) {
@@ -72,7 +68,16 @@ export const useBundlrStore = create((set, get) => ({
                         get().uploadNext()
                     }
 
-                    rerender()
+                    fetchLoadedBalance()
+
+                    contract.insert({
+                        id: result.data.id,
+                        contentType: first.file.type,
+                        name: first.file.name,
+                        parentId: first.parentId,
+                        size: first.size
+                    })
+                    .then(() => set({ contractState: contract.state }))
                 }
             }
         )
@@ -80,14 +85,14 @@ export const useBundlrStore = create((set, get) => ({
         set({ currentUploader: uploader })
     },
 
-    uploadFiles: async (files, parent) => {
+    uploadFiles: async (files, parentId) => {
         const { uploading, uploadNext } = get()
         const items = []
 
         for (const file of files) {
             items.push({  
                 file,
-                parent
+                parentId
             })
         }
 
@@ -96,6 +101,32 @@ export const useBundlrStore = create((set, get) => ({
         if (!uploading) {
             uploadNext()
         }
+    },
+
+    createFolder: async (name, parentId) => {
+        const { contract } = get()
+
+        await contract.insert({
+            name,
+            parentId,
+            contentType: "folder"
+        })
+
+        set({ contractState: contract.state })
+    },
+
+    renameFile: async (id, newName) => {
+        const { contract } = get()
+        await contract.rename(id, newName)
+
+        set({ contractState: contract.state })
+    },
+    
+    relocateFiles: async (ids, oldParentId, newParentId) => {
+        const { contract } = get()
+        await contract.relocate(ids, oldParentId, newParentId)
+
+        set({ contractState: contract.state })
     },
 
     pauseOrResume: () => {
@@ -113,4 +144,4 @@ export const useBundlrStore = create((set, get) => ({
     }
 }));
 
-export const useBundlrState = (func) => useBundlrStore(func, shallow);
+export const useDriveState = (func) => useDriveStore(func, shallow);

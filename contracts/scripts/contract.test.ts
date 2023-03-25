@@ -26,12 +26,17 @@ describe('testing xdrive contract', () => {
         warp = WarpFactory.forLocal(1820).use(new DeployPlugin())
         ownerWallet = await warp.generateWallet()
     
-        const initialStateJson = fs.readFileSync(initialStatePath, 'utf8')
+        const initialState = JSON.parse(fs.readFileSync(initialStatePath, 'utf8'))
         const contractSrc = fs.readFileSync(contractSrcPath)
     
         contractDeploy = await warp.deploy({
             wallet: ownerWallet.jwk,
-            initState: initialStateJson,
+            initState: JSON.stringify(
+                {
+                    ...initialState,
+                    owner: ownerWallet.address
+                }
+            ),
             src: contractSrc,
             wasmSrcCodeDir: wasmSrcCodeDirPath,
             wasmGlueCode: wasmGlueCodePath
@@ -47,23 +52,23 @@ describe('testing xdrive contract', () => {
     
     it('should correctly update state', async () => {        
         await contract.writeInteraction({
-            function: { Insert: { id: 'id1', name: 'file1', contentType: 'folder' } }
+            input: 'insert', id: 'id1', name: 'file1', contentType: 'folder'
         })
 
         await contract.writeInteraction({
-            function: { Insert: { id: 'id2', name: 'file2', contentType: 'folder' } }
+            input: 'insert', id: 'id2', name: 'file2', contentType: 'folder'
         })
         
         await contract.writeInteraction({
-            function: { Insert: { id: 'id3', name: 'file3', parent: 'id1', contentType: 'image/png' } }
+            input: 'insert', id: 'id3', name: 'file3', parent: 'id1', contentType: 'image/png'
         })
         
         await contract.writeInteraction({
-            function: { Rename: { id: 'id3', newName: 'file3_renamed' } }
+            input: 'rename', id: 'id3', newName: 'file3_renamed'
         })
         
         await contract.writeInteraction({
-            function: { Relocate: { ids: ['id3'], oldParentId: 'id1', newParentId: 'id2' } }
+            input: 'relocate', ids: ['id3'], oldParentId: 'id1', newParentId: 'id2'
         })
 
         const state = (await contract.readState()).cachedValue.state as any

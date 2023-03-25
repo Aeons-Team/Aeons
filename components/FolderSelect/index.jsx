@@ -13,10 +13,9 @@ export default function FolderSelect() {
     relocateFiles: state.relocateFiles
   }));
   
-  const { activateContextMenu, getSelection, clearSelection } = useAppState((state) => ({
+  const { activateContextMenu, getSelection } = useAppState((state) => ({
     activateContextMenu: state.activateContextMenu,
-    getSelection: state.getSelection,
-    clearSelection: state.clearSelection,
+    getSelection: state.getSelection
   }));
   
   const [currentFileId, setCurrentFileId] = useState("root");
@@ -30,7 +29,6 @@ export default function FolderSelect() {
   async function onMoveButtonClick() {
     activateContextMenu(false);
     await relocateFiles(selection, activeFileId, selectedFileId);
-    clearSelection();
   }
 
   return (

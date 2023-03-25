@@ -2,7 +2,10 @@ import { useDriveState } from '../../stores/DriveStore'
 import style from './style.module.css';
 
 export default function Wallet() {
-  const [client, loadedBalance] = useDriveState(state => [state.client, state.loadedBalance]);
+  const { client, loadedBalance } = useDriveState(state => ({
+    client: state.client, 
+    loadedBalance: state.loadedBalance
+  }));
 
   return (
     <div className={style.wallet}>

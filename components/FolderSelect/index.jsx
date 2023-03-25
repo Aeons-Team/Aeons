@@ -7,15 +7,18 @@ import style from "./style.module.css";
 
 export default function FolderSelect() {
   const { id: activeFileId } = useRouter().query;
+
+  const { contractState, relocateFiles } = useDriveState((state) => ({
+    contractState: state.contractState, 
+    relocateFiles: state.relocateFiles
+  }));
   
-  const [contractState, relocateFiles] = useDriveState((state) => [state.contractState, state.relocateFiles]);
-  const [activateContextMenu, getSelection, clearSelection] = useAppState(
-    (state) => [
-      state.activateContextMenu,
-      state.getSelection,
-      state.clearSelection,
-    ]
-  );
+  const { activateContextMenu, getSelection, clearSelection } = useAppState((state) => ({
+    activateContextMenu: state.activateContextMenu,
+    getSelection: state.getSelection,
+    clearSelection: state.clearSelection,
+  }));
+  
   const [currentFileId, setCurrentFileId] = useState("root");
   const [selectedFileId, setSelectedFileId] = useState("root");
   const currentFile = contractState.getFile(currentFileId);

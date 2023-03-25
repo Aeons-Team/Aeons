@@ -6,14 +6,16 @@ import style from "./style.module.css";
 
 export default function Explorer() {
   const { id: activeFileId } = useRouter().query;
-  const [activateContextMenu, clearSelection] = useAppState((state) => [
-    state.activateContextMenu,
-    state.clearSelection,
-  ]);
-  const [contractState, uploadFiles] = useDriveState((state) => [
-    state.contractState,
-    state.uploadFiles
-  ]);
+  const { activateContextMenu, clearSelection } = useAppState((state) => ({
+    activateContextMenu: state.activateContextMenu,
+    clearSelection: state.clearSelection,
+  }));
+  
+  const { contractState, uploadFiles } = useDriveState((state) => ({
+    contractState: state.contractState,
+    uploadFiles: state.uploadFiles
+  }));
+
   const activeFile = contractState.getFile(activeFileId);
   const activeFileChildren = contractState.getChildren(activeFileId);
   const isFileView = activeFile.content_type != "folder";

@@ -1,10 +1,10 @@
-import { useAppState } from "../../stores/AppStore";
+import { useAppStore } from "../../stores/AppStore";
 import { useDriveStore } from "../../stores/DriveStore";
 import File from "../File";
 import style from "./style.module.css";
 
 export default function SearchExplorer({ searchList }) {
-  const [clearSelection] = useAppState((state) => [state.clearSelection]);
+  const clearSelection = useAppStore((state) => state.clearSelection);
   const contractState = useDriveStore((state) => state.contractState);
 
   let searchItems = {};

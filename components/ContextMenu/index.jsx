@@ -8,19 +8,15 @@ import Creator from "../Creator";
 
 export default function ContextMenu() {
   const menuRef = useRef();
-  const [
-    contextMenuActivated,
-    contextMenuPosition,
-    contextMenuOpts,
-    activateContextMenu,
-    getSelection,
-  ] = useAppState((state) => [
-    state.contextMenuActivated,
-    state.contextMenuPosition,
-    state.contextMenuOpts,
-    state.activateContextMenu,
-    state.getSelection,
-  ]);
+  
+  const { contextMenuActivated, contextMenuPosition, contextMenuOpts, activateContextMenu, getSelection } = useAppState((state) => ({
+    contextMenuActivated: state.contextMenuActivated,
+    contextMenuPosition: state.contextMenuPosition,
+    contextMenuOpts: state.contextMenuOpts,
+    activateContextMenu: state.activateContextMenu,
+    getSelection: state.getSelection,
+  }));
+
   const [action, setAction] = useState();
 
   useEffect(() => {

@@ -1,10 +1,38 @@
 import { create } from "zustand";
 import { shallow } from "zustand/shallow";
 import fileReaderStream from "filereader-stream";
+import { ChunkingUploader } from "@bundlr-network/client/build/common/chunkingUploader";
 import BundlrClient from "../lib/BundlrClient";
 import UserContract from "../lib/UserContract";
+import ContractState from "../lib/ContractState";
 
-export const useDriveStore = create((set, get) => ({
+interface UploadQueueItem {
+    file: File,
+    parentId: string
+}
+
+interface DriveStoreData {
+    initialized: boolean,
+    client: BundlrClient,
+    contract: UserContract,
+    contractState: ContractState | null,
+    loadedBalance: string | null,
+    uploading: boolean,
+    paused: boolean,
+    uploadQueue: UploadQueueItem[],
+    currentUpload: File | null,
+    currentUploader: ChunkingUploader | null
+    bytesUploaded: number | null,
+    fetchLoadedBalance: Function,
+    uploadNext: Function,
+    uploadFiles: (files: File[], parentId: string) => void,
+    createFolder: (name: string, parentId: string) => Promise<void>,
+    renameFile: (id: string, newName: string) => Promise<void>,
+    relocateFiles: (ids: string[], oldParentId: string, newParentId: string) => Promise<void>,
+    pauseOrResume: Function
+}
+
+export const useDriveStore = create<DriveStoreData>((set, get) => ({
     initialized: false, 
     client: new BundlrClient(),
     contract: new UserContract(),
@@ -75,7 +103,7 @@ export const useDriveStore = create((set, get) => ({
                         contentType: first.file.type,
                         name: first.file.name,
                         parentId: first.parentId,
-                        size: first.size
+                        size: first.file.size
                     })
                     .then(() => set({ contractState: contract.state }))
                 }
@@ -85,25 +113,24 @@ export const useDriveStore = create((set, get) => ({
         set({ currentUploader: uploader })
     },
 
-    uploadFiles: async (files, parentId) => {
-        const { uploading, uploadNext } = get()
-        const items = []
+    uploadFiles: async (files: File[], parentId: string) => {
+        const { uploading, uploadQueue, uploadNext } = get()
 
         for (const file of files) {
-            items.push({  
+            uploadQueue.push({  
                 file,
                 parentId
             })
         }
 
-        set({ uploadQueue: items })
+        set({ uploadQueue })
 
         if (!uploading) {
             uploadNext()
         }
     },
 
-    createFolder: async (name, parentId) => {
+    createFolder: async (name: string, parentId: string) => {
         const { contract } = get()
 
         await contract.insert({
@@ -115,14 +142,14 @@ export const useDriveStore = create((set, get) => ({
         set({ contractState: contract.state })
     },
 
-    renameFile: async (id, newName) => {
+    renameFile: async (id: string, newName: string) => {
         const { contract } = get()
         await contract.rename(id, newName)
 
         set({ contractState: contract.state })
     },
     
-    relocateFiles: async (ids, oldParentId, newParentId) => {
+    relocateFiles: async (ids: string[], oldParentId: string, newParentId: string) => {
         const { contract } = get()
         await contract.relocate(ids, oldParentId, newParentId)
 
@@ -133,15 +160,15 @@ export const useDriveStore = create((set, get) => ({
         const { currentUploader, paused } = get()
 
         if (paused) {
-            currentUploader.resume()
+            currentUploader?.resume()
         }
 
         else {
-            currentUploader.pause()
+            currentUploader?.pause()
         }
 
         set({ paused: !get().paused })
     }
 }));
 
-export const useDriveState = (func) => useDriveStore(func, shallow);
+export const useDriveState = (selector: (state: DriveStoreData) => DriveStoreData) => useDriveStore<DriveStoreData>(selector, shallow);

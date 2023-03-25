@@ -1,17 +1,34 @@
-import { WarpFactory, LoggerFactory } from 'warp-contracts'
+import { WarpFactory, LoggerFactory, Contract, Warp } from 'warp-contracts'
 import { DeployPlugin, InjectedEthereumSigner } from 'warp-contracts-plugin-deploy'
+import { ethers } from 'ethers'
 import { gql } from '@apollo/client'
-import ContractState from './ContractState'
+import ContractState, { ContractStateData } from './ContractState'
+import BundlrClient from './BundlrClient'
 import initialState from '../contracts/data/initialState.json'
 
+interface InsertData {
+    id?: string,
+    contentType: string,
+    size?: number,
+    parentId: string,
+    name: string
+}
+
 export default class UserContract {
-    setContractId(contractId) {
+    contractId: string
+    instance: Contract<ContractStateData>
+    state: ContractState
+    warp: Warp
+    provider: ethers.providers.Web3Provider
+    client: BundlrClient
+
+    setContractId(contractId: string) {
         this.contractId = contractId
     }
 
     async updateState() {
-        const stateVal = (await this.instance.readState()).cachedValue.state
-        this.state = new ContractState(stateVal)
+        const stateData = (await this.instance.readState()).cachedValue.state
+        this.state = new ContractState(stateData)
     }
 
     async createContract() {
@@ -26,9 +43,9 @@ export default class UserContract {
                 ...initialState,
                 owner: this.client.owner 
             }),
-            srcTxId: process.env.NEXT_PUBLIC_CONTRACT_SRC_ID,
+            srcTxId: process.env.NEXT_PUBLIC_CONTRACT_SRC_ID ?? '',
             tags: [
-                { name: 'Client-App-Name', value: process.env.NEXT_PUBLIC_APP_NAME }
+                { name: 'Client-App-Name', value: process.env.NEXT_PUBLIC_APP_NAME ?? '' }
             ]
         })
 
@@ -89,7 +106,7 @@ export default class UserContract {
         }
     }
 
-    async initialize(provider, client) {
+    async initialize(provider: ethers.providers.Web3Provider, client: BundlrClient) {
         this.provider = provider
         this.client = client
 
@@ -103,23 +120,24 @@ export default class UserContract {
 
         const { evmSignature } = await import('warp-contracts-plugin-signature')
 
-        this.instance = this.warp.contract(this.contractId)
+        this.instance = this.warp.contract<ContractStateData>(this.contractId)
+
         this.instance.connect({ signer: evmSignature, signatureType: 'ethereum' })
 
         await this.updateState()
     }
 
-    async insert(data) {
+    async insert(data: InsertData) {
         await this.instance.writeInteraction({ input: 'insert', ...data })
         await this.updateState()
     }
 
-    async rename(id, newName) {
+    async rename(id: string, newName: string) {
         await this.instance.writeInteraction({ name: 'rename', id, newName })
         await this.updateState()
     }
 
-    async relocate(ids, oldParentId, newParentId) {
+    async relocate(ids: string[], oldParentId: string, newParentId: string) {
         await this.instance.writeInteraction({ input: 'relocate', ids, oldParentId, newParentId })
         await this.updateState()
     }

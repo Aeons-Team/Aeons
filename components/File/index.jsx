@@ -9,16 +9,18 @@ export default function File({ file, enableControls }) {
   const router = useRouter();
   const { id: activeFileId } = router.query;
   
-  const [activateContextMenu, selected, select] = useAppState((state) => [
-    state.activateContextMenu,
-    state.selected[file.id],
-    state.select,
-  ]);
-  const [contractState, uploadFiles, relocateFiles] = useDriveState((state) => [
-    state.contractState,
-    state.uploadFiles,
-    state.relocateFiles
-  ]);
+  const { activateContextMenu, selected, select } = useAppState((state) => ({
+    activateContextMenu: state.activateContextMenu,
+    selected: state.selected[file.id],
+    select: state.select,
+  }));
+
+  const { contractState, uploadFiles, relocateFiles } = useDriveState((state) => ({
+    contractState: state.contractState,
+    uploadFiles: state.uploadFiles,
+    relocateFiles: state.relocateFiles
+  }));
+  
   const isFolder = file.content_type == "folder";
 
   const onFileDragStart = (e) => {

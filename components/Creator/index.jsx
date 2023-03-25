@@ -7,14 +7,18 @@ import { useAppState } from "../../stores/AppStore";
 
 export default function Creator({ type }) {
   const { id: activeFileId } = useRouter().query;
-  const [createFolder, renameFile] = useDriveState((state) => [state.createFolder, state.renameFile]);
-  const [activateContextMenu, getSelection, clearSelection] = useAppState(
-    (state) => [
-      state.activateContextMenu,
-      state.getSelection,
-      state.clearSelection,
-    ]
-  );
+
+  const { createFolder, renameFile } = useDriveState((state) => ({
+    createFolder: state.createFolder, 
+    renameFile: state.renameFile
+  }));
+
+  const { activateContextMenu, getSelection, clearSelection } = useAppState((state) => ({
+    activateContextMenu: state.activateContextMenu,
+    getSelection: state.getSelection,
+    clearSelection: state.clearSelection,
+  }));
+
   const [name, setName] = useState();
 
   async function onCreate() {

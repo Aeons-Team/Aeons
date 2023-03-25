@@ -25,7 +25,6 @@ export default function Search() {
       `/drive/search/${searchList.length ? searchList : "NoResults"}`
     );
   }
-  console.log(inputValue);
   return (
     <div className={style.search}>
       <input

@@ -25,4 +25,4 @@ deploy to mainnet
 npm run deploy:prod
 ```
 
-deployed contract data will be in `/data/contract_deployment.json`
+deployed contract source id will be in `/data/contract_deployment.txt`

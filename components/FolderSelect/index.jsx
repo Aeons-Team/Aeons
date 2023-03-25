@@ -9,11 +9,10 @@ export default function FolderSelect() {
     state.fileSystem,
     state.rerender,
   ]);
-  const [activateContextMenu, getSelection, clearSelection] = useAppState(
+  const [activateContextMenu, getSelection] = useAppState(
     (state) => [
       state.activateContextMenu,
       state.getSelection,
-      state.clearSelection,
     ]
   );
   const [currentFileId, setCurrentFileId] = useState("root");
@@ -27,7 +26,6 @@ export default function FolderSelect() {
   async function onMoveButtonClick() {
     activateContextMenu(false);
     await fileSystem.moveFiles(selection, selectedFileId);
-    clearSelection();
     rerender();
   }
 

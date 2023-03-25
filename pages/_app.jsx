@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }) {
       initialize(provider);
     }
 
-    // init();
+    init();
 
     const onMouseMove = (e) => {
       cursorPosition.set(

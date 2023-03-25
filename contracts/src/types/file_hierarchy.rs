@@ -53,4 +53,8 @@ impl FileHierarchy {
     pub fn insert_file(&mut self, file: File) {
         self.files.insert(file.id.clone(), file);
     }
+
+    pub fn contains(&self, id: &String) -> bool {
+        self.files.contains_key(id)
+    }
 }

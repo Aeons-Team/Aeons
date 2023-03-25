@@ -2,6 +2,10 @@ use crate::types::{ ContractState, Insert, File };
 use warp_contracts::handler_result::WriteResult;
 
 pub fn insert(mut state: ContractState, input: Insert) -> WriteResult<ContractState, ()> {
+    if state.hierarchy.contains(&input.id) {
+        return WriteResult::ContractError(())
+    }
+
     state.hierarchy.insert_file(File {
         id: input.id.clone(),
         name: input.name,

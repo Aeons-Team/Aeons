@@ -4,7 +4,9 @@ import { useAppState } from "../../stores/AppStore";
 import Uploader from "../Uploader";
 import style from "./style.module.css";
 import FolderSelect from "../FolderSelect";
-import Creator from "../Creator";
+import FolderCreator from "../FolderCreator";
+import Funder from "../Funder";
+import Rename from "../Rename";
 
 export default function ContextMenu() {
   const menuRef = useRef();
@@ -38,11 +40,11 @@ export default function ContextMenu() {
       break;
 
     case "creatingFolder":
-      var contextMenuInner = <Creator type="Folder" />;
+      var contextMenuInner = <FolderCreator />;
       break;
 
     case "fundingWallet":
-      var contextMenuInner = <Creator type="Fund" />;
+      var contextMenuInner = <Funder />;
       break;
 
     case "moveFile":
@@ -50,7 +52,7 @@ export default function ContextMenu() {
       break;
 
     case "rename":
-      var contextMenuInner = <Creator type="New" />;
+      var contextMenuInner = <Rename />;
       break;
 
     default:

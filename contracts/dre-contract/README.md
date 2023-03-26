@@ -1,5 +1,5 @@
 # XDrive DRE Contract
-Warp smart contracts for XDrive to run on DRE nodes 
+Warp smart contracts for XDrive to run on warp DRE nodes 
 
 (This is not integrated into XDrive yet)
 

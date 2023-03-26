@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 import { gql } from '@apollo/client'
 import ContractState, { ContractStateData } from './ContractState'
 import BundlrClient from './BundlrClient'
-import initialState from '../contracts/data/initialState.json'
+import initialState from '../contracts/client-contract/data/initialState.json'
 
 interface InsertData {
     id?: string,

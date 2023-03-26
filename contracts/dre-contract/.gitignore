@@ -1,0 +1,7 @@
+/dist
+/warp
+/node_modules
+/logs
+/cache
+/data/contract_deployment.txt
+/data/wallet.json

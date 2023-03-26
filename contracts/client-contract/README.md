@@ -1,5 +1,5 @@
 # XDrive Contract
-Warp smart contracts for XDrive
+Warp smart contract for XDrive that evaluates state on the dapp
 
 #### Building and testing
 building wasm

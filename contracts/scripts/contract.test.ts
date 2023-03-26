@@ -60,7 +60,7 @@ describe('testing xdrive contract', () => {
         })
         
         await contract.writeInteraction({
-            function: 'insert', id: 'id3', name: 'file3', parent: 'id1', contentType: 'image/png'
+            function: 'insert', id: 'id3', name: 'file3', parentId: 'id1', contentType: 'image/png'
         })
         
         await contract.writeInteraction({

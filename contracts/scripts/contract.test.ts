@@ -52,23 +52,23 @@ describe('testing xdrive contract', () => {
     
     it('should correctly update state', async () => {        
         await contract.writeInteraction({
-            input: 'insert', id: 'id1', name: 'file1', contentType: 'folder'
+            function: 'insert', id: 'id1', name: 'file1', contentType: 'folder'
         })
 
         await contract.writeInteraction({
-            input: 'insert', id: 'id2', name: 'file2', contentType: 'folder'
+            function: 'insert', id: 'id2', name: 'file2', contentType: 'folder'
         })
         
         await contract.writeInteraction({
-            input: 'insert', id: 'id3', name: 'file3', parent: 'id1', contentType: 'image/png'
+            function: 'insert', id: 'id3', name: 'file3', parent: 'id1', contentType: 'image/png'
         })
         
         await contract.writeInteraction({
-            input: 'rename', id: 'id3', newName: 'file3_renamed'
+            function: 'rename', id: 'id3', newName: 'file3_renamed'
         })
         
         await contract.writeInteraction({
-            input: 'relocate', ids: ['id3'], oldParentId: 'id1', newParentId: 'id2'
+            function: 'relocate', ids: ['id3'], oldParentId: 'id1', newParentId: 'id2'
         })
 
         const state = (await contract.readState()).cachedValue.state as any

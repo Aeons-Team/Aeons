@@ -2,6 +2,10 @@ use crate::types::{ ContractState, Insert, File };
 use warp_contracts::{ js_imports::Transaction, handler_result::WriteResult };
 
 pub fn insert(mut state: ContractState, input: Insert) -> WriteResult<ContractState, ()> {
+    if !state.is_owner() {
+        return WriteResult::ContractError(())
+    }
+    
     let id = input.id.unwrap_or(Transaction::id());
 
     if state.hierarchy.contains(&id) {

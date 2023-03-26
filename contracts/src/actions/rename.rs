@@ -2,6 +2,10 @@ use crate::types::{ ContractState, Rename };
 use warp_contracts::handler_result::WriteResult;
 
 pub fn rename(mut state: ContractState, input: Rename) -> WriteResult<ContractState, ()> {
+    if !state.is_owner() {
+        return WriteResult::ContractError(())
+    }
+
     let file = state.hierarchy.get_file_mut(&input.id);
 
     if file.is_none() {

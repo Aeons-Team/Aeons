@@ -1,5 +1,5 @@
 import { WarpFactory, LoggerFactory, Contract, Warp } from 'warp-contracts'
-import { DeployPlugin, InjectedEthereumSigner } from 'warp-contracts-plugin-deploy'
+import { DeployPlugin } from 'warp-contracts-plugin-deploy'
 import { ethers } from 'ethers'
 import { gql } from '@apollo/client'
 import ContractState, { ContractStateData } from './ContractState'
@@ -16,14 +16,15 @@ interface InsertData {
 
 export default class UserContract {
     contractId: string
+    contractSrcId: string
     instance: Contract<ContractStateData>
     state: ContractState
     warp: Warp
     provider: ethers.providers.Web3Provider
     client: BundlrClient
 
-    setContractId(contractId: string) {
-        this.contractId = contractId
+    setContractSrcId(contractSrcId: string) {
+        this.contractSrcId = contractSrcId
     }
 
     async updateState() {
@@ -34,48 +35,46 @@ export default class UserContract {
     async createContract() {
         this.warp.use(new DeployPlugin())
 
-        const signer = new InjectedEthereumSigner(this.provider)
-        await signer.setPublicKey()
-
-        const result = await this.warp.deployFromSourceTx({
-            wallet: signer,
-            initState: JSON.stringify({
-                ...initialState,
-                owner: this.client.owner 
-            }),
-            srcTxId: process.env.NEXT_PUBLIC_CONTRACT_SRC_ID ?? '',
+        const contractUpload = await this.client.upload('', {
             tags: [
+                { name: 'Init-State', value: JSON.stringify({ ...initialState, owner: this.client.owner }) },
+                { name: 'App-Name', value: 'SmartWeaveContract' },
+                { name: 'App-Version', value: process.env.NEXT_PUBLIC_WARP_SDK_VERSION ?? '' },
+                { name: 'Content-Type', value: 'application/json' },
+                { name: 'Contract-Src', value: process.env.NEXT_PUBLIC_CONTRACT_SRC_ID ?? '' },
                 { name: 'Client-App-Name', value: process.env.NEXT_PUBLIC_APP_NAME ?? '' }
             ]
         })
 
-        this.setContractId(result.contractTxId)
+        const contractDeploy = await this.warp.register(contractUpload.id, 'node2')
+
+        this.contractId = contractDeploy.contractTxId
+        this.contractSrcId = process.env.NEXT_PUBLIC_CONTRACT_SRC_ID ?? ''
     }
 
     async initializeContract() {
-        const contractId = localStorage.getItem(`${this.client.owner}-${process.env.NEXT_PUBLIC_CONTRACT_SRC_ID}`)
+        const contractId = localStorage.getItem(`${this.client.owner}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractId`)
+        const contractSrcId = localStorage.getItem(`${this.client.owner}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractSrcId`)
 
         if (contractId) {
-            this.setContractId(contractId)
+            this.contractId = contractId
+            this.contractSrcId = contractSrcId ?? ''
         }
 
         else {
             const res = await this.client.query({
                 query: gql`
-                    query($owners: [String!]!, $contractSrcId: String!) {
+                    query($owners: [String!]!, $clientAppName: String!) {
                         transactions(
                             owners: $owners,
                             tags:[
                                 { name: "App-Name", values: "SmartWeaveContract" }
-                                { name: "Contract-Src", values: [$contractSrcId] }
+                                { name: "Client-App-Name", values: [$clientAppName] }
                             ]
                         ) {
                             edges {
                                 node {
                                     id
-                                    owner {
-                                        address
-                                    }
                                     tags {
                                         name
                                         value
@@ -88,7 +87,7 @@ export default class UserContract {
 
                 variables: {
                     owners: [this.client.owner],
-                    contractSrcId: process.env.NEXT_PUBLIC_CONTRACT_SRC_ID
+                    clientAppName: process.env.NEXT_PUBLIC_APP_NAME
                 }
             })
     
@@ -99,10 +98,22 @@ export default class UserContract {
             }
 
             else {
-                this.setContractId(edges[0].node.id)
+                const node = edges[0].node
+                this.contractId = node.id
+                this.contractSrcId = node.tags.find(tag => tag.name == 'Contract-Src').value
             }
 
-            localStorage.setItem(`${this.client.owner}-${process.env.NEXT_PUBLIC_CONTRACT_SRC_ID}`, this.contractId)
+            localStorage.setItem(`${this.client.owner}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractId`, this.contractId)
+            localStorage.setItem(`${this.client.owner}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractSrcId`, this.contractSrcId)
+        }
+    }
+
+    async checkEvolve() {
+        console.log(this.state)
+
+        if (this.contractSrcId != process.env.NEXT_PUBLIC_CONTRACT_SRC_ID && this.state.data.evolve != process.env.NEXT_PUBLIC_CONTRACT_SRC_ID) {
+            await this.instance.evolve(process.env.NEXT_PUBLIC_CONTRACT_SRC_ID ?? '')
+            await this.updateState()
         }
     }
 
@@ -110,9 +121,7 @@ export default class UserContract {
         this.provider = provider
         this.client = client
 
-        this.warp = process.env.NEXT_PUBLIC_MODE == 'production' 
-            ? WarpFactory.forMainnet()
-            : WarpFactory.forTestnet()
+        this.warp = WarpFactory.forMainnet()
 
         LoggerFactory.INST.logLevel('none')
         
@@ -121,24 +130,24 @@ export default class UserContract {
         const { evmSignature } = await import('warp-contracts-plugin-signature')
 
         this.instance = this.warp.contract<ContractStateData>(this.contractId)
-
         this.instance.connect({ signer: evmSignature, signatureType: 'ethereum' })
 
         await this.updateState()
+        await this.checkEvolve()
     }
 
     async insert(data: InsertData) {
-        await this.instance.writeInteraction({ input: 'insert', ...data })
+        await this.instance.writeInteraction({ function: "insert", ...data })
         await this.updateState()
     }
 
     async rename(id: string, newName: string) {
-        await this.instance.writeInteraction({ name: 'rename', id, newName })
+        await this.instance.writeInteraction({ function: "rename", id, newName })
         await this.updateState()
     }
 
     async relocate(ids: string[], oldParentId: string, newParentId: string) {
-        await this.instance.writeInteraction({ input: 'relocate', ids, oldParentId, newParentId })
+        await this.instance.writeInteraction({ function: "relocate", ids, oldParentId, newParentId })
         await this.updateState()
     }
 }

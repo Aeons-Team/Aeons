@@ -3,6 +3,10 @@ use std::collections::HashSet;
 use warp_contracts::handler_result::WriteResult;
 
 pub fn relocate(mut state: ContractState, input: Relocate) -> WriteResult<ContractState, ()> {
+    if !state.is_owner() {
+        return WriteResult::ContractError(())
+    }
+    
     let old_parent_id = input.old_parent_id.unwrap_or("root".to_string());
     let new_parent_id = input.new_parent_id.clone().unwrap_or("root".to_string());
 

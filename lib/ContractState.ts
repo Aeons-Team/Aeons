@@ -12,7 +12,10 @@ export interface ContractStateData {
         files: { [id: string]: ContractFile }
     }
 
-    owner: String
+    owner: string,
+    internal_owner?: string,
+    can_evolve: boolean
+    evolve?: string
 }
 
 export default class ContractState {

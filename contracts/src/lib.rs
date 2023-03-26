@@ -12,6 +12,7 @@ pub fn handle(state: ContractState, action: ContractAction) -> WriteResult<Contr
         ContractAction::Insert(input) => insert(state, input),
         ContractAction::Relocate(input) => relocate(state, input),
         ContractAction::Rename(input) => rename(state, input),
-        ContractAction::Evolve(input) => evolve(state, input)
+        ContractAction::Evolve(input) => evolve(state, input),
+        ContractAction::SetInternalOwner(input) => set_internal_owner(state, input)
     }   
 }

@@ -37,7 +37,7 @@ export default class UserContract {
 
         const contractUpload = await this.client.upload('', {
             tags: [
-                { name: 'Init-State', value: JSON.stringify({ ...initialState, owner: this.client.owner }) },
+                { name: 'Init-State', value: JSON.stringify({ ...initialState, owner: this.client.address }) },
                 { name: 'App-Name', value: 'SmartWeaveContract' },
                 { name: 'App-Version', value: process.env.NEXT_PUBLIC_WARP_SDK_VERSION ?? '' },
                 { name: 'Content-Type', value: 'application/json' },
@@ -53,8 +53,8 @@ export default class UserContract {
     }
 
     async initializeContract() {
-        const contractId = localStorage.getItem(`${this.client.owner}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractId`)
-        const contractSrcId = localStorage.getItem(`${this.client.owner}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractSrcId`)
+        const contractId = localStorage.getItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractId`)
+        const contractSrcId = localStorage.getItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractSrcId`)
 
         if (contractId) {
             this.contractId = contractId
@@ -103,14 +103,12 @@ export default class UserContract {
                 this.contractSrcId = node.tags.find(tag => tag.name == 'Contract-Src').value
             }
 
-            localStorage.setItem(`${this.client.owner}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractId`, this.contractId)
-            localStorage.setItem(`${this.client.owner}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractSrcId`, this.contractSrcId)
+            localStorage.setItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractId`, this.contractId)
+            localStorage.setItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractSrcId`, this.contractSrcId)
         }
     }
 
     async checkEvolve() {
-        console.log(this.state)
-
         if (this.contractSrcId != process.env.NEXT_PUBLIC_CONTRACT_SRC_ID && this.state.data.evolve != process.env.NEXT_PUBLIC_CONTRACT_SRC_ID) {
             await this.instance.evolve(process.env.NEXT_PUBLIC_CONTRACT_SRC_ID ?? '')
             await this.updateState()
@@ -130,7 +128,7 @@ export default class UserContract {
         const { evmSignature } = await import('warp-contracts-plugin-signature')
 
         this.instance = this.warp.contract<ContractStateData>(this.contractId)
-        this.instance.connect({ signer: evmSignature, signatureType: 'ethereum' })
+        this.instance.connect({ signer: evmSignature, type: 'ethereum' })
 
         await this.updateState()
         await this.checkEvolve()

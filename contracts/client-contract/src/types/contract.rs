@@ -60,7 +60,6 @@ pub struct ContractState {
 
 impl ContractState {
     pub fn is_owner(&self) -> bool {
-        true
-        // self.internal_owner.as_ref().unwrap_or(&self.owner).eq(&SmartWeave::caller())
+        self.internal_owner.as_ref().unwrap_or(&self.owner).eq(&SmartWeave::caller())
     }
 }

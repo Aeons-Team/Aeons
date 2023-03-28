@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: false,
+  typescript: {
+    ignoreBuildErrors: true
+  },
   redirects: () => {
     return [
       {

@@ -4,3 +4,4 @@
 /data/wallet.json
 /data/contract_deployment.txt
 logs
+/cache

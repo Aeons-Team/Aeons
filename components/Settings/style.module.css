@@ -1,3 +1,9 @@
 .settings {
     color: var(--color-secondary);
+    display: flex;
+    flex-direction: column;
+}
+
+.preview {
+    width: 400px;
 }

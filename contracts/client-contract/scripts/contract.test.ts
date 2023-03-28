@@ -71,6 +71,10 @@ describe('testing xdrive contract', () => {
             function: 'relocate', ids: ['id3'], oldParentId: 'id1', newParentId: 'id2'
         })
 
+        await contract.writeInteraction({
+            function: 'setInternalOwner', value: 'internal'
+        })
+
         const state = (await contract.readState()).cachedValue.state as any
         let file2 = state.hierarchy.files['id2']
 
@@ -83,5 +87,7 @@ describe('testing xdrive contract', () => {
         expect(file2.children[0]).toBe('id3')
 
         expect(state.hierarchy.files[file2.children[0]].name).toBe('file3_renamed')
+
+        expect(state.internal_owner).toBe('internal')
     })
 })

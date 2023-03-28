@@ -19,8 +19,8 @@ export default class BundlrClient {
     this.address = await this.provider.getSigner().getAddress();
     this.network = await this.provider.getNetwork();
 
-    switch (process.env.NEXT_PUBLIC_MODE) {
-      case "production":
+    switch (process.env.NEXT_PUBLIC_BUNDLR_ENV) {
+      case "mainnet":
         this.instance = new WebBundlr(
           process.env.NEXT_PUBLIC_BUNDLR_NODE_URL ?? '',
           this.network.name,
@@ -28,7 +28,7 @@ export default class BundlrClient {
         );
         break;
         
-      case "development":
+      case "devnet":
         this.instance = new WebBundlr(
           process.env.NEXT_PUBLIC_DEV_BUNDLR_NODE_URL ?? '',
           process.env.NEXT_PUBLIC_DEV_BUNDLR_CURRENCY ?? '',

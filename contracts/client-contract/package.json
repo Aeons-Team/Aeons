@@ -7,7 +7,7 @@
     "build:wasm": "wasm-pack build --target nodejs",
     "test": "jest ./scripts/contract.test.ts",
     "deploy:test": "ts-node ./scripts/deployment/testnet.deploy.ts",
-    "deploy:prod": "ts-node ./scripts/deployment/mainnet.deploy.ts"
+    "deploy:main": "ts-node ./scripts/deployment/mainnet.deploy.ts"
   },
   "keywords": [],
   "author": "",

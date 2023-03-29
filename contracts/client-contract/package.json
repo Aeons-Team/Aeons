@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:wasm": "wasm-pack build --target nodejs",
+    "build:wasm": "wasm-pack build --target nodejs --release",
     "test": "jest ./scripts/contract.test.ts",
     "deploy:test": "ts-node ./scripts/deployment/testnet.deploy.ts",
     "deploy:main": "ts-node ./scripts/deployment/mainnet.deploy.ts"

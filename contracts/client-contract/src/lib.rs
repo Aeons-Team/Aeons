@@ -1,6 +1,5 @@
 pub mod actions;
 pub mod types;
-pub mod test;
 
 use actions::*;
 use types::*;

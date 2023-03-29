@@ -1,10 +1,11 @@
 export interface ContractFile {
     id: string,
-    content_type: string,
+    contentType: string,
     size?: number,
-    parent_id?: string,
+    parentId?: string,
     name: string,
-    children?: string[]
+    children?: string[],
+    pending: boolean
 }
 
 export interface ContractStateData {
@@ -13,23 +14,41 @@ export interface ContractStateData {
     }
 
     owner: string,
-    internal_owner?: string,
-    can_evolve: boolean
+    internalOwner?: string,
+    canEvolve: boolean
     evolve?: string
 }
 
 export default class ContractState {
-    data: ContractStateData
+    data: ContractStateData | undefined
 
-    constructor(data: ContractStateData) {
+    constructor(data?: ContractStateData) {
         this.data = data
     }
 
+    setData(data: ContractStateData) {
+        this.data = data
+    }
+
+    getData() : ContractStateData {
+        if (!this.data) throw new Error()
+
+        return this.data
+    }
+
+    copy() {
+        return new ContractState(this.data)
+    }
+
     getFiles(): { [id: string]: ContractFile } {
+        if (!this.data) throw new Error()
+
         return this.data.hierarchy.files
     }
 
     getFile(id: string): ContractFile {
+        if (!this.data) throw new Error()
+
         return this.data.hierarchy.files[id]
     }
 
@@ -41,6 +60,6 @@ export default class ContractState {
         if (fileId == destinationId) return false
 
         const file = this.getFile(fileId)
-        return destinationId != file.parent_id
+        return destinationId != file.parentId
     }
 }

@@ -1,7 +1,9 @@
 use std::collections::HashMap;
+use schemars::JsonSchema;
 use serde::{ Serialize, Deserialize };
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct File {
     pub id: String,
     pub name: String,
@@ -17,7 +19,8 @@ impl File {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct FileHierarchy {
     pub files: HashMap<String, File>
 }

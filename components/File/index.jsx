@@ -21,7 +21,7 @@ export default function File({ file, enableControls }) {
     relocateFiles: state.relocateFiles
   }));
   
-  const isFolder = file.content_type == "folder";
+  const isFolder = file.contentType == "folder";
 
   const onFileDragStart = (e) => {
     e.dataTransfer.effectAllowed = "move";

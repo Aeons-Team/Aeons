@@ -88,6 +88,6 @@ describe('testing xdrive contract', () => {
 
         expect(state.hierarchy.files[file2.children[0]].name).toBe('file3_renamed')
 
-        expect(state.internal_owner).toBe('internal')
+        expect(state.internalOwner).toBe('internal')
     })
 })

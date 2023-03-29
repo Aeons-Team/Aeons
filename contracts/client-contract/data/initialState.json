@@ -4,11 +4,11 @@
             "root": {
                 "id": "root",
                 "name": "root",
-                "content_type": "folder",
+                "contentType": "folder",
                 "children": []
             }
         }
     },
-    "can_evolve": true,
+    "canEvolve": true,
     "evolve": null
 }

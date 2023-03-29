@@ -18,7 +18,7 @@ export default function Explorer() {
 
   const activeFile = contractState.getFile(activeFileId);
   const activeFileChildren = contractState.getChildren(activeFileId);
-  const isFileView = activeFile.content_type != "folder";
+  const isFileView = activeFile.contentType != "folder";
 
   const onExplorerDrop = async (e) => {
     e.preventDefault();
@@ -57,7 +57,7 @@ export default function Explorer() {
             <div className={style.folders}>
               {activeFileChildren &&
                 activeFileChildren
-                  .filter((x) => x.content_type == "folder")
+                  .filter((x) => x.contentType == "folder")
                   .map((x) => <File key={x.id} file={x} />)}
             </div>
           </div>
@@ -67,7 +67,7 @@ export default function Explorer() {
             <div className={style.files}>
               {activeFileChildren &&
                 activeFileChildren
-                  .filter((x) => x.content_type != "folder")
+                  .filter((x) => x.contentType != "folder")
                   .map((x) => <File key={x.id} file={x} />)}
             </div>
           </div>

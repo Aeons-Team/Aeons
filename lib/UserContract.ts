@@ -6,6 +6,8 @@ import ContractState, { ContractStateData } from './ContractState'
 import BundlrClient from './BundlrClient'
 import initialState from '../contracts/client-contract/data/initialState.json'
 
+let seqNo = 1
+
 interface InsertData {
     id?: string,
     contentType: string,
@@ -22,6 +24,11 @@ export default class UserContract {
     warp: Warp
     provider: ethers.providers.Web3Provider
     client: BundlrClient
+    updateUIAction: Function
+
+    constructor() {
+        this.state = new ContractState()
+    }
 
     setContractSrcId(contractSrcId: string) {
         this.contractSrcId = contractSrcId
@@ -29,7 +36,7 @@ export default class UserContract {
 
     async updateState() {
         const stateData = (await this.instance.readState()).cachedValue.state
-        this.state = new ContractState(stateData)
+        this.state.setData(stateData)
     }
 
     async createContract() {
@@ -99,7 +106,7 @@ export default class UserContract {
                 const contractId = await fetch(fetchUrl)
                     .then((res) => res.json())
                     .then((data) => data.contracts)
-                    .then((contracts) => contracts.find(contract => contract.owner == this.client.address.toLowerCase()).contractId)
+                    .then((contracts) => contracts.find(contract => contract.owner == this.client.address.toLowerCase())?.contractId)
 
                 if (contractId) {
                     this.contractId = contractId
@@ -124,7 +131,7 @@ export default class UserContract {
     }
 
     async checkEvolve() {
-        if (this.contractSrcId != process.env.NEXT_PUBLIC_CONTRACT_SRC_ID && this.state.data.evolve != process.env.NEXT_PUBLIC_CONTRACT_SRC_ID) {
+        if (this.contractSrcId != process.env.NEXT_PUBLIC_CONTRACT_SRC_ID && this.state.getData().evolve != process.env.NEXT_PUBLIC_CONTRACT_SRC_ID) {
             await this.instance.evolve(process.env.NEXT_PUBLIC_CONTRACT_SRC_ID ?? '')
             await this.updateState()
         }
@@ -149,18 +156,75 @@ export default class UserContract {
         await this.checkEvolve()
     }
 
-    async insert(data: InsertData) {
-        await this.instance.writeInteraction({ function: "insert", ...data })
+    localWrite(action: any) {
+        const data = this.state.getData()
+        const files = data.hierarchy.files
+
+        switch (action.function) {
+            case 'insert':
+                const id = action.id ?? `temp_id_${++seqNo}`
+
+                files[id] = {
+                    id,
+                    contentType: action.contentType,
+                    size: action.size,
+                    parentId: action.parentId,
+                    name: action.name,
+                    children: action.contentType == 'folder' ? [] : undefined,
+                    pending: true
+                }
+
+                if (action.parentId) {
+                    files[action.parentId].children?.push(id)
+                }
+                
+                break
+
+            case 'rename':
+                files[action.id].name = action.newName
+                files[action.id].pending = true
+                break 
+
+            case 'relocate':
+                const newParent = files[action.newParentId]
+                const oldParent = files[action.oldParentId]
+
+                const in_ids = {}
+                action.ids.forEach(id => {
+                    in_ids[id] = true
+                    files[id].parentId = action.newParentId
+                    files[id].pending = true
+                })
+
+                newParent.children?.push(...action.ids)
+                oldParent.children = oldParent.children?.filter(id => !in_ids[id])
+                break
+        }
+    }
+
+    async updateUI() {
+        if (this.updateUIAction) {
+            this.updateUIAction()
+        }
+    }
+
+    async writeInteraction(action: any) {
+        this.localWrite(action)
+        this.updateUIAction()
+        await this.instance.writeInteraction(action)
         await this.updateState()
+        this.updateUIAction()
+    }
+
+    async insert(data: InsertData) {
+        await this.writeInteraction({ function: 'insert', ...data })
     }
 
     async rename(id: string, newName: string) {
-        await this.instance.writeInteraction({ function: "rename", id, newName })
-        await this.updateState()
+        await this.writeInteraction({ function: 'rename', id, newName })
     }
 
     async relocate(ids: string[], oldParentId: string, newParentId: string) {
-        await this.instance.writeInteraction({ function: "relocate", ids, oldParentId, newParentId })
-        await this.updateState()
+        await this.writeInteraction({ function: 'relocate', ids, oldParentId, newParentId })
     }
 }

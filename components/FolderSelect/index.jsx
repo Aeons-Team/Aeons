@@ -35,7 +35,7 @@ export default function FolderSelect() {
     <div>
       {contractState
         .getChildren(currentFileId)
-        .filter((file) => file.content_type == "folder")
+        .filter((file) => file.contentType == "folder")
         .map((file) => (
           <div
             key={file.id}
@@ -44,7 +44,7 @@ export default function FolderSelect() {
             }`}
             onClick={() => setSelectedFileId(file.id)}
             onDoubleClick={() => {
-              contractState.getChildren(file.id).filter((file) => file.content_type == "folder")
+              contractState.getChildren(file.id).filter((file) => file.contentType == "folder")
                 .length && setCurrentFileId(file.id);
             }}
           >
@@ -53,8 +53,8 @@ export default function FolderSelect() {
         ))}
 
       <Button
-        disabled={currentFile.parent_id == null}
-        onClick={() => setCurrentFileId(currentFile.parent_id ?? "root")}
+        disabled={currentFile.parentId == null}
+        onClick={() => setCurrentFileId(currentFile.parentId ?? "root")}
       >
         back
       </Button>

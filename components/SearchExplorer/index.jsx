@@ -25,7 +25,7 @@ export default function SearchExplorer({ searchList }) {
         <h1 className={style.sectionTitle}>Folders</h1>
         <div className={style.folders}>
           {Object.values(searchItems)
-            .filter((x) => x.content_type == "folder")
+            .filter((x) => x.contentType == "folder")
             .map((x) => (
               <File key={x.id} file={x} />
             ))}
@@ -35,7 +35,7 @@ export default function SearchExplorer({ searchList }) {
         <h1 className={style.sectionTitle}>Files</h1>
         <div className={style.folders}>
           {Object.values(searchItems)
-            .filter((x) => x.content_type != "folder")
+            .filter((x) => x.contentType != "folder")
             .map((x) => (
               <File key={x.id} file={x} />
             ))}

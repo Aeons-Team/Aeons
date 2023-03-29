@@ -1,5 +1,6 @@
 use crate::types::file_hierarchy::FileHierarchy;
 use serde::{ Serialize, Deserialize };
+use schemars::JsonSchema;
 use warp_contracts::js_imports::SmartWeave;
 
 #[derive(Debug, Deserialize)]
@@ -49,7 +50,8 @@ pub enum ContractAction {
     SetInternalOwner(SetInternalOwner)
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct ContractState {
     pub hierarchy: FileHierarchy,
     pub can_evolve: bool,

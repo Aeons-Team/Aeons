@@ -54,6 +54,8 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
         const { client, contract, fetchLoadedBalance } = get()
         await client.initialize(provider);
         await contract.initialize(provider, client);
+
+        contract.updateUIAction = () => set({ contractState: contract.state.copy() })
         
         set({ 
             initialized: true,
@@ -105,7 +107,6 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
                         parentId: first.parentId,
                         size: first.file.size
                     })
-                    .then(() => set({ contractState: contract.state }))
                 }
             }
         )
@@ -138,22 +139,16 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
             parentId,
             contentType: "folder"
         })
-
-        set({ contractState: contract.state })
     },
 
     renameFile: async (id: string, newName: string) => {
         const { contract } = get()
         await contract.rename(id, newName)
-
-        set({ contractState: contract.state })
     },
     
     relocateFiles: async (ids: string[], oldParentId: string, newParentId: string) => {
         const { contract } = get()
         await contract.relocate(ids, oldParentId, newParentId)
-
-        set({ contractState: contract.state })
     },
 
     pauseOrResume: () => {

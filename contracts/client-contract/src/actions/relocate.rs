@@ -19,12 +19,13 @@ pub fn relocate(mut state: ContractState, input: Relocate) -> WriteResult<Contra
     let to_remove: HashSet<&String> = HashSet::from_iter(input.ids.iter().clone());
     
     let old_parent = old_parent.unwrap();
-
-    if old_parent.children.is_none() {
-        return WriteResult::ContractError(())
-    }
+    let old_parent_initial_len = old_parent.children.as_ref().unwrap().len();
 
     old_parent.children = Some(old_parent.children.as_mut().unwrap().iter().cloned().filter(|id| !to_remove.contains(id)).collect());
+
+    if old_parent_initial_len - input.ids.len() != old_parent.children.as_ref().unwrap().len() {
+        return WriteResult::ContractError(())
+    }
 
     let new_parent = state.hierarchy.get_file_mut(&new_parent_id);
 

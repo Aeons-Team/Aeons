@@ -94,18 +94,22 @@ export default class UserContract {
             const edges = res.data.transactions.edges
 
             if (edges.length == 0) {
-                const contractId = await fetch(`https://gateway.warp.cc/gateway/contracts-by-source?id=${process.env.NEXT_PUBLIC_CONTRACT_SRC_ID}&limit=${5000}&sort=desc`)
-                .then((res) => res.json())
-                .then((data) => data.contracts)
-                .then((contracts) => contracts.find(contract => contract.owner == this.client.address.toLowerCase()).contractId)
+                const fetchUrl = `${process.env.NEXT_PUBLIC_WARP_GATEWAY_URL}/contracts-by-source?id=${process.env.NEXT_PUBLIC_CONTRACT_SRC_ID}&limit=${process.env.NEXT_PUBLIC_WARP_GATEWAY_FETCH_LIMIT}&sort=desc`
+                
+                const contractId = await fetch(fetchUrl)
+                    .then((res) => res.json())
+                    .then((data) => data.contracts)
+                    .then((contracts) => contracts.find(contract => contract.owner == this.client.address.toLowerCase()).contractId)
 
-                    if (contractId) {
-                        this.contractId = contractId
-                    }
-                    else {
-                        await this.createContract()
-                    }
+                if (contractId) {
+                    this.contractId = contractId
+                    this.contractSrcId = process.env.NEXT_PUBLIC_CONTRACT_SRC_ID ?? ''
                 }
+
+                else {
+                    await this.createContract()
+                }
+            }
 
             else {
                 const node = edges[0].node

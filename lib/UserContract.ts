@@ -94,8 +94,18 @@ export default class UserContract {
             const edges = res.data.transactions.edges
 
             if (edges.length == 0) {
-                await this.createContract()
-            }
+                const contractId = await fetch(`https://gateway.warp.cc/gateway/contracts-by-source?id=${process.env.NEXT_PUBLIC_CONTRACT_SRC_ID}&limit=${5000}&sort=desc`)
+                .then((res) => res.json())
+                .then((data) => data.contracts)
+                .then((contracts) => contracts.find(contract => contract.owner == this.client.address.toLowerCase()).contractId)
+
+                    if (contractId) {
+                        this.contractId = contractId
+                    }
+                    else {
+                        await this.createContract()
+                    }
+                }
 
             else {
                 const node = edges[0].node
@@ -106,6 +116,7 @@ export default class UserContract {
             localStorage.setItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractId`, this.contractId)
             localStorage.setItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractSrcId`, this.contractSrcId)
         }
+
     }
 
     async checkEvolve() {

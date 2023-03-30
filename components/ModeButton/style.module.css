@@ -1,0 +1,14 @@
+.modeButton {
+  display: grid;
+  float: right;
+  width: 5vw;
+  height: 5vh;
+}
+
+#dark .body {
+  background-color: var(--color-primary);
+}
+
+#light .body {
+  background-color: var(--color-secondary);
+}

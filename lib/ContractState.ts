@@ -52,6 +52,20 @@ export default class ContractState {
         return this.data.hierarchy.files[id]
     }
 
+    searchFiles(searchVal: string): ContractFile[] {
+        const files = this.getData().hierarchy.files
+        const searchList: ContractFile[] = []
+
+        for (const file of Object.values(files)) {
+            if (file.name == 'root') continue
+
+            file.name.toLowerCase().includes(searchVal.trim().toLowerCase()) &&
+                searchList.push(file)
+        }
+
+        return searchList
+    }
+
     getChildren(id: string): ContractFile[] | undefined {
         return this.getFile(id).children?.map(childId => this.getFile(childId))
     }

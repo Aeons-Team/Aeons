@@ -6,7 +6,7 @@ import SearchExplorer from "../SearchExplorer";
 import style from "./style.module.css";
 import HomeButton from "../HomeButton";
 
-export default function Drive({ searchList }) {
+export default function Drive({ searching }) {
   return (
     <div className={style.drive}>
       <ContextMenu />
@@ -16,7 +16,7 @@ export default function Drive({ searchList }) {
           <HomeButton />
           <Search />
         </div>
-        {searchList ? <SearchExplorer searchList={searchList} /> : <Explorer />}
+        {searching ? <SearchExplorer /> : <Explorer />}
       </div>
     </div>
   );

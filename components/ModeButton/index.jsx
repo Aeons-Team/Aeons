@@ -1,22 +1,34 @@
+import { useState } from "react";
+import { useEffect } from "react";
+import Button from "../Button";
 import style from "./style.module.css";
-import { createContext , useState } from "react";
-import ReactSwitch from "react-switch";
-
-const ThemeContext = createContext(null);
 
 export default function ModeButton() {
+
+  const [mode, setMode] = useState("light");
+  const toggleMode = () => {
+    if(mode === "dark"){
+      setMode("light");
+    }
+    else {
+      setMode("dark"); 
+    }
+  };
+
+  useEffect(() => {
+    document.body.className = mode;
+  }, [mode]);
   
-  const [mode , setMode] = useState();
-
-  const toggleTheme = () => {
-     setMode((curr) => (curr === "dark" ? "dark" : "light"))
-   };
-
   return (
-    <ThemeContext.Provider value = {{ mode, toggleTheme}}>
-      <div id="dark">
-        <ReactSwitch />
-      </div>
-    </ThemeContext.Provider>
+    <div className={style.modeButton}>
+      <Button
+        onClick={() => {
+          toggleMode()
+        }}
+      >
+        Mode
+      </Button>
+    </div>
   );
 }
+

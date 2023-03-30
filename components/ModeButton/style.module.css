@@ -5,10 +5,10 @@
   height: 5vh;
 }
 
-#dark .body {
+.dark {
   background-color: var(--color-primary);
 }
 
-#light .body {
+.light {
   background-color: var(--color-secondary);
 }

@@ -43,6 +43,14 @@ body {
   background-color: var(--color-background);
 }
 
+.dark {
+  background-color: var(--color-primary);
+}
+
+.light {
+  background-color: var(--color-secondary);
+}
+
 a {
   text-decoration: none;
 }

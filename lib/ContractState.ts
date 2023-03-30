@@ -70,6 +70,20 @@ export default class ContractState {
         return this.getFile(id).children?.map(childId => this.getFile(childId))
     }
 
+    getAncestors(id: string): ContractFile[] {
+        const ancestors: ContractFile[] = []
+        let cid: string | undefined = id
+
+        while (cid) {
+            const file = this.data?.hierarchy.files[cid]
+            ancestors.push(file)
+         
+            cid = file.parentId
+        }
+
+        return ancestors.reverse()
+    }
+
     isRelocatable(fileId: string, destinationId: string): boolean {
         if (fileId == destinationId) return false
 

@@ -1,7 +1,23 @@
 .modeButton {
-  display: grid;
-  float: right;
-  width: 5vw;
-  height: 5vh;
+  display: flex;
+  align-items: center;
   color: var(--color-secondary);
+  background-color: var(--color-active-high);
+  width: 5rem;
+  height: 2rem;
+  border-radius: 8rem;
+  position: relative;
+}
+
+.modeButton svg:nth-child(1) {
+  width: 1.15rem;
+  height: 1.15rem;
+  position: absolute;
+}
+
+.modeButton svg:nth-child(2) {
+  width: 1.25rem;
+  height: 1.25rem;
+  position: absolute;
+  right: 0;
 }

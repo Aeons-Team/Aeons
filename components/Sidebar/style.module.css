@@ -1,0 +1,18 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar svg {
+    fill: none;
+    stroke: var(--color-secondary);
+    width: 2rem;
+}
+
+.sidebar svg.invert {
+    fill: var(--color-secondary);
+    stroke: none;
+}

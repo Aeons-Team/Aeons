@@ -1,7 +1,28 @@
 .search {
-  display: grid;
-  width: 25vw;
-  height: 5vh;
-  float: left;
-  gap: 1rem;
+    position: relative;
 }
+
+.searchInner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.searchInner svg {
+    fill: none;
+    stroke: var(--color-secondary);
+    stroke-width: 2px;
+}
+
+.searchInner input {
+    border: none;
+    outline: none;
+}
+
+.list {
+    font-size: 0.85rem;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+}  

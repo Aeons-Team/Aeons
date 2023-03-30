@@ -10,30 +10,12 @@ export default function FileInfo({ file }) {
         contentType={file.contentType} />
         
       <div className={style.fileDetails}>
-        <span className={style.fileDetail}>{file.name}</span>
+        <span className={style.fileDetail}>
+          {file.name}
+        </span>
 
-        {file.pending && (
-          <span
-            className={style.fileDetail}
-            style={{
-              gridRow: 2,
-              gridColumn: 1,
-            }}
-          >
-            <span className={style.pending} />
-            pending
-          </span>
-        )}
-
-        <span
-          className={style.fileDetail}
-          style={{
-            gridRow: 2,
-            gridColumn: 2,
-            textAlign: "right",
-          }}
-        >
-          {file.size && Utility.formatSize(file.size)}
+        <span className={style.fileDetail}>
+          {file.size && Utility.formatBytes(file.size)}
         </span>
       </div>
     </>

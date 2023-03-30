@@ -5,8 +5,3 @@
   flex-direction: column;
   gap: 1rem;
 }
-
-.uploaderPreview {
-  max-width: 20rem;
-  max-height: 200px;
-}

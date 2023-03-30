@@ -1,0 +1,15 @@
+.folderInfo {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    overflow: hidden;
+    white-space: pre;
+    text-overflow: ellipsis;
+}
+
+.folderInfo svg {
+    fill: none;
+    stroke: var(--color-secondary);
+    height: 1.25rem;
+    width: 1.25rem;
+}

@@ -1,7 +1,6 @@
 .contextMenu {
   position: absolute;
   background-color: var(--color-primary);
-  color: var(--color-secondary);
   font-size: 0.8rem;
   box-shadow: 0 0 1px 0 #666;
   z-index: 5;
@@ -14,6 +13,16 @@
   align-items: center;
   padding-left: 2rem;
 }
+
+.contextMenuButton svg {
+  fill: none;
+  stroke: var(--color-secondary);
+}
+
+.contextMenuButton svg.invert {
+  fill: var(--color-secondary);
+  stroke: none;
+} 
 
 .contextMenuButton:hover {
   cursor: pointer;

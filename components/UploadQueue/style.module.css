@@ -1,0 +1,15 @@
+.uploadQueue {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+}
+
+.queuePreview {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.currentUpload {
+    display: flex;
+}

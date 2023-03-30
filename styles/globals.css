@@ -1,9 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 :root {
-  --color-background: #0c0c0c;
-  --color-primary: #000000;
-  --color-secondary: #ffffff;
+  --color-background: #ffffff;
+  --color-primary: #ffffff;
+  --color-secondary: #000000;
   --color-selected: #393252;
   --color-active-low: #121218;
   --color-active-high: #c3eeff;
@@ -16,6 +16,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Inter";
+  color: var(--color-secondary);
 }
 
 *::-webkit-scrollbar {

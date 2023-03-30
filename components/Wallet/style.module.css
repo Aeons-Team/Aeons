@@ -1,16 +1,31 @@
 .wallet {
+  
+}
+
+.avatar {
+  height: 3rem;
+  width: 3rem;
+  background-color: red;
+  border-radius: 100%;
+}
+
+.walletInner {
+  position: absolute;
+  right: 0;
   background-color: var(--color-primary);
-  color: var(--color-secondary);
-  display: flex;
-  align-items: center;
-  padding: 2rem;
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
   font-size: 0.75rem;
+}
+
+.walletInner div:nth-child(5) {
+  grid-column: 1 / 3;
 }
 
 .walletSegment {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  width: 100%;
 }

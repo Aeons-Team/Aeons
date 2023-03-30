@@ -1,0 +1,8 @@
+.topbar {
+    display: flex;
+    align-items: center;
+}
+
+.topbar div:nth-child(3) {
+    margin-left: auto;
+}

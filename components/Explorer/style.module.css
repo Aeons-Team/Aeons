@@ -1,17 +1,16 @@
 .explorer {
   display: flex;
   flex-direction: column;
-  height: 100vh;
 }
 
 .section {
-  margin-bottom: 2.5rem;
+
 }
 
 .sectionTitle {
   font-size: 0.85rem;
   font-weight: 400;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   color: var(--color-secondary);
 }
 

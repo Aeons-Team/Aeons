@@ -13,6 +13,7 @@ interface InsertData {
     contentType: string,
     size?: number,
     parentId: string,
+    createdAt?: number,
     name: string
 }
 
@@ -171,6 +172,7 @@ export default class UserContract {
                     parentId: action.parentId,
                     name: action.name,
                     children: action.contentType == 'folder' ? [] : undefined,
+                    createdAt: action.createdAt,
                     pending: true
                 }
 

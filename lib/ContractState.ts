@@ -5,6 +5,7 @@ export interface ContractFile {
     parentId?: string,
     name: string,
     children?: string[],
+    createdAt?: number,
     pending: boolean
 }
 

@@ -18,6 +18,7 @@ pub fn insert(mut state: ContractState, input: Insert) -> WriteResult<ContractSt
         parent_id: input.parent_id.clone(),
         size: input.size,
         children: if input.content_type.eq("folder") { Some(Vec::new()) } else { None },
+        created_at: input.created_at,
         content_type: input.content_type,
     });
 

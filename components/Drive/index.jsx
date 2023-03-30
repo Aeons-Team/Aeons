@@ -1,13 +1,11 @@
 import Wallet from "../Wallet";
-import Explorer from "../Explorer";
 import ContextMenu from "../ContextMenu";
 import Search from "../Search";
-import SearchExplorer from "../SearchExplorer";
 import style from "./style.module.css";
 import HomeButton from "../HomeButton";
 import ModeButton from "../ModeButton";
 
-export default function Drive({ searching }) {
+export default function Drive({ children }) {
   return (
     <div className={style.drive}>
       <ContextMenu />
@@ -18,7 +16,7 @@ export default function Drive({ searching }) {
           <ModeButton />
           <Search />
         </div>
-        {searching ? <SearchExplorer /> : <Explorer />}
+          {children}
       </div>
     </div>
   );

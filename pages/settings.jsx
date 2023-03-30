@@ -1,7 +1,7 @@
 import Settings from '../components/Settings'
 
-function SettingsPage() {
+function Page() {
     return <Settings />
 }
 
-export default SettingsPage
+export default Page

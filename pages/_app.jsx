@@ -1,11 +1,16 @@
 import { useEffect } from "react";
 import { ethers } from "ethers";
-import { useDriveStore } from "../stores/DriveStore";
+import { useDriveState } from "../stores/DriveStore";
 import { useAppStore } from "../stores/AppStore";
+import Drive from "../components/Drive";
 import "../styles/globals.css";
 
-function MyApp({ Component, pageProps }) {
-  const initialize = useDriveStore((state) => state.initialize);
+function App({ Component, pageProps }) {
+  const { initialize, initialized } = useDriveState((state) => ({
+    initialize: state.initialize,
+    initialized: state.initialized
+  }));
+
   const cursorPosition = useAppStore((state) => state.cursorPosition);
 
   useEffect(() => {
@@ -13,7 +18,7 @@ function MyApp({ Component, pageProps }) {
       await window.ethereum.request({ method: "eth_requestAccounts" });
       
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      initialize(provider);
+      await initialize(provider);
     }
 
     init();
@@ -32,7 +37,13 @@ function MyApp({ Component, pageProps }) {
     };
   }, []);
 
-  return <Component {...pageProps} />;
+  if (initialized) {
+    return (
+      <Drive>
+        <Component {...pageProps} />
+      </Drive>
+    )
+  }
 }
 
-export default MyApp;
+export default App;

@@ -1,14 +1,17 @@
-import { useDriveStore } from "../../../stores/DriveStore";
-import Drive from "../../../components/Drive";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useAppState } from "../../../stores/AppStore";
+import SearchExplorer from "../../../components/SearchExplorer";
 
-function SearchPage() {
-  const initialized = useDriveStore((state) => state.initialized);
-  
-  if (initialized) {
-    return (
-      <Drive searching />
-    );
-  }
+function Page() {
+  const { id } = useRouter().query
+  const [ clearSelection ] = useAppState((state) => [state.clearSelection]);
+
+  useEffect(() => {
+    clearSelection();
+  }, [id])
+
+  return <SearchExplorer />
 }
 
-export default SearchPage;
+export default Page;

@@ -5,6 +5,7 @@ import Search from "../Search";
 import SearchExplorer from "../SearchExplorer";
 import style from "./style.module.css";
 import HomeButton from "../HomeButton";
+import ModeButton from "../ModeButton";
 
 export default function Drive({ searchList }) {
   return (
@@ -14,6 +15,7 @@ export default function Drive({ searchList }) {
       <div className={style.driveGrid}>
         <div>
           <HomeButton />
+          <ModeButton />
           <Search />
         </div>
         {searchList ? <SearchExplorer searchList={searchList} /> : <Explorer />}

@@ -7,6 +7,7 @@
 
 .dark {
   background-color: var(--color-primary);
+  color: var(--color-secondary)
 }
 
 .light {

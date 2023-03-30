@@ -5,7 +5,7 @@ import style from "./style.module.css";
 
 export default function ModeButton() {
 
-  const [mode, setMode] = useState("light");
+  const [mode, setMode] = useState("dark");
   const toggleMode = () => {
     if(mode === "dark"){
       setMode("light");

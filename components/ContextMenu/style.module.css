@@ -14,16 +14,6 @@
   padding-left: 2rem;
 }
 
-.contextMenuButton svg {
-  fill: none;
-  stroke: var(--color-secondary);
-}
-
-.contextMenuButton svg.invert {
-  fill: var(--color-secondary);
-  stroke: none;
-} 
-
 .contextMenuButton:hover {
   cursor: pointer;
   background-color: var(--color-active-low);

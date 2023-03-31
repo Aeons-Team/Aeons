@@ -3,9 +3,10 @@ import { useDriveState } from '../../stores/DriveStore'
 import style from './style.module.css';
 
 export default function Wallet() {
-  const { client, loadedBalance } = useDriveState(state => ({
-    client: state.client, 
-    loadedBalance: state.loadedBalance
+  const { client, loadedBalance, walletBalance } = useDriveState(state => ({
+    client: state.client,
+    loadedBalance: state.loadedBalance,
+    walletBalance: state.walletBalance
   }));
 
   return (
@@ -30,7 +31,7 @@ export default function Wallet() {
 
         <div className={style.walletSegment}>
           <span>Balance</span>
-          {Number(client.walletBalance).toFixed(6)}
+          {Number(walletBalance).toFixed(6)}
         </div>
 
         <Funder />

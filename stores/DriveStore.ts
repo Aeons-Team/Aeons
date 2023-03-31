@@ -18,12 +18,14 @@ interface DriveStoreData {
     contract: UserContract,
     contractState: ContractState | null,
     loadedBalance: string | null,
+    walletBalance: string | null,
     uploading: boolean,
     paused: boolean,
     uploadQueue: UploadQueueItem[],
     currentUpload: File | null,
     currentUploader: ChunkingUploader | null
     bytesUploaded: number | null,
+    fetchWalletBalance: Function,
     fetchLoadedBalance: Function,
     uploadNext: Function,
     initialize: (provider: ethers.providers.Web3Provider) => Promise<void>,
@@ -39,6 +41,7 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
     client: new BundlrClient(),
     contract: new UserContract(),
     contractState: null,
+    walletBalance: null,
     loadedBalance: null,
     uploading: false,
     paused: false,
@@ -47,13 +50,19 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
     currentUploader: null,
     bytesUploaded: null,
     
+    
+    fetchWalletBalance: async () => {
+        const walletBalance = await get().client.getWalletBalance();
+        set({ walletBalance })
+    },
+
     fetchLoadedBalance: async () => {
         const loadedBalance = await get().client.getLoadedBalance();
         set({ loadedBalance })
     },
 
     initialize: async (provider: ethers.providers.Web3Provider) => {
-        const { client, contract, fetchLoadedBalance } = get()
+        const { client, contract, fetchWalletBalance, fetchLoadedBalance } = get()
         await client.initialize(provider);
         await contract.initialize(provider, client);
 
@@ -64,6 +73,7 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
             contractState: contract.state
         })
 
+        fetchWalletBalance();
         fetchLoadedBalance();
     },
     

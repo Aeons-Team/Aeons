@@ -6,10 +6,3 @@
     white-space: pre;
     text-overflow: ellipsis;
 }
-
-.folderInfo svg {
-    fill: none;
-    stroke: var(--color-secondary);
-    height: 1.25rem;
-    width: 1.25rem;
-}

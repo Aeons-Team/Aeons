@@ -3,6 +3,7 @@
 :root {
   --color-background: #ffffff;
   --color-primary: #ffffff;
+  --color-primary-darker: #f0f0f0;
   --color-secondary: #000000;
   --color-selected: #393252;
   --color-active-low: #121218;

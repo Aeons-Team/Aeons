@@ -7,8 +7,11 @@ export default function Topbar() {
     return (
         <div className={style.topbar}>
             <Search />
-            <ModeButton />
-            <Wallet />
+
+            <div className={style.topbarRight}>
+                <ModeButton />
+                <Wallet />
+            </div>
         </div>
     )
 }

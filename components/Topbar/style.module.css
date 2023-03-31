@@ -3,6 +3,8 @@
     align-items: center;
 }
 
-.topbar div:nth-child(3) {
+.topbarRight {
+    display: flex;
+    align-items: center;
     margin-left: auto;
 }

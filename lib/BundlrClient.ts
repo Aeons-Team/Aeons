@@ -40,11 +40,6 @@ export default class BundlrClient {
 
     await this.instance.ready();
 
-    const atomicWalletBalance = await this.provider.getBalance(this.address);
-    this.walletBalance = this.instance.utils
-      .unitConverter(atomicWalletBalance.toBigInt())
-      .valueOf();
-
     const publicKey = this.instance.getSigner().publicKey;
     const ownerHash = await Arweave.crypto.hash(publicKey);
     this.owner = Arweave.utils.bufferTob64Url(ownerHash);
@@ -53,6 +48,16 @@ export default class BundlrClient {
       uri: `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/graphql`,
       cache: new InMemoryCache(),
     });
+  }
+
+  async getWalletBalance() {
+    const atomicWalletBalance = await this.provider.getBalance(this.address);
+    
+    this.walletBalance = this.instance.utils
+      .unitConverter(atomicWalletBalance.toBigInt())
+      .valueOf();
+
+    return this.walletBalance
   }
 
   async upload(data: string | Buffer | internal.Readable, opts: CreateAndUploadOptions) {

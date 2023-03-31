@@ -28,6 +28,7 @@ export default function Rename() {
       <input
         type="text"
         onInput={(e) => {setName(e.target.value)}}
+        onKeyDown={(e) => { e.key === "Enter" && onRename()}}
       />
       <Button onClick={onRename}>
         Rename

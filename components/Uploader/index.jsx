@@ -1,12 +1,14 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useDriveStore } from "../../stores/DriveStore";
+import { useAppState } from "../../stores/AppStore";
 import FilePreview from "../FilePreview";
 import Button from "../Button";
 import style from "./style.module.css";
 
 export default function Uploader() {
   const { id: activeFileId } = useRouter().query;
+  const { activateContextMenu } = useAppState((state) => ({ activateContextMenu: state.activateContextMenu }));
   const [
     uploadFiles,
     uploading,
@@ -32,11 +34,13 @@ export default function Uploader() {
         multiple
         onChange={(e) => {
           setFiles(e.target.files);
-        }}
+        }
+      }
       />
 
       <Button
         onClick={() => {
+          activateContextMenu(false);
           uploadFiles(files, activeFileId);
         }}
       >

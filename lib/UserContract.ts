@@ -5,6 +5,7 @@ import { gql } from '@apollo/client'
 import ContractState, { ContractStateData } from './ContractState'
 import BundlrClient from './BundlrClient'
 import initialState from '../contracts/client-contract/data/initialState.json'
+import { Wallet } from 'warp-contracts/lib/types/contract/testing/Testing'
 
 let seqNo = 1
 
@@ -26,6 +27,7 @@ export default class UserContract {
     provider: ethers.providers.Web3Provider
     client: BundlrClient
     updateUIAction: Function
+    internalWallet : Wallet
 
     constructor() {
         this.state = new ContractState()
@@ -144,7 +146,7 @@ export default class UserContract {
 
         this.warp = WarpFactory.forMainnet()
 
-        // LoggerFactory.INST.logLevel('none')
+        LoggerFactory.INST.logLevel('none')
         
         await this.initializeContract()
 
@@ -152,9 +154,12 @@ export default class UserContract {
 
         this.instance = this.warp.contract<ContractStateData>(this.contractId)
         this.instance.connect({ signer: evmSignature, type: 'ethereum' })
-
         await this.updateState()
+        
+        const internalWalletJSON = localStorage.getItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-InternalOwner`)
+        internalWalletJSON ? this.internalWallet = JSON.parse(internalWalletJSON) : await this.createInternalOwner()
         await this.checkEvolve()
+
     }
 
     localWrite(action: any) {
@@ -210,30 +215,32 @@ export default class UserContract {
         }
     }
 
-    async writeInteraction(action: any) {
+    async writeInteraction(action: any, shouldUpdateUI: boolean) {
         this.localWrite(action)
-        this.updateUIAction()
+        shouldUpdateUI && this.updateUIAction()
         await this.instance.writeInteraction(action)
         await this.updateState()
-        this.updateUIAction()
+        shouldUpdateUI && this.updateUIAction()
     }
 
     async insert(data: InsertData) {
-        await this.writeInteraction({ function: 'insert', ...data })
+        this.instance.connect(this.internalWallet.jwk)
+        await this.writeInteraction({ function: 'insert', ...data },true)
     }
 
     async rename(id: string, newName: string) {
-        await this.writeInteraction({ function: 'rename', id, newName })
+        this.instance.connect(this.internalWallet.jwk)
+        await this.writeInteraction({ function: 'rename', id, newName },true)
     }
 
     async relocate(ids: string[], oldParentId: string, newParentId: string) {
-        await this.writeInteraction({ function: 'relocate', ids, oldParentId, newParentId })
+        this.instance.connect(this.internalWallet.jwk)
+        await this.writeInteraction({ function: 'relocate', ids, oldParentId, newParentId },true)
     }
 
     async createInternalOwner() {
-        const internalOwner = await this.warp.generateWallet()
-        await this.writeInteraction({ function: 'setInternalOwner', value : internalOwner.address })
-        console.log( this.state.data?.internalOwner)
-        return internalOwner;
+        this.internalWallet = await this.warp.generateWallet()
+        await this.writeInteraction({ function: 'setInternalOwner', value : this.internalWallet.address },false)
+        localStorage.setItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-InternalOwner`, JSON.stringify(this.internalWallet))
     }
 }

@@ -21,6 +21,8 @@ export default function Funder() {
       <input
         type="number"
         onInput={(e) => {setAmount(e.target.value)}}
+        onKeyDown={(e) => { e.key === "Enter" && onFund()}}
+
       />
       <Button onClick={onFund}>
         Fund

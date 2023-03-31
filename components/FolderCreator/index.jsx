@@ -23,6 +23,8 @@ export default function FolderCreator() {
       <input
         type="text"
         onInput={(e) => {setName(e.target.value)}}
+        onKeyDown={(e) => { e.key === "Enter" && onFolderCreate()}}
+
       />
       <Button onClick={onFolderCreate}>
         Create Folder

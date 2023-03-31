@@ -75,6 +75,9 @@ export default class ContractState {
         if (fileId == destinationId) return false
 
         const file = this.getFile(fileId)
+        const destination = this.getFile(destinationId)
+
+        if(destination.contentType != 'folder') return false 
         return destinationId != file.parentId
     }
 }

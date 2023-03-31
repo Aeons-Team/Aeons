@@ -56,7 +56,7 @@ describe('testing xdrive contract', () => {
         })
 
         await contract.writeInteraction({
-            function: 'insert', id: 'id2', name: 'file2', contentType: 'folder'
+            function: 'insert', id: 'id2', name: 'file2', contentType: 'folder', createdAt: new Date().getTime()
         })
         
         await contract.writeInteraction({
@@ -85,6 +85,8 @@ describe('testing xdrive contract', () => {
         expect(state.hierarchy.files['id2'].children.length).toBe(1)
         
         expect(file2.children[0]).toBe('id3')
+
+        expect(file2.createdAt).not.toBeUndefined()
 
         expect(state.hierarchy.files[file2.children[0]].name).toBe('file3_renamed')
 

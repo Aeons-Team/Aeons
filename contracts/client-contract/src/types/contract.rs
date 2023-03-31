@@ -10,7 +10,8 @@ pub struct Insert {
     pub name: String,
     pub parent_id: Option<String>,
     pub content_type: String,
-    pub size: Option<u64>,
+    pub created_at: Option<u64>,
+    pub size: Option<u64>
 }
 
 #[derive(Debug, Deserialize)]

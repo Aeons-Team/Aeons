@@ -5,6 +5,7 @@ export interface ContractFile {
     parentId?: string,
     name: string,
     children?: string[],
+    createdAt?: number,
     pending: boolean
 }
 
@@ -50,6 +51,20 @@ export default class ContractState {
         if (!this.data) throw new Error()
 
         return this.data.hierarchy.files[id]
+    }
+
+    searchFiles(searchVal: string): ContractFile[] {
+        const files = this.getData().hierarchy.files
+        const searchList: ContractFile[] = []
+
+        for (const file of Object.values(files)) {
+            if (file.name == 'root') continue
+
+            file.name.toLowerCase().includes(searchVal.trim().toLowerCase()) &&
+                searchList.push(file)
+        }
+
+        return searchList
     }
 
     getChildren(id: string): ContractFile[] | undefined {

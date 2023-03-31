@@ -10,6 +10,7 @@ pub struct File {
     pub parent_id: Option<String>,
     pub content_type: String,
     pub size: Option<u64>,
+    pub created_at: Option<u64>,
     pub children: Option<Vec<String>>
 }
 
@@ -36,6 +37,7 @@ impl FileHierarchy {
             name: "root".to_string(),
             parent_id: None,
             content_type: "folder".to_string(),
+            created_at: None,
             size: None,
             children: Some(Vec::new())
         });

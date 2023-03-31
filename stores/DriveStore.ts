@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { shallow } from "zustand/shallow";
+import { ethers } from "ethers";
 import fileReaderStream from "filereader-stream";
 import { ChunkingUploader } from "@bundlr-network/client/build/common/chunkingUploader";
 import BundlrClient from "../lib/BundlrClient";
@@ -25,6 +26,7 @@ interface DriveStoreData {
     bytesUploaded: number | null,
     fetchLoadedBalance: Function,
     uploadNext: Function,
+    initialize: (provider: ethers.providers.Web3Provider) => Promise<void>,
     uploadFiles: (files: File[], parentId: string) => void,
     createFolder: (name: string, parentId: string) => Promise<void>,
     renameFile: (id: string, newName: string) => Promise<void>,
@@ -50,7 +52,7 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
         set({ loadedBalance })
     },
 
-    initialize: async (provider) => {
+    initialize: async (provider: ethers.providers.Web3Provider) => {
         const { client, contract, fetchLoadedBalance } = get()
         await client.initialize(provider);
         await contract.initialize(provider, client);
@@ -105,7 +107,8 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
                         contentType: first.file.type,
                         name: first.file.name,
                         parentId: first.parentId,
-                        size: first.file.size
+                        size: first.file.size,
+                        createdAt: new Date().getTime()
                     })
                 }
             }
@@ -137,7 +140,8 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
         await contract.insert({
             name,
             parentId,
-            contentType: "folder"
+            contentType: "folder",
+            createdAt: new Date().getTime()
         })
     },
 

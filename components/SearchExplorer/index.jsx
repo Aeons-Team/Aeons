@@ -1,18 +1,17 @@
+import { useRouter } from "next/router";
 import { useAppStore } from "../../stores/AppStore";
 import { useDriveStore } from "../../stores/DriveStore";
 import File from "../File";
 import style from "./style.module.css";
 
-export default function SearchExplorer({ searchList }) {
+export default function SearchExplorer() {
+  const { search } = useRouter().query
   const clearSelection = useAppStore((state) => state.clearSelection);
   const contractState = useDriveStore((state) => state.contractState);
 
-  let searchItems = {};
-  searchList.map((x) => {
-    searchItems[x] = contractState.getFile(x);
-  });
+  const searchItems = contractState.searchFiles(search)
 
-  if (searchList == "NoResults")
+  if (searchItems.length == 0)
     return (
       <div className={style.sectionTitle}>
         <h1>No Results Found</h1>
@@ -24,7 +23,7 @@ export default function SearchExplorer({ searchList }) {
       <div className={style.section}>
         <h1 className={style.sectionTitle}>Folders</h1>
         <div className={style.folders}>
-          {Object.values(searchItems)
+          {searchItems
             .filter((x) => x.contentType == "folder")
             .map((x) => (
               <File key={x.id} file={x} />
@@ -34,7 +33,7 @@ export default function SearchExplorer({ searchList }) {
       <div className={style.section}>
         <h1 className={style.sectionTitle}>Files</h1>
         <div className={style.folders}>
-          {Object.values(searchItems)
+          {searchItems
             .filter((x) => x.contentType != "folder")
             .map((x) => (
               <File key={x.id} file={x} />

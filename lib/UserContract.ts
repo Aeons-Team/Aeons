@@ -143,7 +143,7 @@ export default class UserContract {
 
         this.warp = WarpFactory.forMainnet()
 
-        LoggerFactory.INST.logLevel('none')
+        // LoggerFactory.INST.logLevel('none')
         
         await this.initializeContract()
 
@@ -226,5 +226,12 @@ export default class UserContract {
 
     async relocate(ids: string[], oldParentId: string, newParentId: string) {
         await this.writeInteraction({ function: 'relocate', ids, oldParentId, newParentId })
+    }
+
+    async createInternalOwner() {
+        const internalOwner = await this.warp.generateWallet()
+        await this.writeInteraction({ function: 'setInternalOwner', value : internalOwner.address })
+        console.log( this.state.data?.internalOwner)
+        return internalOwner;
     }
 }

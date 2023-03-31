@@ -5,6 +5,7 @@ export interface ContractFile {
     parentId?: string,
     name: string,
     children?: string[],
+    createdAt?: number,
     pending: boolean
 }
 
@@ -88,6 +89,9 @@ export default class ContractState {
         if (fileId == destinationId) return false
 
         const file = this.getFile(fileId)
+        const destination = this.getFile(destinationId)
+
+        if(destination.contentType != 'folder') return false 
         return destinationId != file.parentId
     }
 }

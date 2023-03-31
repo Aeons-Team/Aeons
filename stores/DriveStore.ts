@@ -117,7 +117,8 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
                         contentType: first.file.type,
                         name: first.file.name,
                         parentId: first.parentId,
-                        size: first.file.size
+                        size: first.file.size,
+                        createdAt: new Date().getTime()
                     })
                 }
             }
@@ -149,7 +150,8 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
         await contract.insert({
             name,
             parentId,
-            contentType: "folder"
+            contentType: "folder",
+            createdAt: new Date().getTime()
         })
     },
 

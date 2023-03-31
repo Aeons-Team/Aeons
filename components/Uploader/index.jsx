@@ -17,11 +17,13 @@ export default function Uploader() {
         multiple
         onChange={(e) => {
           setFiles(e.target.files);
-        }}
+        }
+      }
       />
 
       <Button
         onClick={() => {
+          activateContextMenu(false);
           uploadFiles(files, activeFileId);
         }}
       >

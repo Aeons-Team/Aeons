@@ -65,4 +65,8 @@ impl ContractState {
     pub fn is_owner(&self) -> bool {
         self.internal_owner.as_ref().unwrap_or(&self.owner).eq(&SmartWeave::caller())
     }
+
+    pub fn is_direct_owner(&self) -> bool {
+        self.owner.eq(&SmartWeave::caller())
+    }
 }

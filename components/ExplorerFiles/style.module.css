@@ -1,0 +1,22 @@
+.section {
+
+}
+
+.sectionTitle {
+  font-size: 0.85rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  color: var(--color-secondary);
+}
+
+.folders {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(80px, 1fr));
+  gap: 1rem;
+}
+
+.files {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(80px, 1fr));
+  gap: 1rem;
+}

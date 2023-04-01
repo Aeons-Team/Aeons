@@ -5,6 +5,21 @@ import internal from "stream";
 import { ApolloClient, InMemoryCache, NormalizedCacheObject, OperationVariables, QueryOptions } from "@apollo/client";
 import { CreateAndUploadOptions } from "@bundlr-network/client/build/common/types";
 
+const networks = {
+  'homestead': {
+    name: 'Ethereum',
+    currency: 'ETH'
+  },
+  'arbitrum': {
+    name: 'Aribtrum One',
+    currency: 'ETH'
+  },
+  'matic': {
+    name: 'Polygon',
+    currency: 'MTC'
+  }
+}
+
 export default class BundlrClient {
   provider: ethers.providers.Web3Provider
   address: string 
@@ -13,6 +28,8 @@ export default class BundlrClient {
   walletBalance: string 
   owner: string 
   apolloClient: ApolloClient<NormalizedCacheObject>
+  networkName: string
+  networkCurrency: string
 
   async initialize(provider) {
     this.provider = provider
@@ -29,9 +46,11 @@ export default class BundlrClient {
         break;
         
       case "devnet":
+        if (this.network.name != process.env.NEXT_PUBLIC_DEV_BUNDLR_NETWORK) throw new Error()
+
         this.instance = new WebBundlr(
           process.env.NEXT_PUBLIC_DEV_BUNDLR_NODE_URL ?? '',
-          process.env.NEXT_PUBLIC_DEV_BUNDLR_CURRENCY ?? '',
+          process.env.NEXT_PUBLIC_DEV_BUNDLR_NETWORK ?? '',
           this.provider,
           { providerUrl: process.env.NEXT_PUBLIC_DEV_BUNDLR_PROVIDER_URL }
         );
@@ -43,6 +62,9 @@ export default class BundlrClient {
     const publicKey = this.instance.getSigner().publicKey;
     const ownerHash = await Arweave.crypto.hash(publicKey);
     this.owner = Arweave.utils.bufferTob64Url(ownerHash);
+
+    this.networkName = networks[this.network.name].name
+    this.networkCurrency = networks[this.network.name].currency
 
     this.apolloClient = new ApolloClient({
       uri: `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/graphql`,

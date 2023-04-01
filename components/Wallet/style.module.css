@@ -13,19 +13,83 @@
   position: absolute;
   right: 0;
   background-color: var(--color-primary);
-  display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  font-size: 0.75rem;
+  display: flex;
+  width: 400px;
+  overflow: hidden;
+
+  border: solid red 1px;
 }
 
-.walletInner div:nth-child(5) {
-  grid-column: 1 / 3;
+.section {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
 }
 
-.walletSegment {
+.walletUpper {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1rem;
+  background-color: var(--color-primary-darker);
+}
+
+.network {
+  font-size: 0.8rem;
+}
+
+.walletAddress {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.address {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.walletAddress > *:nth-child(2) {
+  position: absolute;
+  width: 100px;
+  text-align: center;
+  font-size: 0.8rem;
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  padding: 0.25rem;
+  pointer-events: none;
+}
+
+.walletLower {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem 0.5rem;
+}
+
+.walletLower > *:nth-child(2) {
+  background-color: black;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.walletBalance {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.walletBalance > *:nth-child(1) {
+  font-size: 0.7rem;
 }

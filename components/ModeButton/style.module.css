@@ -3,21 +3,32 @@
   align-items: center;
   color: var(--color-secondary);
   background-color: var(--color-primary-darker);
-  width: 5rem;
+  width: 3.75rem;
   height: 2rem;
-  border-radius: 8rem;
+  border-radius: 25px;
   position: relative;
 }
 
-.modeButton svg:nth-child(1) {
-  width: 1.15rem;
-  height: 1.15rem;
+.switch {
   position: absolute;
+  left: 2px;
+  height: calc(2rem - 6px); 
+  width: calc(2rem - 6px); 
+  background-color: #888;
+  border-radius: 25px;
+  transition: 500ms;
+}
+
+.switchActive {
+  left: calc(100% - (2rem - 6px) - 3px);
 }
 
 .modeButton svg:nth-child(2) {
-  width: 1.25rem;
-  height: 1.25rem;
   position: absolute;
-  right: 0;
+  left: 0.4rem;
+}
+
+.modeButton svg:nth-child(3) {
+  position: absolute;
+  right: 0.4rem;
 }

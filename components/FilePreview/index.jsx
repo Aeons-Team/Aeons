@@ -1,4 +1,10 @@
+import { useEffect } from "react";
+
 export default function FilePreview({ src, contentType, className, enableControls }) {
+    useEffect(() => {
+        return () => URL.revokeObjectURL(src)
+    }, [])
+
     if (!contentType) return <></>
 
     if (contentType.match("image/*")) {

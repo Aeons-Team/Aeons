@@ -19,12 +19,12 @@ export default function Icon({ name, fill, width, height, strokeWidth, invert = 
 
         case 'folder':
             return <svg style={style} width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 8.00004V22.4C4 23.8935 4 24.6398 4.29065 25.2102C4.54631 25.7119 4.95396 26.1207 5.45573 26.3763C6.0256 26.6667 6.77199 26.6667 8.26255 26.6667H23.7375C25.228 26.6667 25.9733 26.6667 26.5432 26.3763C27.0449 26.1207 27.454 25.7122 27.7096 25.2104C28.0003 24.64 28.0003 23.8932 28.0003 22.3998V12.2664C28.0003 10.7729 28.0003 10.0262 27.7096 9.45577C27.454 8.954 27.0452 8.54635 26.5435 8.29069C25.9731 8.00004 25.2268 8.00004 23.7333 8.00004H16M4 8.00004H16M4 8.00004C4 6.52728 5.19391 5.33337 6.66667 5.33337H11.566C12.2183 5.33337 12.5451 5.33337 12.8521 5.40705C13.1241 5.47237 13.3839 5.58039 13.6224 5.7266C13.8915 5.89147 14.1224 6.12247 14.5833 6.58337L16 8.00004" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M4 8.00004V22.4C4 23.8935 4 24.6398 4.29065 25.2102C4.54631 25.7119 4.95396 26.1207 5.45573 26.3763C6.0256 26.6667 6.77199 26.6667 8.26255 26.6667H23.7375C25.228 26.6667 25.9733 26.6667 26.5432 26.3763C27.0449 26.1207 27.454 25.7122 27.7096 25.2104C28.0003 24.64 28.0003 23.8932 28.0003 22.3998V12.2664C28.0003 10.7729 28.0003 10.0262 27.7096 9.45577C27.454 8.954 27.0452 8.54635 26.5435 8.29069C25.9731 8.00004 25.2268 8.00004 23.7333 8.00004H16M4 8.00004H16M4 8.00004C4 6.52728 5.19391 5.33337 6.66667 5.33337H11.566C12.2183 5.33337 12.5451 5.33337 12.8521 5.40705C13.1241 5.47237 13.3839 5.58039 13.6224 5.7266C13.8915 5.89147 14.1224 6.12247 14.5833 6.58337L16 8.00004" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
 
         case 'open':
             return <svg style={style} width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.5 18V9C7.5 8.17158 8.17158 7.5 9 7.5H27C27.8284 7.5 28.5 8.17158 28.5 9V27C28.5 27.8284 27.8284 28.5 27 28.5H18M12.1667 18H18M18 18V23.8333M18 18L7.5 28.5" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M7.5 18V9C7.5 8.17158 8.17158 7.5 9 7.5H27C27.8284 7.5 28.5 8.17158 28.5 9V27C28.5 27.8284 27.8284 28.5 27 28.5H18M12.1667 18H18M18 18V23.8333M18 18L7.5 28.5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
 
         case 'url': 
@@ -98,6 +98,17 @@ export default function Icon({ name, fill, width, height, strokeWidth, invert = 
         case 'arrow-left':
             return <svg transform='rotate(180, 0, 0)' style={style} width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10.5 6L8 3.5M10.5 6L8 8.5M10.5 6L1.5 6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+
+        case 'add': 
+            return <svg style={style} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 12H18" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 18V6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+
+        case 'cross':
+            return <svg style={style} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 8L8 16M8.00001 8L16 16" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
     }
 }

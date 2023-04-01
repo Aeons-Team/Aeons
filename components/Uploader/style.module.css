@@ -1,7 +1,38 @@
 .uploader {
   background-color: var(--color-primary);
-  padding: 2rem;
+  padding: 0.5rem;
+}
+
+.title {
+  font-size: 1rem;
+}
+
+.uploaderInner {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+}
+
+.uploadLabel {
+  background-color: var(--color-secondary);
+  width: 5rem;
+  height: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+}
+
+.uploaderItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 1rem;
+}
+
+.uploaderPreview {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 100%;
 }

@@ -3,6 +3,7 @@ import Button from "../Button";
 import style from "./style.module.css";
 import { useAppState } from "../../stores/AppStore";
 import { useDriveState } from "../../stores/DriveStore";
+import Input from "../Input";
 
 export default function Rename() {
 
@@ -25,7 +26,7 @@ export default function Rename() {
   return (
     <div className={style.rename}>
      Name:
-      <input
+      <Input
         type="text"
         onInput={(e) => {setName(e.target.value)}}
         onKeyDown={(e) => { e.key === "Enter" && onRename()}}

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useDriveStore } from "../../stores/DriveStore";
 import Icon from '../Icon'
 import style from "./style.module.css";
+import Input from "../Input";
 
 export default function Search() {
   const router = useRouter();
@@ -20,8 +21,8 @@ export default function Search() {
     <div className={style.search}>
       <div className={`${style.searchInner} ${searchFiles.length ? style.searchInnerCollapse : ''}`}>
         <Icon name='search' />
-
-        <input
+        
+        <Input
           onInput={(e) => {
             setInputValue(e.target.value);
           }}

@@ -1,5 +1,5 @@
 import style from './style.module.css'
-import ModeButton from '../ModeButton';
+import ThemeButton from '../ThemeButton';
 import Search from '../Search'
 import Wallet from '../Wallet';
 
@@ -9,7 +9,7 @@ export default function Topbar() {
             <Search />
 
             <div className={style.topbarRight}>
-                <ModeButton />
+                <ThemeButton />
                 <Wallet />
             </div>
         </div>

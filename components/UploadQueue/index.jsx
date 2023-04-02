@@ -16,7 +16,8 @@ export default function UploadQueue() {
         pauseOrResume, 
         uploadNext, 
         currentName,
-        removeFromUploadQueue
+        removeFromUploadQueue,
+        uploadSpeed
      } = useDriveState((state) => ({
          client: state.client,
          paused: state.paused,
@@ -26,7 +27,8 @@ export default function UploadQueue() {
         pauseOrResume: state.pauseOrResume,
         uploadNext: state.uploadNext,
         currentName: state.currentName,
-        removeFromUploadQueue: state.removeFromUploadQueue
+        removeFromUploadQueue: state.removeFromUploadQueue,
+        uploadSpeed: state.uploadSpeed
     }));
 
     const currentUpload = uploadQueue.length && uploadQueue[0].file
@@ -103,6 +105,14 @@ export default function UploadQueue() {
                         <span onClick={() => removeFromUploadQueue(0)}>
                             <Icon name='cross' width='1.5rem' height='1.5rem' />
                         </span>
+                    </div>
+
+                    <div>
+                        {Utility.formatBytes(uploadSpeed)}/s
+                    </div>
+
+                    <div>
+                        {Utility.formatTime((uploadQueue[0].file.size - bytesUploaded) / uploadSpeed)}
                     </div>
 
                     <div className={style.loading}> 

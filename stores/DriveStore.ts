@@ -24,6 +24,7 @@ interface DriveStoreData {
     uploadQueue: UploadQueueItem[],
     currentName: string,
     currentUploader: ChunkingUploader | null
+    uploadSpeed: number,
     bytesUploaded: number | null,
     fetchWalletBalance: Function,
     fetchLoadedBalance: Function,
@@ -45,6 +46,7 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
     walletBalance: null,
     loadedBalance: null,
     uploading: false,
+    uploadSpeed: 0,
     paused: false,
     uploadQueue: [],
     currentName: '',
@@ -88,6 +90,15 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
             currentName: name || first.file.name
         })    
 
+        const startTimes: any = {}
+        const initialTime = new Date().getTime() / 1000
+        const sizes: number[] = []
+        const durations: number[] = []
+        
+        let batchSize = Number(process.env.NEXT_PUBLIC_CHUNKED_UPLOADER_BATCH_SIZE)
+        let nextChunk = batchSize + 1
+        let index = 0
+
         const uploader = client.uploadChunked(
             fileReaderStream(first.file), 
             {
@@ -97,9 +108,29 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
             }, 
             {
                 chunkUpload: (info) => {
-                    if (get().currentUploader == uploader) {
-                        set({ bytesUploaded: info.totalUploaded })   
+                    if (get().currentUploader != uploader) return
+
+                    const partial: any = { bytesUploaded: info.totalUploaded }
+
+                    if (info.id != 1) {                        
+                        const now = new Date().getTime() / 1000
+                        const duration = now - (startTimes[info.id] || initialTime) 
+    
+                        if (durations.length < batchSize) {
+                            durations.push(duration)
+                            sizes.push(info.size)
+                        }
+                        
+                        else {
+                            durations[index % batchSize] = duration
+                            sizes[index++ % batchSize] = info.size
+                        }
+    
+                        startTimes[++nextChunk] = now
+                        partial.uploadSpeed = sizes.reduce((x, y) => x + y, 0) / durations.reduce((x, y) => Math.max(x, y), 0) 
                     }
+
+                    set(partial)   
                 },
                 done: (result) => {
                     set({ uploading: false, uploadQueue: uploadQueue.slice(1), bytesUploaded: 0 })
@@ -160,9 +191,8 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
 
         if (i == 0) {
             currentUploader?.pause()
-            set({ currentUploader: null })
 
-            set({ uploading: false, uploadQueue: uploadQueue.slice(1), bytesUploaded: 0 })
+            set({ currentUploader: null, uploading: false, uploadQueue: uploadQueue.slice(1), bytesUploaded: 0 })
         }
 
         else {

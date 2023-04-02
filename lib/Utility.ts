@@ -25,4 +25,14 @@ export default class Utility {
 
     return `${size.toFixed(2)} bytes`;
   }
+
+  static formatTime(seconds: number): string {
+    if (seconds < 60) return `${seconds} seconds`
+
+    if (seconds < 60 * 60) return `${Math.round(seconds / 60)} minutes`
+
+    if (seconds < 24 * 60 * 60) return `${Math.round(seconds / (60 * 60))} hours`
+
+    return `${Math.round(seconds / (24 * 60 * 60))} days`
+  }
 }

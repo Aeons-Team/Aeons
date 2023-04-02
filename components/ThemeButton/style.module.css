@@ -1,4 +1,4 @@
-.modeButton {
+.themeButton {
   display: flex;
   align-items: center;
   color: var(--color-secondary);
@@ -23,12 +23,12 @@
   left: calc(100% - (2rem - 6px) - 3px);
 }
 
-.modeButton svg:nth-child(2) {
+.themeButton svg:nth-child(2) {
   position: absolute;
   left: 0.4rem;
 }
 
-.modeButton svg:nth-child(3) {
+.themeButton svg:nth-child(3) {
   position: absolute;
   right: 0.4rem;
 }

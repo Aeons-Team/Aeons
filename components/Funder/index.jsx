@@ -1,9 +1,10 @@
 import { useState } from "react";
-import Icon from "../Icon";
 import Button from "../Button";
 import style from "./style.module.css";
 import { useAppState } from "../../stores/AppStore";
 import { useDriveState } from '../../stores/DriveStore'
+import IconButton from "../IconButton";
+import Input from "../Input";
 
 export default function Funder({ onBack }) {
   
@@ -31,15 +32,15 @@ export default function Funder({ onBack }) {
 
   return (
     <div className={style.funder}>
-      <span onClick={onBack}>
-        <Icon name='arrow-left' width='1rem' height='1rem' />
+      <span >
+        <IconButton name='arrow-left' onClick={onBack}/>
+        Amount:
       </span>
-
-      Amount:
-      <input
+      <Input
         type="number"
         onInput={(e) => {setAmount(e.target.value)}}
         onKeyDown={(e) => { e.key === "Enter" && onFund()}}
+        placeholder="0.00"
       />
       <Button onClick={onFund}>
         Fund

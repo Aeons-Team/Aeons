@@ -4,6 +4,7 @@ import { useDriveState } from "../../stores/DriveStore";
 import Button from "../Button";
 import style from "./style.module.css";
 import { useAppState } from "../../stores/AppStore";
+import Input from "../Input";
 
 export default function FolderCreator() {
   
@@ -20,7 +21,7 @@ export default function FolderCreator() {
   return (
     <div className={style.folderCreator}>
       Folder name:
-      <input
+      <Input
         type="text"
         onInput={(e) => {setName(e.target.value)}}
         onKeyDown={(e) => { e.key === "Enter" && onFolderCreate()}}

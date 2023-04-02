@@ -75,3 +75,15 @@
     font-size: 0.7rem;
     gap: 0.25rem;
 }
+
+.confirmUpload {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.confirmUploadInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}

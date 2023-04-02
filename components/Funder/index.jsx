@@ -8,12 +8,25 @@ import { useDriveState } from '../../stores/DriveStore'
 export default function Funder({ onBack }) {
   
   const { activateContextMenu } = useAppState((state) => ({activateContextMenu: state.activateContextMenu}));
-  const { client } = useDriveState(state => ({client: state.client}));
+  const { client, fetchWalletBalance, fetchLoadedBalance } = useDriveState(state => ({
+    client: state.client,
+    fetchWalletBalance: state.fetchWalletBalance,
+    fetchLoadedBalance: state.fetchLoadedBalance
+  }));
+  
   const [amount, setAmount] = useState();
 
   async function onFund() {
     activateContextMenu(false);
-    amount &&  await client.fund(amount)
+
+    if (amount) {
+      await client.fund(amount)
+
+      await Promise.all([
+        fetchWalletBalance(),
+        fetchLoadedBalance()
+      ])
+    }
   }
 
   return (

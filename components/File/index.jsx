@@ -9,10 +9,11 @@ export default function File({ file, enableControls }) {
   const router = useRouter();
   const { id: activeFileId } = router.query;
   
-  const { activateContextMenu, selected, select } = useAppState((state) => ({
+  const { activateContextMenu, selected, select, getSelection } = useAppState((state) => ({
     activateContextMenu: state.activateContextMenu,
     selected: state.selected[file.id],
     select: state.select,
+    getSelection: state.getSelection,
   }));
 
   const { contractState, uploadFiles, relocateFiles } = useDriveState((state) => ({
@@ -25,17 +26,21 @@ export default function File({ file, enableControls }) {
 
   const onFileDragStart = (e) => {
     e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", file.id);
+    select(file.id)
   };
 
   const onFileDrop = async (e) => {
     e.stopPropagation();
     e.preventDefault();
-    const dragFileId = e.dataTransfer.getData("text/plain");
-    if (e.dataTransfer.files.length)
+    
+    if (e.dataTransfer.files.length) {
       await uploadFiles(e.dataTransfer.files, file.id);
-    else if (contractState.isRelocatable(dragFileId, file.id)) {
-      await relocateFiles([dragFileId], activeFileId, file.id);
+    }
+
+    const selection = getSelection()
+
+    if (selection.length && !selection.filter(id => !contractState.isRelocatable(id, file.id)).length) {
+      await relocateFiles(getSelection(), activeFileId, file.id);
     }
   };
 

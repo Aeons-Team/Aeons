@@ -28,9 +28,11 @@ export default class UserContract {
     client: BundlrClient
     updateUIAction: Function
     internalWallet : Wallet
+    interactionQueue: any[]
 
     constructor() {
         this.state = new ContractState()
+        this.interactionQueue = []
     }
 
     setContractSrcId(contractSrcId: string) {
@@ -40,6 +42,8 @@ export default class UserContract {
     async updateState() {
         const stateData = (await this.instance.readState()).cachedValue.state
         this.state.setData(stateData)
+
+        this.interactionQueue.forEach(x => this.localWrite(x))
     }
 
     async createContract() {
@@ -217,9 +221,15 @@ export default class UserContract {
 
     async writeInteraction(action: any, shouldUpdateUI: boolean) {
         this.localWrite(action)
+        this.interactionQueue.push(action)
+
         shouldUpdateUI && this.updateUIAction()
+        
         await this.instance.writeInteraction(action)
+        this.interactionQueue = this.interactionQueue.filter(x => x != action)
+
         await this.updateState()
+        
         shouldUpdateUI && this.updateUIAction()
     }
 

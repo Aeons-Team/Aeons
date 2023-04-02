@@ -2,16 +2,19 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import copy from "clipboard-copy";
 import { useAppState } from "../../stores/AppStore";
-import Uploader from "../Uploader";
 import style from "./style.module.css";
 import FolderSelect from "../FolderSelect";
 import FolderCreator from "../FolderCreator";
 import Rename from "../Rename";
 import Icon from '../Icon';
+import { useDriveStore } from "../../stores/DriveStore";
 
 export default function ContextMenu() {
   const menuRef = useRef();
   const router = useRouter()
+  const { id: activeFileId } = router.query
+
+  const uploadFiles = useDriveStore(state => state.uploadFiles)
   
   const { contextMenuActivated, contextMenuPosition, contextMenuOpts, activateContextMenu, getSelection } = useAppState((state) => ({
     contextMenuActivated: state.contextMenuActivated,
@@ -37,10 +40,6 @@ export default function ContextMenu() {
   }, []);
 
   switch (action) {
-    case "uploadingFile":
-      var contextMenuInner = <Uploader />;
-      break;
-
     case "creatingFolder":
       var contextMenuInner = <FolderCreator />;
       break;
@@ -58,14 +57,27 @@ export default function ContextMenu() {
         case "explorer":
           var contextMenuInner = (
             <>
-              <div
+              <input 
+                id='upload-file' 
+                type='file' 
+                multiple 
+                hidden 
+                onChange={(e) => {
+                  uploadFiles(e.target.files, activeFileId)
+                  e.target.value = null
+                  activateContextMenu(false)
+                }}
+              />
+
+              <label
+                htmlFor='upload-file'
                 className={style.contextMenuButton}
                 onClick={() => setAction("uploadingFile")}
               >
                 <Icon name='upload-file' fill />
 
                 Upload File
-              </div>
+              </label>
 
               <div
                 className={style.contextMenuButton}

@@ -5,18 +5,26 @@ import internal from "stream";
 import { ApolloClient, InMemoryCache, NormalizedCacheObject, OperationVariables, QueryOptions } from "@apollo/client";
 import { CreateAndUploadOptions } from "@bundlr-network/client/build/common/types";
 
-const networks = {
+const networkInfos = {
   'homestead': {
     name: 'Ethereum',
-    currency: 'ETH'
+    currency: 'ether',
+    currencySym: 'ETH'
   },
   'arbitrum': {
     name: 'Aribtrum One',
-    currency: 'ETH'
+    currency: 'arbitrum',
+    currencySym: 'ETH'
   },
   'matic': {
     name: 'Polygon',
-    currency: 'MTC'
+    currency: 'matic',
+    currencySym: 'MTC'
+  },
+  'maticmum': {
+    name: 'Polygon Testnet (Mumbai)',
+    currency: 'matic',
+    currencySym: 'MTC'
   }
 }
 
@@ -29,31 +37,27 @@ export default class BundlrClient {
   owner: string 
   apolloClient: ApolloClient<NormalizedCacheObject>
   networkName: string
-  networkCurrency: string
+  networkCurrencySym: string
 
   async initialize(provider) {
     this.provider = provider
     this.address = await this.provider.getSigner().getAddress();
     this.network = await this.provider.getNetwork();
 
+    const networkInfo = networkInfos[this.network.name]
+
     switch (process.env.NEXT_PUBLIC_BUNDLR_ENV) {
       case "mainnet":
-        this.instance = new WebBundlr(
-          process.env.NEXT_PUBLIC_BUNDLR_NODE_URL ?? '',
-          this.network.name,
-          this.provider
-        );
+        this.instance = new WebBundlr(process.env.NEXT_PUBLIC_BUNDLR_NODE_URL ?? '', networkInfo.currency, this.provider);
         break;
         
       case "devnet":
-        if (this.network.name != process.env.NEXT_PUBLIC_DEV_BUNDLR_NETWORK) throw new Error()
+        if (this.network.name != 'maticmum') throw new Error()
 
-        this.instance = new WebBundlr(
-          process.env.NEXT_PUBLIC_DEV_BUNDLR_NODE_URL ?? '',
-          process.env.NEXT_PUBLIC_DEV_BUNDLR_NETWORK ?? '',
-          this.provider,
-          { providerUrl: process.env.NEXT_PUBLIC_DEV_BUNDLR_PROVIDER_URL }
-        );
+        this.instance = new WebBundlr(process.env.NEXT_PUBLIC_DEV_BUNDLR_NODE_URL ?? '', 'matic', this.provider, { 
+          providerUrl: 'https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78' 
+        });
+        
         break;
     }
 
@@ -63,8 +67,8 @@ export default class BundlrClient {
     const ownerHash = await Arweave.crypto.hash(publicKey);
     this.owner = Arweave.utils.bufferTob64Url(ownerHash);
 
-    this.networkName = networks[this.network.name].name
-    this.networkCurrency = networks[this.network.name].currency
+    this.networkName = networkInfo.name
+    this.networkCurrencySym = networkInfo.currencySym
 
     this.apolloClient = new ApolloClient({
       uri: `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/graphql`,
@@ -115,9 +119,8 @@ export default class BundlrClient {
     const uploader = this.instance.uploader.chunkedUploader;
     uploader.uploadData(data, opts);
 
-    // FOR TESTING, REMOVE LATER
-    uploader.setBatchSize(3);
-    uploader.setChunkSize(500000);
+    uploader.setBatchSize(Number(process.env.NEXT_PUBLIC_CHUNKED_UPLOADER_BATCH_SIZE));
+    uploader.setChunkSize(Number(process.env.NEXT_PUBLIC_CHUNKED_UPLOADER_CHUNK_SIZE));
 
     for (const eventName in events) {
       uploader.on(eventName, events[eventName]);

@@ -69,7 +69,7 @@ export default function Wallet() {
               <div className={style.walletLower}>
                 <div className={style.walletBalance}>
                   <span>Metamask Wallet</span>
-                  <span>{Number(walletBalance).toFixed(6)} {client.networkCurrency}</span>
+                  <span>{Number(walletBalance).toFixed(6)} {client.networkCurrencySym}</span>
                 </div>
     
                 <div className={style.transfer} onClick={() => setFunding(true)}>
@@ -78,7 +78,7 @@ export default function Wallet() {
     
                 <div className={style.walletBalance}>
                   <span>Bundlr Wallet</span>
-                  <span>{Number(loadedBalance).toFixed(6)} {client.networkCurrency}</span>
+                  <span>{Number(loadedBalance).toFixed(6)} {client.networkCurrencySym}</span>
                 </div>
               </div>
             </motion.div>

@@ -22,17 +22,18 @@ interface DriveStoreData {
     uploading: boolean,
     paused: boolean,
     uploadQueue: UploadQueueItem[],
-    currentUpload: File | null,
+    currentName: string,
     currentUploader: ChunkingUploader | null
     bytesUploaded: number | null,
     fetchWalletBalance: Function,
     fetchLoadedBalance: Function,
-    uploadNext: Function,
+    uploadNext: (name?: string) => Promise<void>,
     initialize: (provider: ethers.providers.Web3Provider) => Promise<void>,
     uploadFiles: (files: File[], parentId: string) => void,
     createFolder: (name: string, parentId: string) => Promise<void>,
     renameFile: (id: string, newName: string) => Promise<void>,
     relocateFiles: (ids: string[], oldParentId: string, newParentId: string) => Promise<void>,
+    removeFromUploadQueue: (i: number) => void,
     pauseOrResume: Function
 }
 
@@ -46,7 +47,7 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
     uploading: false,
     paused: false,
     uploadQueue: [],
-    currentUpload: null,
+    currentName: '',
     currentUploader: null,
     bytesUploaded: null,
     
@@ -77,15 +78,14 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
         fetchLoadedBalance();
     },
     
-    uploadNext: async () => {
+    uploadNext: async (name?: string) => {
         const { client, contract, fetchLoadedBalance, uploadQueue } = get()
         const first = uploadQueue[0]
 
         set({ 
             uploading: true, 
-            uploadQueue: uploadQueue.slice(1),
             bytesUploaded: 0,
-            currentUpload: first.file
+            currentName: name || first.file.name
         })    
 
         const uploader = client.uploadChunked(
@@ -97,25 +97,19 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
             }, 
             {
                 chunkUpload: (info) => {
-                    set({ bytesUploaded: info.totalUploaded })   
+                    if (get().currentUploader == uploader) {
+                        set({ bytesUploaded: info.totalUploaded })   
+                    }
                 },
                 done: (result) => {
-                    const queue = get().uploadQueue
-
-                    if (queue.length == 0) {
-                        set({ uploading: false })
-                    }
-
-                    else {
-                        get().uploadNext()
-                    }
+                    set({ uploading: false, uploadQueue: uploadQueue.slice(1), bytesUploaded: 0 })
 
                     fetchLoadedBalance()
 
                     contract.insert({
                         id: result.data.id,
                         contentType: first.file.type,
-                        name: first.file.name,
+                        name: name || first.file.name,
                         parentId: first.parentId,
                         size: first.file.size,
                         createdAt: new Date().getTime()
@@ -128,7 +122,7 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
     },
 
     uploadFiles: async (files: File[], parentId: string) => {
-        const { uploading, uploadQueue, uploadNext } = get()
+        const { uploadQueue } = get()
 
         for (const file of files) {
             uploadQueue.push({  
@@ -137,11 +131,7 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
             })
         }
 
-        set({ uploadQueue })
-
-        if (!uploading) {
-            uploadNext()
-        }
+        set({ uploadQueue: [...uploadQueue] })
     },
 
     createFolder: async (name: string, parentId: string) => {
@@ -163,6 +153,22 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
     relocateFiles: async (ids: string[], oldParentId: string, newParentId: string) => {
         const { contract } = get()
         await contract.relocate(ids, oldParentId, newParentId)
+    },
+
+    removeFromUploadQueue: (i: number) => {
+        const { uploadQueue, currentUploader } = get()
+
+        if (i == 0) {
+            currentUploader?.pause()
+            set({ currentUploader: null })
+
+            set({ uploading: false, uploadQueue: uploadQueue.slice(1), bytesUploaded: 0 })
+        }
+
+        else {
+            uploadQueue.splice(i, 1)
+            set({ uploadQueue: [...uploadQueue] })
+        }
     },
 
     pauseOrResume: () => {

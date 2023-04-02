@@ -50,7 +50,7 @@ export default function Explorer() {
       onContextMenu={onExplorerContextMenu}
     >
       {isFileView ? (
-        <File file={activeFile} enableControls />
+        <File file={activeFile} enableControls view />
       ) : (
         <ExplorerFiles files={activeFileChildren} />
       )}

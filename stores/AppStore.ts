@@ -6,7 +6,8 @@ import { ContractFile } from '../lib/ContractState'
 interface ContextMenuOpts {
   type?: string,
   copy?: boolean,
-  file?: ContractFile
+  file?: ContractFile,
+  action?: string
 }
 
 interface AppStoreData {
@@ -19,6 +20,8 @@ interface AppStoreData {
   holdingControl: boolean,
   firstSelected: string | null,
   showWallet: boolean,
+  explorerView: string,
+  searchActivated: boolean,
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => void
   select: (item: string) => void,
   selectItems: (items: string[]) => void,
@@ -37,6 +40,8 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
   holdingControl: false,
   firstSelected: null,
   showWallet: false,
+  explorerView: 'grid',
+  searchActivated: false,
 
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => {
     const { cursorPosition, contextMenuPosition } = get();
@@ -66,7 +71,18 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
   },
 
   clearSelection: (clearFirstSelected: boolean = true) => {
-    set({ selected: {}, firstSelected: clearFirstSelected ? null : get().firstSelected })
+    const { firstSelected, selected } = get()
+    const partial: any = {}
+
+    if (clearFirstSelected) {
+      partial.firstSelected = null
+    }
+
+    if (Object.keys(selected).length) {
+      partial.selected = {}
+    }
+    
+    set(partial)
   },
 
   getSelection: () => {

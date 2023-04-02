@@ -6,19 +6,21 @@ import FileInfo from "../FileInfo";
 import FolderInfo from "../FolderInfo";
 import style from "./style.module.css";
 
-export default function File({ file, enableControls }) {
+export default function File({ file, enableControls, view }) {
   const router = useRouter();
   const { id: activeFileId } = router.query;
   
-  const { activateContextMenu, selected, select, getSelection, clearSelection, selectItems, setShowWallet } = useAppState((state) => ({
+  const { activateContextMenu, selected, select, getSelection, clearSelection, selectItems, explorerView } = useAppState((state) => ({
     activateContextMenu: state.activateContextMenu,
     selected: state.selected[file.id],
     select: state.select,
     getSelection: state.getSelection,
     clearSelection: state.clearSelection,
     selectItems: state.selectItems,
-    setShowWallet: state.setShowWallet
+    explorerView: state.explorerView
   }));
+
+  const isGrid = view || explorerView == 'grid'
 
   const { contractState, uploadFiles, relocateFiles } = useDriveState((state) => ({
     contractState: state.contractState,
@@ -61,7 +63,11 @@ export default function File({ file, enableControls }) {
 
   const onFileClick = (e) => {
     e.stopPropagation();
-    setShowWallet(false)
+    
+    const appState = useAppStore.getState()
+
+    if (appState.showWallet) appState.setShowWallet(false)
+    if (appState.contextMenuActivated) activateContextMenu(false)
 
     if (file.pending) return
 
@@ -135,12 +141,20 @@ export default function File({ file, enableControls }) {
     router.push(`/drive/${file.id}`)
   }
 
+  const getClassName = () => {
+    if (isFolder) {
+      return isGrid ? style.folder : style.folderList
+    }
+
+    else {
+      return isGrid ? style.file : style.fileList
+    }
+  }
+
   return (
     <motion.div
       animate={{ opacity: file.pending ? 0.5 : 1 }}
-      className={`${isFolder ? style.folder : style.file} ${
-        selected ? style.selected : ""
-      }`}
+      className={`${getClassName()} ${selected ? style.selected : "" }`}
       draggable
       onDragStart={onFileDragStart}
       onDrop={onFileDrop}
@@ -156,6 +170,7 @@ export default function File({ file, enableControls }) {
           file={file}
           className={style.filePreview}
           enableControls={enableControls}
+          view={view}
         />
       )}
     </motion.div>

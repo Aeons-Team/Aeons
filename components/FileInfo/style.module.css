@@ -7,3 +7,15 @@
 .fileDetail:nth-child(2) {
     margin-left: auto;
 }
+
+.fileDetailsList {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.previewList {
+    width: 4rem;
+    height: 4rem;
+}

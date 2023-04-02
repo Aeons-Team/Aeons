@@ -24,11 +24,14 @@ export default function ContextMenu() {
     getSelection: state.getSelection,
   }));
 
+  const selection = getSelection()
+
   const [action, setAction] = useState();
+  const contextMenuActivatedRef = useRef()
 
   useEffect(() => {
     const onClick = (e) => {
-      if (!menuRef.current.contains(e.target)) {
+      if (!menuRef.current.contains(e.target) && contextMenuActivatedRef.current) {
         activateContextMenu(false);
         setAction(); 
       }
@@ -41,7 +44,11 @@ export default function ContextMenu() {
     };
   }, []);
 
-  switch (action) {
+  useEffect(() => {
+    contextMenuActivatedRef.current = contextMenuActivated
+  }, [contextMenuActivated])
+
+  switch (action || contextMenuOpts.action) {
     case "creatingFolder":
       var contextMenuInner = <FolderCreator />;
       break;
@@ -99,18 +106,21 @@ export default function ContextMenu() {
         case "file":
           var contextMenuInner = (
             <>
-              <div
-                className={style.contextMenuButton}
-                onClick={() => {
-                  router.push(`/drive/${getSelection()[0]}`)
-                }}
-              >
-                <Icon name='open' />
+              {     
+                selection.length < 2 &&           
+                <div
+                  className={style.contextMenuButton}
+                  onClick={() => {
+                    router.push(`/drive/${selection[0]}`)
+                  }}
+                >
+                  <Icon name='open' />
 
-                Open
-              </div>
+                  Open
+                </div>
+              }
 
-              {contextMenuOpts.copy && getSelection().length < 2 && (
+              {contextMenuOpts.copy && selection.length < 2 && (
                 <div
                   className={style.contextMenuButton}
                   onClick={() => {
@@ -118,7 +128,7 @@ export default function ContextMenu() {
                     setAction();
                     copy(
                       `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${
-                        getSelection()[0]
+                        selection[0]
                       }`
                     );
                   }}
@@ -141,7 +151,7 @@ export default function ContextMenu() {
                 Move
               </div>
 
-              {getSelection().length < 2 && (
+              {selection.length < 2 && (
                 <div
                   className={style.contextMenuButton}
                   onClick={(e) => {

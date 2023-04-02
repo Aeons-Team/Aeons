@@ -20,3 +20,9 @@
   grid-template-columns: repeat(5, minmax(80px, 1fr));
   gap: 1rem;
 }
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

@@ -26,3 +26,12 @@
 .selected {
   background-color: var(--color-selected);
 }
+
+.fileList {
+  display: flex;
+  gap: 1rem;
+}
+
+.folderList {
+  padding: 0.5rem; 
+}

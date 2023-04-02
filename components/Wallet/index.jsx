@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import copy from 'clipboard-copy'
 import { useDriveState } from '../../stores/DriveStore'
+import { useAppState } from '../../stores/AppStore';
 import Icon from '../Icon'
 import Funder from '../Funder'
 import style from './style.module.css';
@@ -13,12 +14,20 @@ export default function Wallet() {
     walletBalance: state.walletBalance
   }));
 
+  const { showWallet, setShowWallet } = useAppState(state => ({
+    showWallet: state.showWallet,
+    setShowWallet: state.setShowWallet
+  }));
+
   const [funding, setFunding] = useState(false)
   const [hoveringAddress, setHoveringAddress] = useState(false)
   const [copyText, setCopyText] = useState('Copy address')
   const [height, setHeight] = useState(0)
   const section1Ref = useRef()
   const section2Ref = useRef()
+  const walletRef = useRef()
+
+  const firstActivationRef = useRef(false)
 
   useEffect(() => {
     const elem = !funding ? section1Ref.current : section2Ref.current
@@ -26,11 +35,41 @@ export default function Wallet() {
     setHeight(height)
   }, [funding])
 
-  return (
-    <div className={style.wallet}>
-      <div className={style.avatar} />
+  useEffect(() => {
+    const onClick = (e) => {
+      if (!walletRef.current.contains(e.target)) {
+        setShowWallet(false)
+      }
+    };
 
-      <motion.div className={style.walletInner} animate={{ height }}>
+    document.addEventListener("click", onClick);
+
+    return () => {
+      document.removeEventListener("click", onClick);
+    };
+  }, []);
+
+  return (
+    <div className={style.wallet} ref={walletRef}>
+      <div className={style.avatar} 
+        onClick={() => {
+          firstActivationRef.current = true
+          setShowWallet(!showWallet)
+        }} />
+
+      <motion.div 
+        className={style.walletInner} 
+        initial={{
+          height, 
+          opacity: 0,
+          pointerEvents: 'none'
+        }}
+        animate={{ 
+          height, 
+          opacity: showWallet ? 1 : 0,
+          pointerEvents: showWallet ? 'auto' : 'none'
+        }}
+      >
         <AnimatePresence>
           {
             !funding &&
@@ -38,7 +77,7 @@ export default function Wallet() {
               key='wallet'
               ref={section1Ref}
               className={style.section} 
-              initial={{ right: '100%' }} 
+              initial={{ right: firstActivationRef.current ? '0%' : '100%' }} 
               animate={{ right: '0%' }} 
               exit={{ right: '100%' }}
             >
@@ -72,7 +111,12 @@ export default function Wallet() {
                   <span>{Number(walletBalance).toFixed(6)} {client.networkCurrencySym}</span>
                 </div>
     
-                <div className={style.transfer} onClick={() => setFunding(true)}>
+                <div className={style.transfer} 
+                  onClick={() => {
+                    firstActivationRef.current = false
+                    setFunding(true)
+                  }}
+                >
                   <Icon name='arrow-right' width='1.5rem' height='1.5rem' strokeWidth={0.8} invert />
                 </div>
     

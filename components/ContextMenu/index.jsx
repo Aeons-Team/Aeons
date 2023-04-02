@@ -28,8 +28,10 @@ export default function ContextMenu() {
 
   useEffect(() => {
     const onClick = (e) => {
-      activateContextMenu(false);
-      setAction();
+      if (!menuRef.current.contains(e.target)) {
+        activateContextMenu(false);
+        setAction(); 
+      }
     };
 
     document.addEventListener("click", onClick);
@@ -72,7 +74,6 @@ export default function ContextMenu() {
               <label
                 htmlFor='upload-file'
                 className={style.contextMenuButton}
-                onClick={() => setAction("uploadingFile")}
               >
                 <Icon name='upload-file' fill />
 
@@ -81,7 +82,10 @@ export default function ContextMenu() {
 
               <div
                 className={style.contextMenuButton}
-                onClick={() => setAction("creatingFolder")}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setAction("creatingFolder")
+                }}
               >
                 <Icon name='folder' />
 
@@ -127,7 +131,8 @@ export default function ContextMenu() {
 
               <div
                 className={style.contextMenuButton}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation()
                   setAction("moveFile");
                 }}
               >
@@ -139,7 +144,8 @@ export default function ContextMenu() {
               {getSelection().length < 2 && (
                 <div
                   className={style.contextMenuButton}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation()
                     setAction("rename");
                   }}
                 >
@@ -165,9 +171,6 @@ export default function ContextMenu() {
 
   return (
     <div
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
       ref={menuRef}
       className={style.contextMenu}
       style={{

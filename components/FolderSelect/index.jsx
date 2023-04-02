@@ -13,22 +13,23 @@ export default function FolderSelect() {
     relocateFiles: state.relocateFiles
   }));
   
-  const { activateContextMenu, getSelection } = useAppState((state) => ({
+  const { activateContextMenu, getSelection, clearSelection } = useAppState((state) => ({
     activateContextMenu: state.activateContextMenu,
-    getSelection: state.getSelection
+    getSelection: state.getSelection,
+    clearSelection: state.clearSelection
   }));
   
-  const [currentFileId, setCurrentFileId] = useState("root");
-  const [selectedFileId, setSelectedFileId] = useState("root");
+  const [currentFileId, setCurrentFileId] = useState(activeFileId);
+  const [selectedFileId, setSelectedFileId] = useState(activeFileId);
   const currentFile = contractState.getFile(currentFileId);
+
   const selection = getSelection();
-  const isMovable = selection.filter(
-    (file) => !contractState.isRelocatable(file, selectedFileId)
-  ).length;
+  const isDisabled = selection.filter((file) => !contractState.isRelocatable(file, selectedFileId)).length;
 
   async function onMoveButtonClick() {
     activateContextMenu(false);
-    await relocateFiles(selection, activeFileId, selectedFileId);
+    relocateFiles(selection, activeFileId, selectedFileId);
+    clearSelection()
   }
 
   return (
@@ -42,10 +43,14 @@ export default function FolderSelect() {
             className={`${style.folder} ${
               file.id == selectedFileId ? style.selected : ""
             }`}
-            onClick={() => setSelectedFileId(file.id)}
-            onDoubleClick={() => {
-              contractState.getChildren(file.id).filter((file) => file.contentType == "folder")
-                .length && setCurrentFileId(file.id);
+            onClick={() => {
+              if (selectedFileId == file.id) {
+                setCurrentFileId(file.id)
+              }
+        
+              else {
+                setSelectedFileId(file.id)
+              }
             }}
           >
             {file.name}
@@ -58,7 +63,7 @@ export default function FolderSelect() {
       >
         back
       </Button>
-      <Button disabled={isMovable} onClick={onMoveButtonClick}>
+      <Button disabled={isDisabled} onClick={onMoveButtonClick}>
         move
       </Button>
     </div>

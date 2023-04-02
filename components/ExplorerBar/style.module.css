@@ -1,0 +1,16 @@
+.explorerBar {
+    display: flex;
+}
+
+.ancestors {
+    display: flex;
+    gap: 1rem;
+}
+
+.ancestor {
+    width: 50px;
+}
+
+.actions {
+    margin-left: auto;
+}

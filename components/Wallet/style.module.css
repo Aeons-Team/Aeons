@@ -16,8 +16,6 @@
   display: flex;
   width: 400px;
   overflow: hidden;
-
-  border: solid red 1px;
 }
 
 .section {

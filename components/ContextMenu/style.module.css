@@ -16,5 +16,5 @@
 
 .contextMenuButton:hover {
   cursor: pointer;
-  background-color: var(--color-active-low);
+  background-color: var(--color-active);
 }

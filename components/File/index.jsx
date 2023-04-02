@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
-import { useAppState } from "../../stores/AppStore";
+import { motion } from "framer-motion";
+import { useAppState, useAppStore } from "../../stores/AppStore";
 import { useDriveState } from "../../stores/DriveStore";
 import FileInfo from "../FileInfo";
 import FolderInfo from "../FolderInfo";
@@ -9,11 +10,14 @@ export default function File({ file, enableControls }) {
   const router = useRouter();
   const { id: activeFileId } = router.query;
   
-  const { activateContextMenu, selected, select, getSelection } = useAppState((state) => ({
+  const { activateContextMenu, selected, select, getSelection, clearSelection, selectItems, setShowWallet } = useAppState((state) => ({
     activateContextMenu: state.activateContextMenu,
     selected: state.selected[file.id],
     select: state.select,
     getSelection: state.getSelection,
+    clearSelection: state.clearSelection,
+    selectItems: state.selectItems,
+    setShowWallet: state.setShowWallet
   }));
 
   const { contractState, uploadFiles, relocateFiles } = useDriveState((state) => ({
@@ -26,7 +30,11 @@ export default function File({ file, enableControls }) {
 
   const onFileDragStart = (e) => {
     e.dataTransfer.effectAllowed = "move";
-    select(file.id)
+    const appState = useAppStore.getState()
+
+    if (!appState.selected[file.id]) {
+      select(file.id)
+    }
   };
 
   const onFileDrop = async (e) => {
@@ -37,10 +45,13 @@ export default function File({ file, enableControls }) {
       await uploadFiles(e.dataTransfer.files, file.id);
     }
 
-    const selection = getSelection()
-
-    if (selection.length && !selection.filter(id => !contractState.isRelocatable(id, file.id)).length) {
-      await relocateFiles(getSelection(), activeFileId, file.id);
+    else {
+      const selection = getSelection()
+  
+      if (selection.length && !selection.filter(id => !contractState.isRelocatable(id, file.id)).length) {
+        relocateFiles(getSelection(), activeFileId, file.id);
+        clearSelection()
+      }
     }
   };
 
@@ -50,7 +61,57 @@ export default function File({ file, enableControls }) {
 
   const onFileClick = (e) => {
     e.stopPropagation();
-    select(file.id);
+    setShowWallet(false)
+
+    if (file.pending) return
+
+    switch (e.nativeEvent.pointerType) {
+      case 'mouse': 
+        const appState = useAppStore.getState()
+
+        if (!appState.holdingControl && !appState.holdingShift) {
+          clearSelection()
+        }
+
+        if (!selected) {
+          if (appState.holdingShift && appState.firstSelected) {
+            clearSelection(false)
+
+            const children = contractState.getChildren(activeFileId)
+            const folders = children.filter(x => x.contentType == 'folder')
+            const files = children.filter(x => x.contentType != 'folder')
+
+            const childrenGrouped = folders.concat(files).map(file => file.id)
+
+            const firstSelectedIndex = childrenGrouped.findIndex(id => id == appState.firstSelected)
+            const currentIndex = childrenGrouped.findIndex(id => id == file.id)
+
+            const start = firstSelectedIndex < currentIndex ? firstSelectedIndex : currentIndex
+            const end = firstSelectedIndex < currentIndex ? currentIndex : firstSelectedIndex
+
+            selectItems(childrenGrouped.slice(start, end + 1))
+          }
+
+          else {
+            select(file.id);
+          }
+        }
+
+        break
+
+      case 'touch':
+        const selection = getSelection()
+
+        if (selection.length) {
+          select(file.id)
+        }
+
+        else {
+          router.push(`/drive/${file.id}`)
+        }
+
+        break
+    }
   };
 
   const onFileContextMenu = (e) => {
@@ -68,8 +129,15 @@ export default function File({ file, enableControls }) {
     });
   };
 
+  const onFileDoubleClick = () => {
+    if (file.pending) return
+
+    router.push(`/drive/${file.id}`)
+  }
+
   return (
-    <div
+    <motion.div
+      animate={{ opacity: file.pending ? 0.5 : 1 }}
       className={`${isFolder ? style.folder : style.file} ${
         selected ? style.selected : ""
       }`}
@@ -77,7 +145,7 @@ export default function File({ file, enableControls }) {
       onDragStart={onFileDragStart}
       onDrop={onFileDrop}
       onDragOver={onFileDragOver}
-      onDoubleClick={() => router.push(`/drive/${file.id}`)}
+      onDoubleClick={onFileDoubleClick}
       onClick={onFileClick}
       onContextMenu={onFileContextMenu}
     >
@@ -90,6 +158,6 @@ export default function File({ file, enableControls }) {
           enableControls={enableControls}
         />
       )}
-    </div>
+    </motion.div>
   );
 }

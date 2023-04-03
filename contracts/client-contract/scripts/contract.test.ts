@@ -91,5 +91,7 @@ describe('testing xdrive contract', () => {
         expect(state.hierarchy.files[file2.children[0]].name).toBe('file3_renamed')
 
         expect(state.internalOwner).toBe('internal')
+
+        expect(state.hierarchy.files['archive']).not.toBeUndefined()
     })
 })

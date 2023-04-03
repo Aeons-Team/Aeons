@@ -6,6 +6,12 @@
                 "name": "root",
                 "contentType": "folder",
                 "children": []
+            },
+            "archive": {
+                "id": "archive",
+                "name": "archive",
+                "contentType": "folder",
+                "children": []
             }
         }
     },

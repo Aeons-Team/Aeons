@@ -111,7 +111,11 @@ export default function ContextMenu() {
                 <div
                   className={style.contextMenuButton}
                   onClick={() => {
-                    router.push(`/drive/${selection[0]}`)
+                    if (contextMenuOpts.file.contentType == 'folder') {
+                      router.push(`/drive/${selection[0]}`)
+                    }
+
+                    activateContextMenu(false)
                   }}
                 >
                   <Icon name='open' />
@@ -120,7 +124,7 @@ export default function ContextMenu() {
                 </div>
               }
 
-              {contextMenuOpts.copy && selection.length < 2 && (
+              {contextMenuOpts.file.contentType != 'folder' && selection.length < 2 && (
                 <div
                   className={style.contextMenuButton}
                   onClick={() => {

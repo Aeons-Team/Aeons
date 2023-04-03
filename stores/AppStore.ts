@@ -5,7 +5,6 @@ import { ContractFile } from '../lib/ContractState'
 
 interface ContextMenuOpts {
   type?: string,
-  copy?: boolean,
   file?: ContractFile,
   action?: string
 }

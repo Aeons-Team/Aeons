@@ -29,8 +29,7 @@ export default function FolderInfo({ file }) {
 
                     activateContextMenu(true, {
                         type: "file",
-                        copy: file.contentType != 'folder',
-                        file,
+                        file
                     })
                 }}
             />

@@ -4,39 +4,35 @@ import IconButton from '../IconButton'
 import Utility from "../../lib/Utility"
 import style from './style.module.css'
 
-export default function FileInfo({ file, view }) {
+export default function FileInfo({ file }) {
   const { explorerView, activateContextMenu, select } = useAppState(state => ({
     explorerView: state.explorerView,
     activateContextMenu: state.activateContextMenu,
     select: state.select
   }))
 
-  const isGrid = view || (explorerView == 'grid')
+  const isGrid = explorerView == 'grid'
 
   return (
     <>    
-      {
-        !view &&
-        <IconButton 
-          name='dots-horizontal' 
-          fill 
-          onClick={(e) => {
-            e.stopPropagation()
+      <IconButton 
+        name='dots-horizontal' 
+        fill 
+        onClick={(e) => {
+          e.stopPropagation()
 
-            const appState = useAppStore.getState()
+          const appState = useAppStore.getState()
 
-            if (!appState.selected[file.id]) {
-              select(file.id)
-            }
+          if (!appState.selected[file.id]) {
+            select(file.id)
+          }
 
-            activateContextMenu(true, {
-              type: "file",
-              copy: file.contentType != 'folder',
-              file,
-            })
-          }}
-        />
-      }
+          activateContextMenu(true, {
+            type: "file",
+            file,
+          })
+        }}
+      />
 
       <FilePreview 
         className={isGrid ? '' : style.previewList}

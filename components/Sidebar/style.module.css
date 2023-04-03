@@ -1,7 +1,7 @@
 .sidebar {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 3rem;
     align-items: center;
     justify-content: center;
 }

@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { motion } from 'framer-motion'
 import { useDriveStore } from "../../stores/DriveStore";
 import { useAppStore } from "../../stores/AppStore";
 import Icon from '../Icon'
@@ -41,8 +42,11 @@ export default function Search() {
         />
       </div>
 
-      <div className={style.list}>
-        {isSearching && searchFiles.map((file) => (
+      <motion.div 
+        className={style.list} 
+        animate={{ height: isSearching ? 'auto' : 0 }}
+      >
+        {searchFiles && searchFiles.map((file) => (
             <div
               key={file.id}
               className={style.listItem}
@@ -57,7 +61,7 @@ export default function Search() {
               {file.name}
             </div>
           ))}
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -6,7 +6,7 @@ import FileInfo from "../FileInfo";
 import FolderInfo from "../FolderInfo";
 import style from "./style.module.css";
 
-export default function File({ file, enableControls, view }) {
+export default function File({ file, enableControls }) {
   const router = useRouter();
   const { id: activeFileId } = router.query;
   
@@ -20,7 +20,7 @@ export default function File({ file, enableControls, view }) {
     explorerView: state.explorerView
   }));
 
-  const isGrid = view || explorerView == 'grid'
+  const isGrid = explorerView == 'grid'
 
   const { contractState, uploadFiles, relocateFiles } = useDriveState((state) => ({
     contractState: state.contractState,
@@ -112,7 +112,7 @@ export default function File({ file, enableControls, view }) {
           select(file.id)
         }
 
-        else {
+        else if (file.contentType == 'folder') {
           router.push(`/drive/${file.id}`)
         }
 
@@ -125,18 +125,21 @@ export default function File({ file, enableControls, view }) {
     e.stopPropagation();
 
     if (!selected) {
+      if (getSelection().length == 1) {
+        clearSelection()
+      }
+
       select(file.id);
     }
 
     activateContextMenu(true, {
       type: "file",
-      copy: !isFolder,
       file,
     });
   };
 
   const onFileDoubleClick = () => {
-    if (file.pending) return
+    if (file.pending || file.contentType != 'folder') return
 
     router.push(`/drive/${file.id}`)
   }
@@ -170,7 +173,6 @@ export default function File({ file, enableControls, view }) {
           file={file}
           className={style.filePreview}
           enableControls={enableControls}
-          view={view}
         />
       )}
     </motion.div>

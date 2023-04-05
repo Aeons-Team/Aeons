@@ -192,7 +192,7 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
         if (i == 0) {
             currentUploader?.pause()
 
-            set({ currentUploader: null, uploading: false, uploadQueue: uploadQueue.slice(1), bytesUploaded: 0 })
+            set({ currentUploader: null, uploading: false, uploadQueue: uploadQueue.slice(1), bytesUploaded: 0, paused : false })
         }
 
         else {

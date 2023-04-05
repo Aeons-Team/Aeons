@@ -4,6 +4,7 @@ import FilePreview from "../FilePreview";
 import Utility from "../../lib/Utility"
 import Button from "../Button";
 import Icon from '../Icon'
+import IconButton from "../IconButton"
 import style from './style.module.css';
 
 export default function UploadQueue() {
@@ -62,14 +63,11 @@ export default function UploadQueue() {
                             uploading &&
                             <div className={style.currentUploadInfo}>
                                 <div className={style.currentUploadInfoTop}>
-                                    <span>{currentName}</span>
-                                    <span onClick={pauseOrResume}>
-                                        <Icon name={paused ? 'play' : 'pause'} width='1rem' height='1rem' fill />
-                                    </span>
+                                    <span>{currentName.length > 17 ? currentName.substring(0, 10) + '...' + currentName.substring(currentName.length - 7) : currentName}</span>
                                 </div>
 
                                 <div className={style.currentUploadInfoBottom}>
-                                    <span>{uploadedPerc}%</span>
+                                    <span>{uploadedPerc.toFixed(1)}%</span>
                                     <span>{Utility.formatBytes(bytesUploaded)} / {Utility.formatBytes(currentUpload.size)}</span> 
                                 </div>
                             </div>
@@ -84,7 +82,7 @@ export default function UploadQueue() {
                                         suppressContentEditableWarning
                                         onInput={(e) => currentNameRef.current = e.target.innerHTML}
                                     >
-                                        {currentUpload.name}
+                                        {currentUpload.name.length > 17 ? currentUpload.name.substring(0, 10) + '...' + currentUpload.name.substring(currentUpload.name.length - 7) : currentUpload.name}
                                     </span>
 
                                     <span>
@@ -95,25 +93,30 @@ export default function UploadQueue() {
                                         }
                                     </span>
                                 </div>
-
-                                <Button onClick={() => uploadNext(currentNameRef.current)}>
-                                    Confirm
-                                </Button>
+                                <div className={style.speedStatsLeft}>
+                                    <Button onClick={() => uploadNext(currentNameRef.current)}>
+                                        Confirm
+                                    </Button>
+                                </div>
                             </div>
                         }
-
-                        <span onClick={() => removeFromUploadQueue(0)}>
-                            <Icon name='cross' width='1.5rem' height='1.5rem' />
-                        </span>
+                        <div className={style.currentUploadRight}>
+                            {uploading && <IconButton name={paused ? 'play' : 'pause'} width='1rem' height='1rem' onClick={pauseOrResume} fill />}
+                            <IconButton name='cross' width='1.5rem' height='1.5rem' onClick={() => removeFromUploadQueue(0)}/>                        
+                        </div>
                     </div>
 
-                    <div>
-                        {Utility.formatBytes(uploadSpeed)}/s
-                    </div>
-
-                    <div>
-                        {Utility.formatTime((uploadQueue[0].file.size - bytesUploaded) / uploadSpeed)}
-                    </div>
+                    {   
+                        uploadSpeed > 0 && 
+                        <div className={style.speedStats}>
+                            <div className={style.speedStatsLeft}>
+                                {Utility.formatBytes(uploadSpeed)}/s
+                            </div>
+                            <div className={style.speedStatsRight}>
+                                {Utility.formatTime((uploadQueue[0].file.size - bytesUploaded) / uploadSpeed)}
+                            </div>
+                        </div>
+                    }
 
                     <div className={style.loading}> 
                         <div style={{ width: `${uploadedPerc}%` }} className={style.loadingInner} />
@@ -129,13 +132,12 @@ export default function UploadQueue() {
                         />
 
                         <div className={style.queueItemInfo}>
-                            <span>{item.file.name}</span>
+                            <span>{item.file.name.length > 17 ? item.file.name.substring(0, 10) + '...' + item.file.name.substring(item.file.name.length - 7) : item.file.name}</span>
                             <span>{Utility.formatBytes(item.file.size)}</span>
                         </div>
-
-                        <span onClick={() => removeFromUploadQueue(i+1)}>
-                            <Icon name='cross' width='1.5rem' height='1.5rem' />
-                        </span>
+                        <div className={style.queueItemCancel}>
+                            <IconButton name='cross' width='1.5rem' height='1.5rem' onClick={() => removeFromUploadQueue(i+1)}/>
+                        </div>
                     </div>
                 ))}
             </div>

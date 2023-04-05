@@ -31,7 +31,7 @@ export default class Utility {
   }
 
   static formatTime(seconds: number): string {
-    if (seconds < 60) return `${seconds} seconds`
+    if (seconds < 60) return `${seconds.toFixed(1)} seconds`
 
     if (seconds < 60 * 60) return `${Math.round(seconds / 60)} minutes`
 

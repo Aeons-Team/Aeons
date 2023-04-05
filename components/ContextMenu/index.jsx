@@ -163,7 +163,7 @@ export default function ContextMenu() {
                   useAppStore.setState({ contextMenuAction: "creatingFolder" })
                 }}
               >
-                <Icon width='1.5rem' height='1.5rem' name='folder' />
+                <Icon width='1.5rem' height='1.5rem' name='folder' fill/>
 
                 Create Folder
               </div>

@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import Spinner from 'react-spinner-material'
 import { useAppState, useAppStore } from '../../stores/AppStore'
 import FilePreview from '../FilePreview'
 import IconButton from '../IconButton'
@@ -11,10 +13,12 @@ export default function FileInfo({ file }) {
     select: state.select
   }))
 
+  const [loading, setLoading] = useState(true)
+
   return (
     <>
       <div className={style.fileHeader}>
-        <Icon name='folder' width='1.5rem' height='1.5rem' fill />
+        <Icon name='folder' width='1.25rem' height='1.25rem' fill />
 
         <span className={style.fileName}>{file.name}</span>
 
@@ -40,14 +44,24 @@ export default function FileInfo({ file }) {
             }}
           />
         }
+
+        {
+          file.pending &&
+          <Spinner className={style.spinner2} radius={13} stroke={1} color='var(--color-active)' />
+        }
       </div>
 
       <div className={style.previewContainer}>
         <FilePreview 
           className={style.preview}
+          onLoad={() => setLoading(false)}
           src={`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`} 
           contentType={file.contentType} 
         />
+
+        {
+          loading && <Spinner className={style.spinner} radius={20} stroke={2} color='var(--color-active)' />
+        }
       </div>
         
       <div className={style.fileDetails}>

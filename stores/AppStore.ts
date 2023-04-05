@@ -51,10 +51,15 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
     if (flag) {
       contextMenuPosition.copy(cursorPosition);
       partial.contextMenuOpts = { type: opts.type, file: opts.file };
-      partial.contextMenuAction = opts.action
-    } else partial.contextMenuOpts = {};
+      partial.contextMenuAction = opts.action;
+    } 
+    
+    else {
+      partial.contextMenuOpts = {};
+      partial.contextMenuAction = ''
+    }
 
-    partial.contextMenuActivation = contextMenuActivation + 1
+    partial.contextMenuActivation = contextMenuActivation + 1;
 
     set(partial);
   },

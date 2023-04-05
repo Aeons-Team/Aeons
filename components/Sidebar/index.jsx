@@ -30,40 +30,41 @@ export default function Sidebar() {
         }
     })
 
-    const spanVariants = !isMobile
-        ? {
-            normal: {
-                height: 0,
-                width: '2px',
-                backgroundColor: 'var(--color-secondary)'
-            },
+    const spanVariants = {
+        normal: {
+            height: 0,
+            width: '2px',
+            backgroundColor: 'var(--color-secondary)'
+        },
 
-            selected: {
-                height: '180%',
-                backgroundColor: 'var(--color-secondary)'
-            },
+        selected: {
+            height: '180%',
+            backgroundColor: 'var(--color-secondary)'
+        },
 
-            hover: {
-                height: '50%'
-            }
+        hover: {
+            height: '50%'
         }
-        : {
-            normal: {
-                height: '3px',
-                width: 0,
-                backgroundColor: 'var(--color-secondary)'
-            },
+    }
+    
+    const spanVariantsMobile = {
+        normal: {
+            height: '2px',
+            width: 0,
+            backgroundColor: 'var(--color-secondary)'
+        },
 
-            selected: {
-                height: '3px',
-                width: '180%',
-                backgroundColor: 'var(--color-secondary)'
-            },
+        selected: {
+            height: '2px',
+            width: '150%',
+            backgroundColor: 'var(--color-secondary)'
+        },
 
-            hover: {
-                width: '50%'
-            }
+        hover: {
+            height: '2px',
+            width: '50%'
         }
+    }
 
     return (
         <div className={style.sidebar}>
@@ -75,7 +76,11 @@ export default function Sidebar() {
                 onMouseLeave={() => setHovering([false, false, false])}
                 animate={router.pathname.startsWith('/drive') ? 'selected' : (hovering[0] ? 'hover' : 'normal')}
             >
-                <motion.span variants={spanVariants} />
+                {
+                    !isMobile 
+                        ? <motion.span key='span-desk' variants={spanVariants} />
+                        : <motion.span key='span-mob' variants={spanVariantsMobile} />
+                }
 
                 <Icon 
                     name='drive' 
@@ -91,7 +96,11 @@ export default function Sidebar() {
                 onMouseLeave={() => setHovering([false, false, false])}
                 animate={router.pathname.startsWith('/settings') ? 'selected' : (hovering[1] ? 'hover' : 'normal')}
             >
-                <motion.span variants={spanVariants} />
+                {
+                    !isMobile 
+                        ? <motion.span key='span-desk' variants={spanVariants} />
+                        : <motion.span key='span-mob' variants={spanVariantsMobile} />
+                }
 
                 <Icon 
                     name='settings' 
@@ -106,7 +115,11 @@ export default function Sidebar() {
                 onMouseLeave={() => setHovering([false, false, false])}
                 animate={router.pathname.startsWith('/archive') ? 'selected' : (hovering[2] ? 'hover' : 'normal')}
             >
-                <motion.span variants={spanVariants} />
+                {
+                    !isMobile 
+                        ? <motion.span key='span-desk' variants={spanVariants} />
+                        : <motion.span key='span-mob' variants={spanVariantsMobile} />
+                }
 
                 <Icon 
                     name='archive' 

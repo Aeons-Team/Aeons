@@ -11,6 +11,12 @@
     top: 0rem;
 }
 
+.spinner {
+    position: absolute;
+    right: 0rem;
+    top: 0rem;
+}
+
 .folderHeader {
     display: flex;
     flex-direction: column;
@@ -20,7 +26,8 @@
 .folderName {
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
 }
 
 .folderDetails {
@@ -32,4 +39,27 @@
 
 .folderDetails > *:nth-child(2) {
     margin-left: auto;
+}
+
+@media (max-width: 500px) {
+    .folderName {
+        font-size: 0.85rem;
+    }
+
+    .folderDetails {
+        font-size: 0.7rem;
+    }
+    
+    .folderHeader {
+        gap: 0.5rem;
+    }
+
+    .folderHeader svg {
+        transform: scale(0.8);
+        transform-origin: left center;
+    }
+
+    .folderInfo {
+        gap: 1rem;
+    }
 }

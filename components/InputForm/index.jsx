@@ -22,8 +22,11 @@ export default function InputForm({ icon, heading, initialVal='', type='text', d
   return (
     <div className={style.form}>
       <div className={style.top}>
-        <Icon width='1.75rem' height='1.75rem' name={icon} fill />
-        <div className={style.title}>{heading}</div>
+        <div className={style.header}>
+          <Icon width='1.75rem' height='1.75rem' name={icon} fill />
+          <div className={style.title}>{heading}</div>
+        </div>
+        
         <p className={style.description}>{description}</p>
       </div>
 

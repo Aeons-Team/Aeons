@@ -151,7 +151,9 @@ export default function ContextMenu() {
                 htmlFor='upload-file'
                 className={style.contextMenuButton}
               >
-                <Icon width='1.5rem' height='1.5rem' name='upload-file' fill />
+                <span>
+                  <Icon width='1.5rem' height='1.5rem' name='upload-file' fill />
+                </span>
 
                 Upload File
               </label>
@@ -163,7 +165,9 @@ export default function ContextMenu() {
                   useAppStore.setState({ contextMenuAction: "creatingFolder" })
                 }}
               >
-                <Icon width='1.5rem' height='1.5rem' name='folder' />
+                <span>
+                  <Icon width='1.5rem' height='1.5rem' name='folder' />
+                </span>
 
                 Create Folder
               </div>
@@ -184,10 +188,16 @@ export default function ContextMenu() {
                       router.push(`/drive/${selection[0]}`)
                     }
 
+                    else {
+                      window.open(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${contextMenuOpts.file.id}`)
+                    }
+
                     activateContextMenu(false)
                   }}
                 >
-                  <Icon width='1.5rem' height='1.5rem' name='open' />
+                  <span>
+                    <Icon width='1.65rem' height='1.65rem' name='open' />
+                  </span>
 
                   Open
                 </div>
@@ -206,11 +216,15 @@ export default function ContextMenu() {
                     );
                   }}
                 >
-                  <Icon width='1.5rem' height='1.5rem' name='url' />
+                  <span>
+                    <Icon width='1.65rem' height='1.65rem' name='url' />
+                  </span>
 
                   Copy url
                 </div>
               )}
+
+              <div className={style.separator} />
 
               <div
                 className={style.contextMenuButton}
@@ -219,7 +233,9 @@ export default function ContextMenu() {
                   useAppStore.setState({ contextMenuAction: "moveFile" });
                 }}
               >
-                <Icon width='1.5rem' height='1.5rem' name='move' fill />
+                <span>
+                  <Icon width='1.3rem' height='1.3rem' name='move' fill />
+                </span>
 
                 Move
               </div>
@@ -232,7 +248,9 @@ export default function ContextMenu() {
                     useAppStore.setState({ contextMenuAction: "rename" });
                   }}
                 >
-                  <Icon width='1.5rem' height='1.5rem' name='rename' fill />
+                  <span>
+                    <Icon width='1.5rem' height='1.5rem' name='rename' fill />
+                  </span>
 
                   Rename
                 </div>
@@ -241,7 +259,9 @@ export default function ContextMenu() {
               <div
                 className={style.contextMenuButton}
               >
-                <Icon width='1.5rem' height='1.5rem' name='archive' strokeWidth={8} />
+                <span>
+                  <Icon width='1.45rem' height='1.45rem' name='archive' strokeWidth={11} />
+                </span>
                 
                 Archive
               </div>

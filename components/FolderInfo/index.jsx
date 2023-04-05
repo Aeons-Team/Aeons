@@ -1,4 +1,5 @@
 import { useAppState, useAppStore } from '../../stores/AppStore'
+import Spinner from 'react-spinner-material'
 import IconButton from '../IconButton'
 import Icon from '../Icon'
 import Utility from '../../lib/Utility'
@@ -33,6 +34,11 @@ export default function FolderInfo({ file }) {
                         })
                     }}
                 />
+            }
+
+            {
+                file.pending &&
+                <Spinner className={style.spinner} radius={13} stroke={1} color='var(--color-active)' />
             }
 
             <div className={style.folderHeader}>

@@ -3,7 +3,7 @@ import style from './style.module.css'
 
 export default function ExplorerFiles({ files }) {
     return (
-        <>
+        <div className={style.explorerFiles}>
             <div className={style.section}>
                 <h1 className={style.sectionHeader}>
                     <span>Folders</span>
@@ -21,6 +21,6 @@ export default function ExplorerFiles({ files }) {
                     {files.filter((x) => x.contentType != "folder").map((x) => <File key={x.id} file={x} />)}
                 </div>
             </div>
-        </>
+        </div>
     )
 }

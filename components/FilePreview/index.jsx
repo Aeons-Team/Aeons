@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export default function FilePreview({ src, contentType, className, enableControls }) {
+export default function FilePreview({ src, contentType, className, enableControls, onLoad }) {
     useEffect(() => {
         return () => URL.revokeObjectURL(src)
     }, [])
@@ -8,12 +8,12 @@ export default function FilePreview({ src, contentType, className, enableControl
     if (!contentType) return <></>
 
     if (contentType.match("image/*")) {
-        return <img src={src} className={className} />;
+        return <img onLoad={onLoad} src={src} className={className} />;
     }
 
     if (contentType.match("video/*")) {
         return (
-            <video className={className} controls={enableControls}>
+            <video onCanPlay={onLoad} autoPlay muted loop className={className} controls={enableControls}>
                 <source src={src} />
             </video>
         );
@@ -21,7 +21,7 @@ export default function FilePreview({ src, contentType, className, enableControl
 
     if (contentType.match("audio/*")) {
         return (
-            <audio className={className} controls>
+            <audio onLoad={onLoad} className={className} controls>
                 <source src={src} />
             </audio>
         );

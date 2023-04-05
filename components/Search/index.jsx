@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
-import { motion } from 'framer-motion'
 import { useDriveStore } from "../../stores/DriveStore";
 import { useAppStore } from "../../stores/AppStore";
 import Icon from '../Icon'
@@ -54,7 +53,7 @@ export default function Search() {
           }}
         />
         
-        <Input
+        <input
           onInput={(e) => {
             setInputValue(e.target.value);
           }}
@@ -82,12 +81,14 @@ export default function Search() {
                   router.push(`/drive/${file.id}`)
                 }
               }}
-            >              
-              {
-                file.contentType == 'folder'
-                  ? <Icon name='folder' width='1.5rem' height='1.5rem' fill />
-                  : <Icon name='file' fill width='1.75rem' height='1.75rem' />
-              }
+            >      
+              <span>
+                {
+                  file.contentType == 'folder'
+                    ? <Icon name='folder' width='1.1rem' height='1.1rem' fill />
+                    : <Icon name='file' fill width='1.25rem' height='1.25rem' />
+                }
+              </span>        
 
               {file.name}
             </div>

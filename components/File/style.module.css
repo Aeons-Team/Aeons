@@ -3,16 +3,17 @@
   display: flex;
   flex-direction: column;
   background-color: var(--color-primary-2);
-  cursor: pointer;
   padding: 0.25rem;
   padding-bottom: 0.75rem;
   border-radius: 6px;
+  transition: background-color 400ms ease-in-out;
 }
 
 .folder {
   padding: 1rem;
   background-color: var(--color-primary-2);
   border-radius: 6px;
+  transition: background-color 400ms ease-in-out;
 }
 
 .file:not(.selected):hover {

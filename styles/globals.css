@@ -3,9 +3,9 @@
 :root {
   --color-background: #f4f4f4;
   --color-primary: #ffffff;
-  --color-primary-2: #f0f0f0;
-  --color-primary-3: #e0e0e0;
-  --color-primary-4: #d0d0d0;
+  --color-primary-2: #f4f4f4;
+  --color-primary-3: #eaeaea;
+  --color-primary-4: #dfdfdf;
   --color-secondary: #000000;
   --color-secondary-2: #222222;
   --color-secondary-3: #444444;
@@ -49,4 +49,14 @@ body::-webkit-scrollbar {
 
 a {
   text-decoration: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }

@@ -37,4 +37,9 @@
         left: auto;
         bottom: 0;
     }
+
+    .sidebar svg {
+        transform: scale(0.85);
+        transform-origin: center bottom;
+    }
 }

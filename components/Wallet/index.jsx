@@ -29,12 +29,17 @@ export default function Wallet() {
   const section1Ref = useRef()
   const section2Ref = useRef()
   const walletRef = useRef()
+  const walletInnerRef = useRef()
 
   const firstActivationRef = useRef(false)
 
   useEffect(() => {
+    const transform = walletInnerRef.current.style.transform 
+    const result = new RegExp(/scale\((.+?)\)/).exec(transform)
+    const scale = Number((result && result[1]) ?? 1.0)
+
     const elem = !funding ? section1Ref.current : section2Ref.current
-    const height = elem.getBoundingClientRect().height 
+    const height = elem.getBoundingClientRect().height * (1.0 / scale)
     setHeight(height)
   }, [funding])
 
@@ -42,6 +47,7 @@ export default function Wallet() {
     const onClick = (e) => {
       if (!walletRef.current.contains(e.target)) {
         setShowWallet(false)
+        setFunding(false)
       }
     };
 
@@ -65,15 +71,20 @@ export default function Wallet() {
 
       <motion.div 
         className={style.walletInner} 
+        ref={walletInnerRef}
         initial={{
           height, 
           opacity: 0,
-          pointerEvents: 'none'
+          scale: 0.9,
+          pointerEvents: 'none',
+          transformOrigin: 'center top'
         }}
         animate={{ 
           height, 
           opacity: showWallet ? 1 : 0,
-          pointerEvents: showWallet ? 'auto' : 'none'
+          scale: showWallet ? 1 : 0.9,
+          pointerEvents: showWallet ? 'auto' : 'none',
+          transformOrigin: 'center top'
         }}
       >
         <AnimatePresence>
@@ -86,6 +97,7 @@ export default function Wallet() {
               initial={{ right: firstActivationRef.current ? '0%' : '100%' }} 
               animate={{ right: '0%' }} 
               exit={{ right: '100%' }}
+              transition={{ ease: 'easeInOut', duration: 0.45 }}
             >
               <div className={style.walletUpper}>
                 <Icon name={client.networkCurrency} width='3rem' height='3rem' />
@@ -146,6 +158,7 @@ export default function Wallet() {
               initial={{ right: '-100%' }} 
               animate={{ right: '0%' }} 
               exit={{ right: '-100%' }}
+              transition={{ ease: 'easeInOut', duration: 0.45 }}
             >
               <InputForm 
                 heading='Fund Bundlr'

@@ -1,6 +1,6 @@
 .iconButton {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.7rem;
+  height: 1.7rem;
   border: none;
 	cursor: pointer;
   background: none;
@@ -8,6 +8,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 100%;
+  transition: background-color 400ms ease-in-out;
 }
 
 .iconButton:not(:disabled):hover {

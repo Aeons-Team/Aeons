@@ -1,10 +1,11 @@
 .fileHeader {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.5rem;
     font-size: 0.8rem;
     padding: 0.5rem 0.2rem;
     padding-left: 0.8rem;
+    position: relative;
 }
 
 .fileHeader > *:nth-child(3) {
@@ -16,13 +17,14 @@
     gap: 0.3rem;
     display: flex;
     align-items: center;    
-    padding: 0 0.8rem;
+    padding: 0.2rem 0.8rem;
 }
 
 .fileName {
     overflow: hidden;
     text-overflow: ellipsis;
-    width: calc(100% - 1.5rem);
+    width: calc(100% - 4rem);
+    white-space: nowrap;
 }
 
 .previewContainer {
@@ -30,16 +32,50 @@
     padding-top: 0.25rem;
     padding-bottom: 0.6rem;
     flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
 .preview {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 1 / 1;
     border-radius: 6px;
     object-fit: cover;
     pointer-events: none;
+    background-color: var(--color-primary-3);
 }
 
 .fileDetails > *:nth-child(2) {
     margin-left: auto;
+}
+
+.spinner {
+    position: absolute;
+}
+
+.spinner2 {
+    margin-right: 0.65rem;
+}
+
+.fileHeader > *:nth-child(3) {
+    position: absolute;
+    right: 0;
+}
+
+@media (max-width: 500px) {
+    .fileHeader {
+        font-size: 0.75rem;
+        gap: 0.2rem;
+    }
+
+    .fileDetails {
+        font-size: 0.7rem;
+    }
+
+    .fileHeader svg {
+        transform: scale(0.9);
+        transform-origin: left center;
+    }
 }

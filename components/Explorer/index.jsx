@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useAppState } from "../../stores/AppStore";
 import { useDriveState } from "../../stores/DriveStore";
+import ExplorerBar from '../ExplorerBar'
 import ExplorerFiles from "../ExplorerFiles";
 import style from "./style.module.css";
 
@@ -46,6 +47,7 @@ export default function Explorer() {
       onClick={clearSelection}
       onContextMenu={onExplorerContextMenu}
     >
+      <ExplorerBar />
       <ExplorerFiles files={activeFileChildren} />
     </div>
   );

@@ -32,6 +32,7 @@ export default function File({ file, enableControls }) {
     const appState = useAppStore.getState()
 
     if (!appState.selected[file.id]) {
+      clearSelection()
       select(file.id)
     }
   };
@@ -114,6 +115,10 @@ export default function File({ file, enableControls }) {
           router.push(`/drive/${file.id}`)
         }
 
+        else {
+          window.open(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`)
+        }
+
         break
     }
   };
@@ -139,16 +144,22 @@ export default function File({ file, enableControls }) {
   };
 
   const onFileDoubleClick = () => {
-    if (file.pending || file.contentType != 'folder') return
+    if (file.pending) return
 
-    router.push(`/drive/${file.id}`)
+    if (file.contentType == 'folder') {
+      router.push(`/drive/${file.id}`)
+    }
+
+    else {
+      window.open(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`)
+    }
   }
 
   return (
     <motion.div
       animate={{ opacity: file.pending ? 0.5 : 1 }}
       className={`${isFolder ? style.folder : style.file} ${selected ? style.selected : "" }`}
-      draggable
+      draggable={!file.pending}
       onDragStart={onFileDragStart}
       onDrop={onFileDrop}
       onDragOver={onFileDragOver}

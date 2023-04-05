@@ -25,17 +25,27 @@ export default function ExplorerActions() {
                 <>
                     <IconButton 
                         name='open' 
-                        width='1.05rem'
-                        height='1.05rem'
-                        onClick={() => router.push(`/drive/${selection[0]}`)}
+                        width='1.25rem'
+                        height='1.25rem'
+                        onClick={() => {
+                            const file = contractState.getFile(selection[0])
+
+                            if (file.contentType == 'folder') {
+                                router.push(`/drive/${selection[0]}`)
+                            }
+
+                            else {
+                                window.open(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`)
+                            }
+                        }}
                     />
 
                     {   
                         contractState.getFile(selection[0]).contentType != 'folder' &&
                         <IconButton 
                             name='url' 
-                            width='1.05rem'
-                            height='1.05rem'
+                            width='1.25rem'
+                            height='1.25rem'
                             onClick={() => copy(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${selection[0]}`)}
                         />
                     }
@@ -43,8 +53,8 @@ export default function ExplorerActions() {
                     <IconButton 
                         name='rename' 
                         fill
-                        width='1.05rem'
-                        height='1.05rem'
+                        width='1.15rem'
+                        height='1.15rem'
                         onClick={(e) => {
                             e.stopPropagation()
 
@@ -66,8 +76,8 @@ export default function ExplorerActions() {
                     <IconButton 
                         name='move'
                         fill 
-                        width='1rem'
-                        height='1rem'
+                        width='1.05rem'
+                        height='1.05rem'
                         onClick={(e) => {
                             e.stopPropagation()
 
@@ -83,8 +93,8 @@ export default function ExplorerActions() {
 
                     <IconButton 
                         name='archive' 
-                        width='1rem'
-                        height='1rem'
+                        width='1.05rem'
+                        height='1.05rem'
                         strokeWidth={12}
                     />
                 </>

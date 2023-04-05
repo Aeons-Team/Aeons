@@ -1,9 +1,77 @@
+.folderSelect {
+  display: flex;
+  flex-direction: column;
+}
+
+.folders {
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  overflow-y: auto;
+  margin-bottom: 0.75rem;
+}
+
 .folder {
-  padding: 0.5rem 2rem;
-  background-color: var(--color-primary);
+  padding: 0.75rem 1rem;
   color: var(--color-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary-2);
+}
+
+.folder:not(.selected):hover {
+  background-color: var(--color-primary-3);
 }
 
 .selected {
   background-color: var(--color-selected);
+}
+
+.lower {
+  display: flex;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.lower > *:nth-child(2) {
+  margin-left: auto;
+}
+
+.back {
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+.back:not(:disabled):hover {
+  background-color: var(--color-primary-2);
+}
+
+.back:disabled {
+  opacity: 0.6;
+}
+
+.currentFileHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.currentFileHeader > span {
+  width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1rem;
+}
+
+.folderName {
+  width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

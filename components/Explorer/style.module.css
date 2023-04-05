@@ -3,4 +3,6 @@
   flex-direction: column;
   height: calc(100vh - 100px);
   overflow-y: scroll;
+  padding: 1.25rem;
+  gap: 2rem;
 }

@@ -1,25 +1,45 @@
 .wallet {
-  
+  position: relative;
 }
 
-.transfer{
+.transfer {
+  background-color: var(--color-active);
+  width: 3rem;
+  height: 3rem;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
 
+.transfer:hover {
+  background-color: var(--color-active-2);
 }
 
 .avatar {
-  height: 3rem;
-  width: 3rem;
-  background-color: red;
+  height: 2.5rem;
+  width: 2.5rem;
+  margin-right: 0.25rem;
+  background-color: var(--color-active);
+  color: var(--color-primary);
   border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .walletInner {
   position: absolute;
   right: 0;
+  transform: translate(-0.25rem, 0.25rem);
   background-color: var(--color-primary);
   display: flex;
   width: 400px;
   overflow: hidden;
+  z-index: 5;
 }
 
 .section {
@@ -33,9 +53,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.6rem;
   padding: 1rem;
-  background-color: var(--color-primary-darker);
 }
 
 .network {
@@ -52,7 +71,7 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   cursor: pointer;
 }
 
@@ -61,10 +80,11 @@
   width: 100px;
   text-align: center;
   font-size: 0.8rem;
-  background-color: var(--color-secondary);
-  color: var(--color-primary);
-  padding: 0.25rem;
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  padding: 0.4rem 0.25rem;
   pointer-events: none;
+  border-radius: 5px;
 }
 
 .walletLower {
@@ -75,17 +95,6 @@
   padding: 2rem 0.5rem;
 }
 
-.walletLower > *:nth-child(2) {
-  background-color: black;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
 .walletBalance {
   display: flex;
   flex-direction: column;
@@ -93,5 +102,6 @@
 }
 
 .walletBalance > *:nth-child(1) {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
+  color: var(--color-secondary-3);
 }

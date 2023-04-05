@@ -1,6 +1,7 @@
 import { useAppState, useAppStore } from '../../stores/AppStore'
 import IconButton from '../IconButton'
 import Icon from '../Icon'
+import Utility from '../../lib/Utility'
 import style from './style.module.css'
 
 export default function FolderInfo({ file }) {
@@ -11,28 +12,40 @@ export default function FolderInfo({ file }) {
 
     return (
         <div className={style.folderInfo}>
-            <Icon name='folder' width='1.5rem' height='1.5rem' />
+            {
+                !file.pending &&
+                <IconButton 
+                    className={style.folderInfoMenu}
+                    name='dots-vertical' 
+                    strokeWidth={2}
+                    onClick={(e) => {
+                        e.stopPropagation()
 
-            <span>{file.name}</span>
+                        const appState = useAppStore.getState()
 
-            <IconButton 
-                name='dots-horizontal' 
-                fill 
-                onClick={(e) => {
-                    e.stopPropagation()
+                        if (!appState.selected[file.id]) {
+                            select(file.id)
+                        }
 
-                    const appState = useAppStore.getState()
+                        activateContextMenu(true, {
+                            type: "file",
+                            file
+                        })
+                    }}
+                />
+            }
 
-                    if (!appState.selected[file.id]) {
-                        select(file.id)
-                    }
+            <div className={style.folderHeader}>
+                <Icon name='folder' width='2rem' height='2rem' fill />
 
-                    activateContextMenu(true, {
-                        type: "file",
-                        file
-                    })
-                }}
-            />
+                <span className={style.folderName}>{file.name}</span>
+            </div>
+
+            <div className={style.folderDetails}>
+                <span>{file.children.length} files</span>
+
+                <span>{Utility.formatDate(file.createdAt)}</span>
+            </div>
         </div>
     )
 }

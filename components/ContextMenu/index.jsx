@@ -1,39 +1,44 @@
 import { useRouter } from "next/router";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import copy from "clipboard-copy";
-import { useAppState } from "../../stores/AppStore";
+import { useAppState, useAppStore } from "../../stores/AppStore";
+import { useDriveState } from "../../stores/DriveStore";
 import style from "./style.module.css";
 import FolderSelect from "../FolderSelect";
-import FolderCreator from "../FolderCreator";
-import Rename from "../Rename";
+import InputForm from "../InputForm";
 import Icon from '../Icon';
-import { useDriveStore } from "../../stores/DriveStore";
 
 export default function ContextMenu() {
   const menuRef = useRef();
   const router = useRouter()
   const { id: activeFileId } = router.query
 
-  const uploadFiles = useDriveStore(state => state.uploadFiles)
+  const { uploadFiles, renameFile, createFolder, contractState, relocateFiles } = useDriveState(state => ({
+    uploadFiles: state.uploadFiles,
+    renameFile: state.renameFile,
+    createFolder: state.createFolder,
+    contractState: state.contractState,
+    relocateFiles: state.relocateFiles
+  }))
   
-  const { contextMenuActivated, contextMenuPosition, contextMenuOpts, activateContextMenu, getSelection } = useAppState((state) => ({
+  const { contextMenuActivated, contextMenuPosition, contextMenuOpts, activateContextMenu, getSelection, contextMenuAction, clearSelection } = useAppState((state) => ({
     contextMenuActivated: state.contextMenuActivated,
     contextMenuPosition: state.contextMenuPosition,
     contextMenuOpts: state.contextMenuOpts,
     activateContextMenu: state.activateContextMenu,
     getSelection: state.getSelection,
+    contextMenuAction: state.contextMenuAction,
+    clearSelection: state.clearSelection
   }));
 
   const selection = getSelection()
-
-  const [action, setAction] = useState();
   const contextMenuActivatedRef = useRef()
 
   useEffect(() => {
     const onClick = (e) => {
       if (!menuRef.current.contains(e.target) && contextMenuActivatedRef.current) {
         activateContextMenu(false);
-        setAction(); 
+        useAppStore.setState({ contextMenuAction: '' });
       }
     };
 
@@ -48,17 +53,81 @@ export default function ContextMenu() {
     contextMenuActivatedRef.current = contextMenuActivated
   }, [contextMenuActivated])
 
-  switch (action || contextMenuOpts.action) {
+  switch (contextMenuAction) {
     case "creatingFolder":
-      var contextMenuInner = <FolderCreator />;
+      var contextMenuInner = <InputForm 
+        heading='Create Folder'
+        icon='folder'
+        description='create a folder with a name of your choice'
+        onBack={() => {
+          useAppStore.setState({ contextMenuAction: '' })
+        }}
+
+        onClick={async (input) => {
+          const activation = useAppStore.getState().contextMenuActivation
+
+          await createFolder(input, activeFileId)
+
+          if (useAppStore.getState().contextMenuActivation == activation) {
+            activateContextMenu(false);
+          }
+        }}
+      
+      />;
       break;
 
     case "moveFile":
-      var contextMenuInner = <FolderSelect />;
+      var contextMenuInner = <div className={style.moveFile}>
+        <div className={style.moveFileHeader}>
+          <Icon name='move' fill width='1.5rem' height='1.5rem' />
+          <span>Move Files</span>
+        </div>
+
+        <p>Select the folder to which you'd like move all the selected files to</p>
+
+        <FolderSelect 
+          disabled={(selectedFileId) => selection.filter((file) => !contractState.isRelocatable(file, selectedFileId)).length}
+          onClick={async (selectedFileId) => {
+            const activation = useAppStore.getState().contextMenuActivation
+
+            clearSelection()
+            await relocateFiles(selection, activeFileId, selectedFileId);
+            
+            if (useAppStore.getState().contextMenuActivation == activation) {
+              activateContextMenu(false);
+            }
+          }}
+          onBack={(e) => {
+            e.stopPropagation()
+            useAppStore.setState({ contextMenuAction: '' })
+          }}
+        />
+      </div>
       break;
 
     case "rename":
-      var contextMenuInner = <Rename />;
+      var contextMenuInner = <InputForm 
+        heading='Rename'
+        icon='rename'
+        initialVal={contextMenuOpts.file.name}
+        description='change the name of the currently selected file'
+        onBack={() => {
+          useAppStore.setState({ contextMenuAction: '' })
+        }}
+
+        onClick={async (input) => {
+          const activation = useAppStore.getState().contextMenuActivation
+
+          const fileId = getSelection()[0];
+          clearSelection();
+          await renameFile(fileId, input);
+
+          if (useAppStore.getState().contextMenuActivation == activation) {
+            activateContextMenu(false);
+          }
+        }}
+      
+      />;
       break;
 
     default:
@@ -82,7 +151,7 @@ export default function ContextMenu() {
                 htmlFor='upload-file'
                 className={style.contextMenuButton}
               >
-                <Icon name='upload-file' fill />
+                <Icon width='1.5rem' height='1.5rem' name='upload-file' fill />
 
                 Upload File
               </label>
@@ -91,10 +160,10 @@ export default function ContextMenu() {
                 className={style.contextMenuButton}
                 onClick={(e) => {
                   e.stopPropagation()
-                  setAction("creatingFolder")
+                  useAppStore.setState({ contextMenuAction: "creatingFolder" })
                 }}
               >
-                <Icon name='folder' />
+                <Icon width='1.5rem' height='1.5rem' name='folder' />
 
                 Create Folder
               </div>
@@ -118,7 +187,7 @@ export default function ContextMenu() {
                     activateContextMenu(false)
                   }}
                 >
-                  <Icon name='open' />
+                  <Icon width='1.5rem' height='1.5rem' name='open' />
 
                   Open
                 </div>
@@ -129,7 +198,7 @@ export default function ContextMenu() {
                   className={style.contextMenuButton}
                   onClick={() => {
                     activateContextMenu(false);
-                    setAction();
+                    useAppStore.setState({ contextMenuAction: '' });
                     copy(
                       `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${
                         selection[0]
@@ -137,7 +206,7 @@ export default function ContextMenu() {
                     );
                   }}
                 >
-                  <Icon name='url' />
+                  <Icon width='1.5rem' height='1.5rem' name='url' />
 
                   Copy url
                 </div>
@@ -147,10 +216,10 @@ export default function ContextMenu() {
                 className={style.contextMenuButton}
                 onClick={(e) => {
                   e.stopPropagation()
-                  setAction("moveFile");
+                  useAppStore.setState({ contextMenuAction: "moveFile" });
                 }}
               >
-                <Icon name='move' fill />
+                <Icon width='1.5rem' height='1.5rem' name='move' fill />
 
                 Move
               </div>
@@ -160,10 +229,10 @@ export default function ContextMenu() {
                   className={style.contextMenuButton}
                   onClick={(e) => {
                     e.stopPropagation()
-                    setAction("rename");
+                    useAppStore.setState({ contextMenuAction: "rename" });
                   }}
                 >
-                  <Icon name='rename' fill />
+                  <Icon width='1.5rem' height='1.5rem' name='rename' fill />
 
                   Rename
                 </div>
@@ -172,7 +241,7 @@ export default function ContextMenu() {
               <div
                 className={style.contextMenuButton}
               >
-                <Icon name='archive' />
+                <Icon width='1.5rem' height='1.5rem' name='archive' strokeWidth={8} />
                 
                 Archive
               </div>

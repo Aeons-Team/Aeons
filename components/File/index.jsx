@@ -10,17 +10,14 @@ export default function File({ file, enableControls }) {
   const router = useRouter();
   const { id: activeFileId } = router.query;
   
-  const { activateContextMenu, selected, select, getSelection, clearSelection, selectItems, explorerView } = useAppState((state) => ({
+  const { activateContextMenu, selected, select, getSelection, clearSelection, selectItems } = useAppState((state) => ({
     activateContextMenu: state.activateContextMenu,
     selected: state.selected[file.id],
     select: state.select,
     getSelection: state.getSelection,
     clearSelection: state.clearSelection,
-    selectItems: state.selectItems,
-    explorerView: state.explorerView
+    selectItems: state.selectItems
   }));
-
-  const isGrid = explorerView == 'grid'
 
   const { contractState, uploadFiles, relocateFiles } = useDriveState((state) => ({
     contractState: state.contractState,
@@ -68,6 +65,7 @@ export default function File({ file, enableControls }) {
 
     if (appState.showWallet) appState.setShowWallet(false)
     if (appState.contextMenuActivated) activateContextMenu(false)
+    if (appState.searchActivated) useAppStore.setState({ searchActivated: false })
 
     if (file.pending) return
 
@@ -124,6 +122,8 @@ export default function File({ file, enableControls }) {
     e.preventDefault();
     e.stopPropagation();
 
+    if (file.pending) return 
+
     if (!selected) {
       if (getSelection().length == 1) {
         clearSelection()
@@ -144,20 +144,10 @@ export default function File({ file, enableControls }) {
     router.push(`/drive/${file.id}`)
   }
 
-  const getClassName = () => {
-    if (isFolder) {
-      return isGrid ? style.folder : style.folderList
-    }
-
-    else {
-      return isGrid ? style.file : style.fileList
-    }
-  }
-
   return (
     <motion.div
       animate={{ opacity: file.pending ? 0.5 : 1 }}
-      className={`${getClassName()} ${selected ? style.selected : "" }`}
+      className={`${isFolder ? style.folder : style.file} ${selected ? style.selected : "" }`}
       draggable
       onDragStart={onFileDragStart}
       onDrop={onFileDrop}

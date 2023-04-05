@@ -1,7 +1,40 @@
 .sidebar {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2.5rem;
     align-items: center;
     justify-content: center;
+    background-color: var(--color-background);
+    z-index: 5;
+}
+
+.sidebarOption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+}
+
+.sidebarOption > *:nth-child(1) {
+    position: absolute;
+    left: 0;
+}
+
+@media (max-width: 820px) {
+    .sidebar {
+        flex-direction: row;
+    }
+
+    .sidebarOption {
+        width: auto;
+        height: 100%;
+    }
+
+    .sidebarOption > *:nth-child(1) {
+        position: absolute;
+        left: auto;
+        bottom: 0;
+    }
 }

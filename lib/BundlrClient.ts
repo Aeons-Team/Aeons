@@ -38,6 +38,7 @@ export default class BundlrClient {
   apolloClient: ApolloClient<NormalizedCacheObject>
   networkName: string
   networkCurrencySym: string
+  networkCurrency: string
 
   async initialize(provider) {
     this.provider = provider
@@ -69,6 +70,7 @@ export default class BundlrClient {
 
     this.networkName = networkInfo.name
     this.networkCurrencySym = networkInfo.currencySym
+    this.networkCurrency = networkInfo.currency
 
     this.apolloClient = new ApolloClient({
       uri: `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/graphql`,

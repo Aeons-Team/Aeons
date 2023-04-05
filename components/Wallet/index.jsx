@@ -4,19 +4,22 @@ import copy from 'clipboard-copy'
 import { useDriveState } from '../../stores/DriveStore'
 import { useAppState } from '../../stores/AppStore';
 import Icon from '../Icon'
-import Funder from '../Funder'
+import InputForm from '../InputForm'
 import style from './style.module.css';
 
 export default function Wallet() {
-  const { client, loadedBalance, walletBalance } = useDriveState(state => ({
+  const { client, loadedBalance, walletBalance, fetchLoadedBalance, fetchWalletBalance } = useDriveState(state => ({
     client: state.client,
     loadedBalance: state.loadedBalance,
-    walletBalance: state.walletBalance
+    walletBalance: state.walletBalance,
+    fetchLoadedBalance: state.fetchLoadedBalance,
+    fetchWalletBalance: state.fetchWalletBalance
   }));
 
-  const { showWallet, setShowWallet } = useAppState(state => ({
+  const { showWallet, setShowWallet, activateContextMenu } = useAppState(state => ({
     showWallet: state.showWallet,
-    setShowWallet: state.setShowWallet
+    setShowWallet: state.setShowWallet,
+    activateContextMenu: state.activateContextMenu
   }));
 
   const [funding, setFunding] = useState(false)
@@ -55,7 +58,10 @@ export default function Wallet() {
         onClick={() => {
           firstActivationRef.current = true
           setShowWallet(!showWallet)
-        }} />
+        }}
+      >
+        {client.address.slice(2, 4)}
+      </div>
 
       <motion.div 
         className={style.walletInner} 
@@ -82,6 +88,8 @@ export default function Wallet() {
               exit={{ right: '100%' }}
             >
               <div className={style.walletUpper}>
+                <Icon name={client.networkCurrency} width='3rem' height='3rem' />
+
                 <div className={style.network}>
                   {client.networkName}
                 </div>
@@ -94,7 +102,8 @@ export default function Wallet() {
                       copy(client.address)
                     }} 
                     onMouseEnter={() => setHoveringAddress(true)} 
-                    onMouseLeave={() => setHoveringAddress(false)}>
+                    onMouseLeave={() => setHoveringAddress(false)}
+                  >
                     <div>{client.address.substring(0, 6) + '...' + client.address.substring(client.address.length - 3)}</div>
                     <Icon name='copy-clipboard' fill width='1rem' height='1rem' />
                   </div>
@@ -138,7 +147,27 @@ export default function Wallet() {
               animate={{ right: '0%' }} 
               exit={{ right: '-100%' }}
             >
-              <Funder onBack={() => setFunding(false)} />
+              <InputForm 
+                heading='Fund Bundlr'
+                icon='wallet'
+                type='number'
+                description='transfer funds to your internal bundlr wallet'
+                onBack={() => {
+                  setFunding(false)
+                }}
+
+                onClick={async (amount) => {
+                  activateContextMenu(false);
+
+                  if (amount) {
+                    await client.fund(amount)
+
+                    fetchLoadedBalance()
+                    fetchWalletBalance()
+                  }
+                }}
+              
+              />
             </motion.div>
           }
         </AnimatePresence>

@@ -1,36 +1,14 @@
-import { useRouter } from 'next/router'
+import Icon from '../Icon'
 import { useDriveStore } from '../../stores/DriveStore'
-import { useAppState } from '../../stores/AppStore'
 import style from './style.module.css'
 
-function Ancestor({ file }) {
-    const router = useRouter()
-    const { id: activeFileId } = router.query
-
-    const { getSelection, clearSelection } = useAppState(state => ({
-        getSelection: state.getSelection,
-        clearSelection: state.clearSelection   
-    }))
-
-    const relocateFiles = useDriveStore(state => state.relocateFiles)
-
-    const onAncestorDrop = () => {
-        if (file.id != activeFileId) {
-            relocateFiles(getSelection(), activeFileId, file.id)
-            clearSelection()
-        }
-    }
-
-    const onAncestorDragOver = (e) => {
-        e.preventDefault()
-    }
-
+function Ancestor({ file, onClick, onDrop, ...remaining }) {
     return (
         <div 
             className={style.ancestor} 
-            onClick={() => router.push(`/drive/${file.id}`)}
-            onDrop={onAncestorDrop}
-            onDragOver={onAncestorDragOver}
+            onClick={() => onClick(file)}
+            onDrop={() => onDrop(file)}
+            {...remaining}
         >
             {file.name}
         </div>
@@ -38,14 +16,23 @@ function Ancestor({ file }) {
 }
 
 
-export default function Ancestors({ id }) {
+export default function Ancestors({ id, itemStyle, gap, iconSize, ...remaining }) {
     const contractState = useDriveStore(state => state.contractState)
     const ancestors = contractState.getAncestors(id)
 
     return (
-        <div className={style.ancestors}>
+        <div className={style.ancestors} style={{ gap }}>
             {
-                ancestors.map(file => <Ancestor key={file.id} file={file} />)
+                ancestors.map((file, i) => (
+                    <div className={style.ancestorItem} style={{ gap }} key={file.id}>
+                        <Ancestor file={file} style={itemStyle} {...remaining} />
+
+                        {
+                            i != ancestors.length - 1 &&
+                            <Icon name='arrow-head-right' width={iconSize} height={iconSize} />
+                        }
+                    </div>
+                ))
             }
         </div>
     )

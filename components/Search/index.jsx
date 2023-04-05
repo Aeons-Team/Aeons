@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from 'framer-motion'
 import { useDriveStore } from "../../stores/DriveStore";
 import { useAppStore } from "../../stores/AppStore";
@@ -12,9 +12,10 @@ export default function Search() {
   const [inputValue, setInputValue] = useState("");
   const contractState = useDriveStore((state) => state.contractState);
   const searchActivated = useAppStore((state) => state.searchActivated)
+  const searchRef = useRef()
 
   const searchFiles = inputValue && contractState.searchFiles(inputValue)
-  const isSearching = searchActivated && searchFiles && searchFiles.length
+  const isSearching = searchActivated && searchFiles && searchFiles.length > 0
 
   function SearchQuery(searchItem) {
     if (searchItem.trim() == "") return;
@@ -22,17 +23,43 @@ export default function Search() {
     router.push(`/drive/search/${inputValue}`);
   }
 
+  useEffect(() => {
+    const onClick = (e) => {
+      if (!searchRef.current.contains(e.target) && useAppStore.getState().searchActivated) {
+        useAppStore.setState({ searchActivated: false })
+      }
+    };
+
+    document.addEventListener("click", onClick);
+
+    return () => {
+      document.removeEventListener("click", onClick);
+    };
+  }, []);
+
   return (
-    <div className={style.search}>
+    <div ref={searchRef} className={style.search}>
       <div className={`${style.searchInner} ${isSearching ? style.searchInnerCollapse : ''}`}>
-        <Icon name='search' />
+        <Icon 
+          name='search' 
+          width='1.6rem'
+          height='1.6rem'
+          animate={{
+            opacity: searchActivated ? 1 : 0.5,
+            scale: searchActivated ? 1 : 0.9
+          }}
+          transition={{
+            duration: 0.2,
+            ease: 'easeInOut'
+          }}
+        />
         
         <Input
           onInput={(e) => {
             setInputValue(e.target.value);
           }}
+          value={inputValue}
           onFocus={() => useAppStore.setState({ searchActivated: true })}
-          onBlur={() => useAppStore.setState({ searchActivated: false })}
           placeholder="Search"
           onKeyUp={(e) => {
             if (e.key === "Enter") {
@@ -42,26 +69,30 @@ export default function Search() {
         />
       </div>
 
-      <motion.div 
-        className={style.list} 
-        animate={{ height: isSearching ? 'auto' : 0 }}
-      >
-        {searchFiles && searchFiles.map((file) => (
+      <div className={style.list}>
+        {isSearching && searchFiles.map((file) => (
             <div
               key={file.id}
               className={style.listItem}
-              onClick={() => router.push(`/drive/${file.id}`)}
+              onClick={() => {
+                useAppStore.setState({ searchActivated: false })
+                setInputValue("")
+
+                if (file.contentType == 'folder') {
+                  router.push(`/drive/${file.id}`)
+                }
+              }}
             >              
               {
                 file.contentType == 'folder'
-                  ? <Icon name='folder' width='1.5rem' height='1.5rem' />
+                  ? <Icon name='folder' width='1.5rem' height='1.5rem' fill />
                   : <Icon name='file' fill width='1.75rem' height='1.75rem' />
               }
 
               {file.name}
             </div>
           ))}
-      </motion.div>
+      </div>
     </div>
   );
 }

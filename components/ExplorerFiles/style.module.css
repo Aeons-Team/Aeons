@@ -1,28 +1,25 @@
 .section {
-
+  
 }
 
-.sectionTitle {
-  font-size: 0.85rem;
+.sectionHeader {
+  font-size: 0.95rem;
   font-weight: 400;
   margin-bottom: 1rem;
   color: var(--color-secondary);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 .folders {
   display: grid;
-  grid-template-columns: repeat(5, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
 }
 
 .files {
   display: grid;
-  grid-template-columns: repeat(5, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
-}
-
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
 }

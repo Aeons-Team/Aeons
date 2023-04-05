@@ -1,6 +1,21 @@
 .button {
-  background-color: var(--color-secondary);
+  background-color: var(--color-active);
   color: var(--color-primary);
-  padding: 0.5rem;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
   border: none;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  cursor: pointer;
+}
+
+.button:not(:disabled):hover {
+  background-color: var(--color-active-2);
+}
+
+.button:disabled {
+  opacity: 0.6;
 }

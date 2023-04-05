@@ -1,12 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 :root {
-  --color-background: #f8f8f8;
+  --color-background: #f4f4f4;
   --color-primary: #ffffff;
-  --color-primary-darker: #f0f0f0;
+  --color-primary-2: #f0f0f0;
+  --color-primary-3: #e0e0e0;
+  --color-primary-4: #d0d0d0;
   --color-secondary: #000000;
+  --color-secondary-2: #222222;
+  --color-secondary-3: #444444;
+  --color-secondary-4: #666666;
   --color-selected: #f0f0ff;
-  --color-active: #f0f0ff;
+  --color-active: #3e98f7;
+  --color-active-2: #53a5fc;
   --color-hover: #e0e0e0;
 }
 

@@ -1,5 +1,9 @@
 import Vector2 from "./Vector2";
 
+const months = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+]
+
 export default class Utility {
   static getElementPosition(elem: Element): Vector2 {
     const elemBB = elem.getBoundingClientRect();
@@ -34,5 +38,11 @@ export default class Utility {
     if (seconds < 24 * 60 * 60) return `${Math.round(seconds / (60 * 60))} hours`
 
     return `${Math.round(seconds / (24 * 60 * 60))} days`
+  }
+
+  static formatDate(epoch: number): string {
+    const date = new Date(epoch)
+
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`
   }
 }

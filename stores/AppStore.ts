@@ -19,8 +19,9 @@ interface AppStoreData {
   holdingControl: boolean,
   firstSelected: string | null,
   showWallet: boolean,
-  explorerView: string,
   searchActivated: boolean,
+  contextMenuAction: string,
+  contextMenuActivation: number,
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => void
   select: (item: string) => void,
   selectItems: (items: string[]) => void,
@@ -39,17 +40,21 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
   holdingControl: false,
   firstSelected: null,
   showWallet: false,
-  explorerView: 'grid',
   searchActivated: false,
+  contextMenuAction: '',
+  contextMenuActivation: 0,
 
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => {
-    const { cursorPosition, contextMenuPosition } = get();
+    const { cursorPosition, contextMenuPosition, contextMenuActivation } = get();
     const partial: any = { contextMenuActivated: flag };
 
     if (flag) {
       contextMenuPosition.copy(cursorPosition);
-      partial.contextMenuOpts = opts;
+      partial.contextMenuOpts = { type: opts.type, file: opts.file };
+      partial.contextMenuAction = opts.action
     } else partial.contextMenuOpts = {};
+
+    partial.contextMenuActivation = contextMenuActivation + 1
 
     set(partial);
   },
@@ -70,7 +75,7 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
   },
 
   clearSelection: (clearFirstSelected: boolean = true) => {
-    const { firstSelected, selected } = get()
+    const { selected } = get()
     const partial: any = {}
 
     if (clearFirstSelected) {

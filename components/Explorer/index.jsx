@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { useAppState } from "../../stores/AppStore";
 import { useDriveState } from "../../stores/DriveStore";
-import File from "../File";
 import ExplorerFiles from "../ExplorerFiles";
 import style from "./style.module.css";
 
@@ -17,9 +16,7 @@ export default function Explorer() {
     uploadFiles: state.uploadFiles
   }));
 
-  const activeFile = contractState.getFile(activeFileId);
   const activeFileChildren = contractState.getChildren(activeFileId);
-  const isFileView = activeFile.contentType != "folder";
 
   const onExplorerDrop = async (e) => {
     e.preventDefault();
@@ -43,17 +40,13 @@ export default function Explorer() {
 
   return (
     <div
-      className={isFileView ? style.fileView : style.explorer}
+      className={style.explorer}
       onDrop={onExplorerDrop}
       onDragOver={onExplorerDragOver}
       onClick={clearSelection}
       onContextMenu={onExplorerContextMenu}
     >
-      {isFileView ? (
-        <File file={activeFile} enableControls view />
-      ) : (
-        <ExplorerFiles files={activeFileChildren} />
-      )}
+      <ExplorerFiles files={activeFileChildren} />
     </div>
   );
 }

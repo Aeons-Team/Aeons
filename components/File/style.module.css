@@ -2,36 +2,27 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-2);
   cursor: pointer;
-}
-
-.filePreview {
-  flex-grow: 1;
-  object-fit: contain;
+  padding: 0.25rem;
+  padding-bottom: 0.75rem;
+  border-radius: 6px;
 }
 
 .folder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 4rem;
-  padding: 0 1rem;
-  font-size: 0.8rem;
-  gap: 0.6rem;
-  background-color: var(--color-primary);
-  cursor: pointer;
+  padding: 1rem;
+  background-color: var(--color-primary-2);
+  border-radius: 6px;
+}
+
+.file:not(.selected):hover {
+  background-color: var(--color-primary-3);
+}
+
+.folder:not(.selected):hover {
+  background-color: var(--color-primary-3);
 }
 
 .selected {
   background-color: var(--color-selected);
-}
-
-.fileList {
-  display: flex;
-  gap: 1rem;
-}
-
-.folderList {
-  padding: 0.5rem; 
 }

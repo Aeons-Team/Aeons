@@ -13,12 +13,13 @@
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     padding: 0.25rem 0.5rem;
-    background-color: var(--color-primary-darker);
+    background-color: var(--color-primary);
 }
 
 .searchInnerCollapse {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    border-bottom: solid 1px var(--color-primary-3);
 }
 
 .searchInner input {
@@ -28,6 +29,16 @@
     color: var(--color-secondary);
     flex-grow: 1;
     padding: 0.5rem 0;
+}
+
+.searchInner input::placeholder {
+    color: var(--color-secondary);
+    opacity: 0.6;
+    transition: opacity 200ms ease-in-out;
+}
+
+.searchInner input:focus::placeholder {
+    opacity: 1;
 }
 
 .list {
@@ -43,9 +54,13 @@
 }  
 
 .listItem {
-    background-color: var(--color-primary-darker);
+    background-color: var(--color-primary);
     padding: 0.5rem;
     display: flex;
     align-items: center;
     gap: 0.25rem;
+}
+
+.listItem:hover {
+    background-color: var(--color-primary-2);
 }

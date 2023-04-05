@@ -1,8 +1,35 @@
 .folderInfo {
+    position: relative;
     display: flex;
-    gap: 0.5rem;
-    align-items: center;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.folderInfoMenu {
+    position: absolute;
+    right: -0.5rem;
+    top: 0rem;
+}
+
+.folderHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.folderName {
     overflow: hidden;
-    white-space: pre;
     text-overflow: ellipsis;
+    font-size: 0.95rem;
+}
+
+.folderDetails {
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.folderDetails > *:nth-child(2) {
+    margin-left: auto;
 }

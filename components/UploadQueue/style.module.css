@@ -45,7 +45,7 @@
     height: 4px;
     border-radius: 4px;
     width: 100%;
-    background-color: var(--color-primary-darker);
+    background-color: var(--color-primary-2);
 }
 
 .loadingInner {

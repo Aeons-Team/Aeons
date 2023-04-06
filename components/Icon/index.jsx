@@ -202,5 +202,17 @@ export default function Icon({ name, fill, width, height, strokeWidth, invert = 
                 <path d="M14.5 14H9.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M22 11V17C22 21 21 22 17 22H7C3 22 2 21 2 17V7C2 3 3 2 7 2H8.5C10 2 10.33 2.44 10.9 3.2L12.4 5.2C12.78 5.7 13 6 14 6H17C21 6 22 7 22 11Z" strokeMiterlimit="10"/>
             </motion.svg>
+
+        case 'minimize':
+            return <motion.svg {...remaining} style={style} viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 20l10 10 10-10z"/>
+                <path d="M0 0h48v48h-48z" fill="none"/>
+            </motion.svg>
+        
+        case 'maximize':
+            return <motion.svg {...remaining} style={style} viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 28l10-10 10 10z"/>
+                <path d="M0 0h48v48h-48z" fill="none"/>
+            </motion.svg>
     }
 }

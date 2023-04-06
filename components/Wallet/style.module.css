@@ -18,9 +18,9 @@
 }
 
 .avatar {
-  height: 2.5rem;
-  width: 2.5rem;
-  margin-right: 0.25rem;
+  height: 2.75rem;
+  width: 2.75rem;
+  margin-right: 0.85rem;
   background-color: var(--color-active);
   color: var(--color-primary);
   border-radius: 100%;
@@ -32,15 +32,22 @@
   cursor: pointer;
 }
 
+.avatar:hover {
+  background-color: var(--color-active-2);
+}
+
 .walletInner {
   position: absolute;
   right: 0;
-  transform: translate(-0.25rem, 0.25rem);
+  margin-top: 0.5rem;
+  margin-right: 0.6rem;
   background-color: var(--color-primary);
   display: flex;
   width: 400px;
   overflow: hidden;
   z-index: 5;
+  border-radius: 8px;
+  box-shadow: 0 0 1px 0px var(--color-shadow);
 }
 
 .section {
@@ -105,4 +112,10 @@
 .walletBalance > *:nth-child(1) {
   font-size: 0.75rem;
   color: var(--color-secondary-3);
+}
+
+@media (max-width: 820px) {
+  .avatar {
+    margin-right: 0;
+  }
 }

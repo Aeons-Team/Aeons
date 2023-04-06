@@ -1,8 +1,15 @@
 import { useEffect } from "react";
+import Icon from '../Icon'
 
 export default function FilePreview({ src, contentType, className, enableControls, onLoad }) {
     useEffect(() => {
         return () => URL.revokeObjectURL(src)
+    }, [])
+
+    useEffect(() => {
+        if (!contentType.match('(image/*|video/*|audio/*)')) {
+            onLoad()
+        }
     }, [])
 
     if (!contentType) return <></>
@@ -26,4 +33,8 @@ export default function FilePreview({ src, contentType, className, enableControl
             </audio>
         );
     }
+
+    return <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name='file' width='2.25rem' height='2.25rem' fill />
+    </div>
 }

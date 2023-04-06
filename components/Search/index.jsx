@@ -39,19 +39,21 @@ export default function Search() {
   return (
     <div ref={searchRef} className={style.search}>
       <div className={`${style.searchInner} ${isSearching ? style.searchInnerCollapse : ''}`}>
-        <Icon 
-          name='search' 
-          width='1.6rem'
-          height='1.6rem'
-          animate={{
-            opacity: searchActivated ? 1 : 0.5,
-            scale: searchActivated ? 1 : 0.9
-          }}
-          transition={{
-            duration: 0.2,
-            ease: 'easeInOut'
-          }}
-        />
+        <span>
+          <Icon 
+            name='search' 
+            width='1.6rem'
+            height='1.6rem'
+            animate={{
+              opacity: searchActivated ? 1 : 0.5,
+              scale: searchActivated ? 1 : 0.9
+            }}
+            transition={{
+              duration: 0.2,
+              ease: 'easeInOut'
+            }}
+          />
+        </span>
         
         <input
           onInput={(e) => {
@@ -69,30 +71,32 @@ export default function Search() {
       </div>
 
       <div className={style.list}>
-        {isSearching && searchFiles.map((file) => (
-            <div
-              key={file.id}
-              className={style.listItem}
-              onClick={() => {
-                useAppStore.setState({ searchActivated: false })
-                setInputValue("")
+        <div className={style.listInner}>
+          {isSearching && searchFiles.map((file) => (
+              <div
+                key={file.id}
+                className={style.listItem}
+                onClick={() => {
+                  useAppStore.setState({ searchActivated: false })
+                  setInputValue("")
 
-                if (file.contentType == 'folder') {
-                  router.push(`/drive/${file.id}`)
-                }
-              }}
-            >      
-              <span>
-                {
-                  file.contentType == 'folder'
-                    ? <Icon name='folder' width='1.1rem' height='1.1rem' fill />
-                    : <Icon name='file' fill width='1.25rem' height='1.25rem' />
-                }
-              </span>        
+                  if (file.contentType == 'folder') {
+                    router.push(`/drive/${file.id}`)
+                  }
+                }}
+              >      
+                <span>
+                  {
+                    file.contentType == 'folder'
+                      ? <Icon name='folder' width='1.1rem' height='1.1rem' fill />
+                      : <Icon name='file' fill width='1.25rem' height='1.25rem' />
+                  }
+                </span>        
 
-              {file.name}
-            </div>
-          ))}
+                {file.name}
+              </div>
+            ))}
+        </div>
       </div>
     </div>
   );

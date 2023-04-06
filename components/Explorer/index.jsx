@@ -7,9 +7,8 @@ import style from "./style.module.css";
 
 export default function Explorer() {
   const { id: activeFileId } = useRouter().query;
-  const { activateContextMenu, clearSelection } = useAppState((state) => ({
-    activateContextMenu: state.activateContextMenu,
-    clearSelection: state.clearSelection,
+  const { clearSelection } = useAppState((state) => ({
+    clearSelection: state.clearSelection
   }));
   
   const { contractState, uploadFiles } = useDriveState((state) => ({
@@ -32,20 +31,12 @@ export default function Explorer() {
     e.stopPropagation();
   };
 
-  const onExplorerContextMenu = (e) => {
-    e.preventDefault();
-    activateContextMenu(true, {
-      type: "explorer",
-    });
-  };
-
   return (
     <div
       className={style.explorer}
       onDrop={onExplorerDrop}
       onDragOver={onExplorerDragOver}
       onClick={clearSelection}
-      onContextMenu={onExplorerContextMenu}
     >
       <ExplorerBar />
       <ExplorerFiles files={activeFileChildren} />

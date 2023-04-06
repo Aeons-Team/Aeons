@@ -1,5 +1,8 @@
 .explorer {
-  height: calc(100vh - 50px);
+  height: calc(100vh - 70px - 25px);
+  margin-right: 35px;
+  margin-bottom: 25px;
+  border-radius: 15px;
 }
 
 .explorer > *:nth-child(1) {
@@ -8,6 +11,7 @@
 
 @media (max-width: 820px) {
   .explorer {
-    height: calc(100vh - 100px);
+    height: calc(100vh - 110px);
+    margin-right: 0;
   }  
 }

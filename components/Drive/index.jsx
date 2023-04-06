@@ -1,4 +1,3 @@
-import ContextMenu from "../ContextMenu";
 import Topbar from '../Topbar';
 import Sidebar from '../Sidebar';
 import UploadQueue from "../UploadQueue"
@@ -10,7 +9,6 @@ export default function Drive({ children }) {
       <Topbar />
       <Sidebar />
       {children}
-      <ContextMenu />
       <UploadQueue />
     </div>
   );

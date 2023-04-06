@@ -17,8 +17,15 @@ function App({ Component, pageProps }) {
     async function init() {
       await window.ethereum.request({ method: "eth_requestAccounts" });
       
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      await initialize(provider);
+      initialize(new ethers.providers.Web3Provider(window.ethereum));
+
+      window.ethereum.on('accountsChanged', () => {
+        initialize(new ethers.providers.Web3Provider(window.ethereum));
+      })
+      
+      window.ethereum.on('chainChanged', () => {
+        initialize(new ethers.providers.Web3Provider(window.ethereum));
+      })
     }
 
     init();

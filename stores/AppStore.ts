@@ -5,7 +5,7 @@ import { ContractFile } from '../lib/ContractState'
 
 interface ContextMenuOpts {
   type?: string,
-  file?: ContractFile,
+  file?: ContractFile
   action?: string
 }
 
@@ -48,8 +48,15 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
     const { cursorPosition, contextMenuPosition, contextMenuActivation } = get();
     const partial: any = { contextMenuActivated: flag };
 
+    const explorerFiles = document.querySelector('#explorer-files')
+
+    if (!explorerFiles) throw new Error()
+
+    const explorerFilesBB = explorerFiles.getBoundingClientRect()
+    const { left, top } = explorerFilesBB
+
     if (flag) {
-      contextMenuPosition.copy(cursorPosition);
+      contextMenuPosition.copy(cursorPosition.sub(left, top - explorerFiles.scrollTop - 2));
       partial.contextMenuOpts = { type: opts.type, file: opts.file };
       partial.contextMenuAction = opts.action;
     } 

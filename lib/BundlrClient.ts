@@ -40,26 +40,21 @@ export default class BundlrClient {
   networkCurrencySym: string
   networkCurrency: string
 
-  async initialize(provider) {
+  async initialize(provider: ethers.providers.Web3Provider) {
     this.provider = provider
     this.address = await this.provider.getSigner().getAddress();
     this.network = await this.provider.getNetwork();
 
     const networkInfo = networkInfos[this.network.name]
 
-    switch (process.env.NEXT_PUBLIC_BUNDLR_ENV) {
-      case "mainnet":
-        this.instance = new WebBundlr(process.env.NEXT_PUBLIC_BUNDLR_NODE_URL ?? '', networkInfo.currency, this.provider);
-        break;
-        
-      case "devnet":
-        if (this.network.name != 'maticmum') throw new Error()
+    if (this.network.name == 'maticmum') {
+      this.instance = new WebBundlr(process.env.NEXT_PUBLIC_BUNDLR_NODE_URL ?? '', networkInfo.currency, this.provider);
+    }
 
-        this.instance = new WebBundlr(process.env.NEXT_PUBLIC_DEV_BUNDLR_NODE_URL ?? '', 'matic', this.provider, { 
-          providerUrl: 'https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78' 
-        });
-        
-        break;
+    else {
+      this.instance = new WebBundlr(process.env.NEXT_PUBLIC_DEV_BUNDLR_NODE_URL ?? '', 'matic', this.provider, { 
+        providerUrl: 'https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78' 
+      });
     }
 
     await this.instance.ready();

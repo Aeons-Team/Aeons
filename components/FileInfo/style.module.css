@@ -8,10 +8,6 @@
     position: relative;
 }
 
-.fileHeader > *:nth-child(3) {
-    margin-left: auto;
-}
-
 .fileDetails {
     font-size: 0.75rem;
     gap: 0.3rem;
@@ -61,7 +57,7 @@
 
 .fileHeader > *:nth-child(3) {
     position: absolute;
-    right: 0;
+    right: 0.15rem;
 }
 
 @media (max-width: 500px) {

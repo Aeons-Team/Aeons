@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import copy from 'clipboard-copy'
+import { useMediaQuery } from 'react-responsive';
 import { useDriveState } from '../../stores/DriveStore'
 import { useAppState } from '../../stores/AppStore';
 import Icon from '../Icon'
@@ -8,6 +9,8 @@ import InputForm from '../InputForm'
 import style from './style.module.css';
 
 export default function Wallet() {
+  const isMobile = useMediaQuery({ maxWidth: 500 })
+
   const { client, loadedBalance, walletBalance, fetchLoadedBalance, fetchWalletBalance } = useDriveState(state => ({
     client: state.client,
     loadedBalance: state.loadedBalance,
@@ -30,7 +33,6 @@ export default function Wallet() {
   const section2Ref = useRef()
   const walletRef = useRef()
   const walletInnerRef = useRef()
-
   const firstActivationRef = useRef(false)
 
   useEffect(() => {
@@ -66,7 +68,7 @@ export default function Wallet() {
           setShowWallet(!showWallet)
         }}
       >
-        {client.address.slice(2, 4)}
+        <Icon name='wallet' width='1.25rem' height='1.25rem' fill invert />
       </div>
 
       <motion.div 
@@ -76,15 +78,24 @@ export default function Wallet() {
           height, 
           opacity: 0,
           scale: 0.9,
-          pointerEvents: 'none',
-          transformOrigin: 'center top'
+          y: 20,
+          scale: isMobile ? 0.8 : 1,
+          transformOrigin: 'top right',
+          pointerEvents: 'none'
         }}
         animate={{ 
           height, 
           opacity: showWallet ? 1 : 0,
           scale: showWallet ? 1 : 0.9,
-          pointerEvents: showWallet ? 'auto' : 'none',
-          transformOrigin: 'center top'
+          y: showWallet ? 0 : 20,
+          scale: isMobile ? 0.8 : 1,
+          transformOrigin: 'top right',
+          pointerEvents: showWallet ? 'auto' : 'none'
+        }}
+        transition={{ 
+          type: 'spring',
+          damping: 18,
+          stiffness: 250
         }}
       >
         <AnimatePresence>
@@ -94,10 +105,12 @@ export default function Wallet() {
               key='wallet'
               ref={section1Ref}
               className={style.section} 
-              initial={{ right: firstActivationRef.current ? '0%' : '100%' }} 
-              animate={{ right: '0%' }} 
-              exit={{ right: '100%' }}
-              transition={{ ease: 'easeInOut', duration: 0.45 }}
+              initial={{ 
+                right: firstActivationRef.current ? '0%' : '60%',
+                opacity: 0 
+              }}
+              animate={{ right: '0%', opacity: 1 }} 
+              exit={{ right: '60%', opacity: 0 }}
             >
               <div className={style.walletUpper}>
                 <Icon name={client.networkCurrency} width='3rem' height='3rem' />
@@ -155,10 +168,9 @@ export default function Wallet() {
               key='funder'
               ref={section2Ref}
               className={style.section} 
-              initial={{ right: '-100%' }} 
-              animate={{ right: '0%' }} 
-              exit={{ right: '-100%' }}
-              transition={{ ease: 'easeInOut', duration: 0.45 }}
+              initial={{ right: '-60%', opacity: 0 }} 
+              animate={{ right: '0%', opacity: 1 }} 
+              exit={{ right: '-60%', opacity: 0 }}
             >
               <InputForm 
                 heading='Fund Bundlr'

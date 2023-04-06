@@ -2,12 +2,14 @@
   position: absolute;
   background-color: var(--color-primary);
   font-size: 0.8rem;
-  box-shadow: 0 0 1px 0 #666;
+  box-shadow: 0 0 1px 0px var(--color-shadow);
   z-index: 5;
+  display: flex;
+  overflow: hidden;
 }
 
 .contextMenuButton {
-  width: 15rem;
+  width: 240px;
   height: 2.5rem;
   display: flex;
   align-items: center;
@@ -24,15 +26,15 @@
 
 .contextMenuButton:hover {
   cursor: pointer;
-  background-color: var(--color-selected);
+  background-color: var(--color-primary-2);
 }
 
 .moveFile {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1rem;
-  padding-top: 1.5rem;
+  padding: 1.25rem;
+  padding-top: 2rem;
 }
 
 .moveFileHeader {
@@ -53,4 +55,17 @@
   height: 1px;
   background-color: var(--color-primary-2);
   margin: 0.2rem 0;
+}
+
+.section {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+@media (max-width: 500px) {
+  .contextMenu {
+    transform: scale(0.8);
+    transform-origin: left top;
+  }
 }

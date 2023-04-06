@@ -15,7 +15,7 @@ export default function Sidebar() {
             strokeWidth,
             width: size,
             height: size,
-            fill: 'var(--color-background)',
+            fill: 'none',
             stroke: 'var(--color-secondary)',
             opacity: opacity
         },
@@ -84,7 +84,7 @@ export default function Sidebar() {
 
                 <Icon 
                     name='drive' 
-                    variants={iconVariants(11, '1.5rem', 0.6)}
+                    variants={iconVariants(11, '1.55rem', 0.6)}
                 />
             </motion.span>
 
@@ -104,7 +104,7 @@ export default function Sidebar() {
 
                 <Icon 
                     name='settings' 
-                    variants={iconVariants(1, '1.6rem', 0.7)}
+                    variants={iconVariants(1, '1.65rem', 0.7)}
                 />
             </motion.span>
 
@@ -123,7 +123,7 @@ export default function Sidebar() {
 
                 <Icon 
                     name='archive' 
-                    variants={iconVariants(8, '1.55rem', 0.6)}
+                    variants={iconVariants(8, '1.6rem', 0.6)}
                 />
             </motion.span>
         </div>

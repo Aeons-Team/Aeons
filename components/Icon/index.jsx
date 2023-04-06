@@ -24,7 +24,7 @@ export default function Icon({ name, fill, width, height, strokeWidth, invert = 
                 <path d="M88.7 223.8L0 375.8V96C0 60.7 28.7 32 64 32H181.5c17 0 33.3 6.7 45.3 18.7l26.5 26.5c12 12 28.3 18.7 45.3 18.7H416c35.3 0 64 28.7 64 64v32H144c-22.8 0-43.8 12.1-55.3 31.8zm27.6 16.1C122.1 230 132.6 224 144 224H544c11.5 0 22 6.1 27.7 16.1s5.7 22.2-.1 32.1l-112 192C453.9 474 443.4 480 432 480H32c-11.5 0-22-6.1-27.7-16.1s-5.7-22.2 .1-32.1l112-192z"/>
             </motion.svg>
         
-            case 'open':
+        case 'open':
             return <motion.svg {...remaining} style={style} viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                 <path d="M7.5 18V9C7.5 8.17158 8.17158 7.5 9 7.5H27C27.8284 7.5 28.5 8.17158 28.5 9V27C28.5 27.8284 27.8284 28.5 27 28.5H18M12.1667 18H18M18 18V23.8333M18 18L7.5 28.5" strokeLinecap="round" strokeLinejoin="round"/>
             </motion.svg>
@@ -194,6 +194,13 @@ export default function Icon({ name, fill, width, height, strokeWidth, invert = 
         case 'wallet':
             return <motion.svg style={style} {...remaining} xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 36 36" version="1.1" preserveAspectRatio="xMidYMid meet">
                 <path className="clr-i-outline clr-i-outline-path-1" d="M32,15H31V9a1,1,0,0,0-1-1H6a1,1,0,0,1-1-.82V6.82A1,1,0,0,1,6,6H29.58a1,1,0,0,0,0-2H6A3,3,0,0,0,3,7a3.08,3.08,0,0,0,0,.36V27.93A4.1,4.1,0,0,0,7.13,32H30a1,1,0,0,0,1-1V25h1a1,1,0,0,0,1-1V16A1,1,0,0,0,32,15ZM29,30H7.13A2.11,2.11,0,0,1,5,27.93V9.88A3.11,3.11,0,0,0,6,10H29v5H22a5,5,0,0,0,0,10h7Zm2-7H22a3,3,0,0,1,0-6H31Z"/><circle className="clr-i-outline clr-i-outline-path-2" cx="23.01" cy="20" r="1.5"/>
+            </motion.svg>
+
+        case 'create-folder':
+            return <motion.svg style={style} {...remaining} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12.0601 16.5V11.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M14.5 14H9.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M22 11V17C22 21 21 22 17 22H7C3 22 2 21 2 17V7C2 3 3 2 7 2H8.5C10 2 10.33 2.44 10.9 3.2L12.4 5.2C12.78 5.7 13 6 14 6H17C21 6 22 7 22 11Z" strokeMiterlimit="10"/>
             </motion.svg>
     }
 }

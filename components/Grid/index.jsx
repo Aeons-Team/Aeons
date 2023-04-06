@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 
-export default function Grid({ children, minWidth = 200, gap = 10, height, gapScale }) {
+export default function Grid({ children, minWidth, gap = 10, height, gapScale }) {
     const gridRef = useRef()
     const [width, setWidth] = useState(0)
 

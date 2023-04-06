@@ -34,7 +34,7 @@ export default function ExplorerFiles({ files, animate = true }) {
 
                     {
                         animate ? (
-                            <Grid height={scale * 160} gapScale={scale * 0.1}>
+                            <Grid minWidth={isMobile ? 150 : 200} height={scale * 160} gapScale={scale * 0.1}>
                                 {files.filter((x) => x.contentType == "folder").map((x) => <File key={x.id} file={x} />)}
                             </Grid>
                         ) : ( 
@@ -52,7 +52,7 @@ export default function ExplorerFiles({ files, animate = true }) {
 
                     {
                         animate ? (
-                            <Grid height={scale * 260} gapScale={scale * 0.9}>
+                            <Grid minWidth={isMobile ? 150 : 200} height={scale * 260} gapScale={scale * 0.9}>
                                 {files.filter((x) => x.contentType != "folder").map((x) => <File key={x.id} file={x} />)}
                             </Grid>
                         ) : (

@@ -10,6 +10,7 @@ import style from './style.module.css';
 
 export default function Wallet() {
   const isMobile = useMediaQuery({ maxWidth: 500 })
+  const scale = isMobile ? 0.8 : 1
 
   const { client, loadedBalance, walletBalance, fetchLoadedBalance, fetchWalletBalance } = useDriveState(state => ({
     client: state.client,
@@ -77,18 +78,14 @@ export default function Wallet() {
         initial={{
           height, 
           opacity: 0,
-          scale: 0.9,
-          y: 15,
-          scale: isMobile ? 0.8 : 1,
+          scale: scale * 0.9,
           transformOrigin: 'top right',
           pointerEvents: 'none'
         }}
         animate={{ 
           height, 
           opacity: showWallet ? 1 : 0,
-          scale: showWallet ? 1 : 0.9,
-          y: showWallet ? 0 : 15,
-          scale: isMobile ? 0.8 : 1,
+          scale: showWallet ? scale : scale * 0.9,
           transformOrigin: 'top right',
           pointerEvents: showWallet ? 'auto' : 'none'
         }}

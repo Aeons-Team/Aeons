@@ -2,6 +2,10 @@
     position: fixed;
     bottom: 1rem;
     right: 1rem;
+    background-color: rgba(0,0,0, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    padding: 10px;
 }
 
 .queueTopPreview {
@@ -119,4 +123,14 @@
 .speedStatsRight {
     margin-left: auto; 
     margin-right: 5.5rem;
+}
+
+.dropdown {
+    margin-left: auto; 
+    margin-right: 0rem;
+}
+
+.remaining {
+    font-size: 1rem;
+    padding-left: 120px;
 }

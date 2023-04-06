@@ -36,6 +36,7 @@ export default function UploadQueue() {
     const uploadedPerc = currentUpload && (bytesUploaded / currentUpload.size) * 100
     const currentNameRef = useRef()
     const [currentPrice, setCurrentPrice] = useState()
+    const [minimized, setMinimized] = useState(false)
 
     useEffect(() => {
         if (currentUpload) {
@@ -66,10 +67,21 @@ export default function UploadQueue() {
                                     <span>{currentName.length > 17 ? currentName.substring(0, 10) + '...' + currentName.substring(currentName.length - 7) : currentName}</span>
                                 </div>
 
-                                <div className={style.currentUploadInfoBottom}>
-                                    <span>{uploadedPerc.toFixed(1)}%</span>
-                                    <span>{Utility.formatBytes(bytesUploaded)} / {Utility.formatBytes(currentUpload.size)}</span> 
-                                </div>
+                                {
+                                    uploadSpeed > 0 && 
+                                    <div>
+                                        {Utility.formatTime((uploadQueue[0].file.size - bytesUploaded) / uploadSpeed)} remaining
+                                    </div>
+                                }
+
+                                {   
+                                    !minimized && 
+                                    <div className={style.currentUploadInfoBottom}>
+                                        <span>{uploadedPerc.toFixed(1)}%</span>
+                                        <span>{Utility.formatBytes(bytesUploaded)} / {Utility.formatBytes(currentUpload.size)}</span> 
+                                        {uploadSpeed > 0 && <span>{Utility.formatBytes(uploadSpeed)}/s</span>}
+                                    </div>
+                                }
                             </div>
                         }
 
@@ -101,29 +113,24 @@ export default function UploadQueue() {
                             </div>
                         }
                         <div className={style.currentUploadRight}>
-                            {uploading && <IconButton name={paused ? 'play' : 'pause'} width='1rem' height='1rem' onClick={pauseOrResume} fill />}
-                            <IconButton name='cross' width='1.5rem' height='1.5rem' onClick={() => removeFromUploadQueue(0)}/>                        
+                            <div className={style.dropdown}>
+                                <IconButton name={minimized ? 'maximize' : 'minimize'}  width='2rem' height='2rem' onClick={()=>setMinimized(!minimized)} fill/>
+                            </div>
+                            <div className={style.speedStats}>
+                                {uploading && <IconButton name={paused ? 'play' : 'pause'} width='1rem' height='1rem' onClick={pauseOrResume} fill />}
+                                <div className={style.dropdown}>
+                                    <IconButton name='cross' width='1.5rem' height='1.5rem' onClick={() => removeFromUploadQueue(0)}/>
+                                </div>
+                            </div>       
                         </div>
                     </div>
-
-                    {   
-                        uploadSpeed > 0 && 
-                        <div className={style.speedStats}>
-                            <div className={style.speedStatsLeft}>
-                                {Utility.formatBytes(uploadSpeed)}/s
-                            </div>
-                            <div className={style.speedStatsRight}>
-                                {Utility.formatTime((uploadQueue[0].file.size - bytesUploaded) / uploadSpeed)}
-                            </div>
-                        </div>
-                    }
 
                     <div className={style.loading}> 
                         <div style={{ width: `${uploadedPerc}%` }} className={style.loadingInner} />
                     </div>
                 </div>
 
-                {uploadQueue.slice(1).map((item, i) => (
+                {!minimized && uploadQueue.slice(1,5).map((item, i) => (
                     <div key={i} className={style.queueItem}>
                         <FilePreview
                             className={style.queueItemPreview}
@@ -140,6 +147,15 @@ export default function UploadQueue() {
                         </div>
                     </div>
                 ))}
+
+                {
+                    uploadQueue.length > 5 &&
+                    <div className={style.queueItem}>
+                        <div className={style.remaining}>
+                        + {uploadQueue.length - 5} more file{uploadQueue.length - 5 > 1 && 's'} remaining
+                        </div>
+                    </div>
+                }
             </div>
         )}
         </div>

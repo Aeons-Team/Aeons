@@ -68,7 +68,7 @@ export default function Wallet() {
           setShowWallet(!showWallet)
         }}
       >
-        <Icon name='wallet' width='1.25rem' height='1.25rem' fill invert />
+        <Icon name='wallet' transform='translate(0.5 0)' width='1.1rem' height='1.1rem' fill invert />
       </div>
 
       <motion.div 

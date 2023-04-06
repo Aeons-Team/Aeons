@@ -2,7 +2,7 @@
   position: absolute;
   background-color: var(--color-primary);
   font-size: 0.8rem;
-  box-shadow: 0 0 1px 0px var(--color-shadow);
+  box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
   z-index: 5;
   display: flex;
   overflow: hidden;

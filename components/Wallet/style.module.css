@@ -47,7 +47,7 @@
   overflow: hidden;
   z-index: 5;
   border-radius: 8px;
-  box-shadow: 0 0 1px 0px var(--color-shadow);
+  box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
 }
 
 .section {
@@ -63,6 +63,7 @@
   align-items: center;
   gap: 0.6rem;
   padding: 1rem;
+  box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
 }
 
 .network {
@@ -93,6 +94,7 @@
   padding: 0.4rem 0.25rem;
   pointer-events: none;
   border-radius: 5px;
+  box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
 }
 
 .walletLower {

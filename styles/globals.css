@@ -14,7 +14,8 @@
   --color-active: #3e98f7;
   --color-active-2: #4ea0f7;
   --color-hover: #e0e0e0;
-  --color-shadow: #888888;
+  --color-shadow: #ccc;
+  --shadow-blur: 2px;
 }
 
 *,
@@ -63,4 +64,6 @@ body {
   background-image: url(../assets/background.jpg);
   background-size: cover;
   backdrop-filter: blur(24px);
+
+
 }

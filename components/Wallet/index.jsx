@@ -78,7 +78,7 @@ export default function Wallet() {
           height, 
           opacity: 0,
           scale: 0.9,
-          y: 20,
+          y: 15,
           scale: isMobile ? 0.8 : 1,
           transformOrigin: 'top right',
           pointerEvents: 'none'
@@ -87,14 +87,14 @@ export default function Wallet() {
           height, 
           opacity: showWallet ? 1 : 0,
           scale: showWallet ? 1 : 0.9,
-          y: showWallet ? 0 : 20,
+          y: showWallet ? 0 : 15,
           scale: isMobile ? 0.8 : 1,
           transformOrigin: 'top right',
           pointerEvents: showWallet ? 'auto' : 'none'
         }}
         transition={{ 
           type: 'spring',
-          damping: 18,
+          damping: 16,
           stiffness: 250
         }}
       >

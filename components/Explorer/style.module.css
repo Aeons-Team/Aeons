@@ -3,6 +3,8 @@
   margin-right: 35px;
   margin-bottom: 25px;
   border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 var(--shadow-blur) 0 var(--color-shadow);
 }
 
 .explorer > *:nth-child(1) {

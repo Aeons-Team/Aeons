@@ -14,8 +14,14 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    transition: background-color 400ms ease-in-out;
 }
 
 .ancestor:hover {
     background-color: var(--color-primary-2);
+}
+
+.dragStart {
+    background-color: var(--color-primary-2);
+    outline: 1px solid var(--color-active);
 }

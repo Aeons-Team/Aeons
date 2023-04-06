@@ -27,3 +27,12 @@
 .selected {
   background-color: var(--color-selected);
 }
+
+.dragEnter {
+  background-color: var(--color-primary-3);
+  outline: 1px solid var(--color-active);
+}
+
+.dragEnter * {
+  pointer-events: none;
+}

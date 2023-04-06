@@ -11,6 +11,10 @@
   height: 50px;
 }
 
+.dragEnter {
+  outline: 2px solid var(--color-active);
+}
+
 @media (max-width: 820px) {
   .explorer {
     height: calc(100vh - 110px);

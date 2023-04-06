@@ -28,7 +28,7 @@ export default function ExplorerBar() {
                         clearSelection()
                     }            
                 }}
-                onDragOver={(e) => e.preventDefault()}
+                onDragEnter={(e) => e.preventDefault()}
                 gap='0.25rem'
                 itemStyle={{
                     padding: '0.5rem 1rem',

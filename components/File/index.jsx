@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import { useAppState, useAppStore } from "../../stores/AppStore";
@@ -8,6 +9,8 @@ import style from "./style.module.css";
 
 export default function File({ file, enableControls }) {
   const router = useRouter();
+  const fileRef = useRef();
+  const countRef = useRef(0);
   const { id: activeFileId } = router.query;
   
   const { activateContextMenu, selected, select, getSelection, clearSelection, selectItems } = useAppState((state) => ({
@@ -29,6 +32,8 @@ export default function File({ file, enableControls }) {
 
   const onFileDragStart = (e) => {
     e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setDragImage(new Image(), 0, 0)
+
     const appState = useAppStore.getState()
 
     if (!appState.selected[file.id]) {
@@ -37,9 +42,16 @@ export default function File({ file, enableControls }) {
     }
   };
 
+  const onFileDragEnd = (e) => {
+    e.dataTransfer.effectsAllowed = "none";
+  }
+
   const onFileDrop = async (e) => {
     e.stopPropagation();
     e.preventDefault();
+
+    countRef.current = 0
+    fileRef.current.classList.remove(style.dragEnter)
     
     if (e.dataTransfer.files.length) {
       await uploadFiles(e.dataTransfer.files, file.id);
@@ -55,8 +67,26 @@ export default function File({ file, enableControls }) {
     }
   };
 
-  const onFileDragOver = (e) => {
+  const onFileDragEnter = (e) => {
+    e.stopPropagation()
     e.preventDefault();
+    countRef.current++
+
+    if (file.contentType != 'folder') return
+
+    const selection = getSelection()    
+    
+    if (!selection.filter(id => !contractState.isRelocatable(id, file.id)).length) {
+      fileRef.current.classList.add(style.dragEnter)
+    }
+  };
+  
+  const onFileDragLeave = (e) => {
+    e.stopPropagation()
+
+    if (--countRef.current == 0) {
+      fileRef.current.classList.remove(style.dragEnter)
+    }
   };
 
   const onFileClick = (e) => {
@@ -157,12 +187,15 @@ export default function File({ file, enableControls }) {
 
   return (
     <motion.div
+      ref={fileRef}
       animate={{ opacity: file.pending ? 0.5 : 1 }}
       className={`${isFolder ? style.folder : style.file} ${selected ? style.selected : "" }`}
       draggable={!file.pending}
       onDragStart={onFileDragStart}
+      onDragEnd={onFileDragEnd}
       onDrop={onFileDrop}
-      onDragOver={onFileDragOver}
+      onDragEnter={onFileDragEnter}
+      onDragLeave={onFileDragLeave}
       onDoubleClick={onFileDoubleClick}
       onClick={onFileClick}
       onContextMenu={onFileContextMenu}

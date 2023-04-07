@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useRouter } from "next/router";
 import { motion, useSpring } from "framer-motion";
 import { useAppState, useAppStore } from "../../stores/AppStore";
@@ -13,9 +13,12 @@ export default function File({ file, enableControls }) {
   const fileRef = useRef();
   const countRef = useRef(0);
   const { id: activeFileId } = router.query;
-  const x = useSpring(0, { stiffness: 100, damping: 13 })
-  const y = useSpring(0, { stiffness: 100, damping: 13 })
-  
+  const x = useSpring(0, { stiffness: 100, damping: 15 })
+  const y = useSpring(0, { stiffness: 100, damping: 15 })
+
+  const isSearching = router.pathname.startsWith('/drive/search')
+  const { search } = router.query
+
   const { activateContextMenu, selected, select, getSelection, clearSelection, selectItems, dragged } = useAppState((state) => ({
     activateContextMenu: state.activateContextMenu,
     selected: state.selected[file.id],
@@ -32,8 +35,14 @@ export default function File({ file, enableControls }) {
     relocateFiles: state.relocateFiles
   }));
 
+  const [moved, setMoved] = useState(false)
+
   useEffect(() => {
     if (dragged) {
+      const explorer = document.querySelector('#explorer')
+
+      if (!explorer) return
+
       const fileElem = fileRef.current
       fileElem.classList.add(style.higherZ)
   
@@ -45,12 +54,12 @@ export default function File({ file, enableControls }) {
       if (result && result.length >= 3) {
         translate.set(new Number(result[1]), new Number(result[2]))
       }
-  
+
       const onDragOver = (e) => {
         cursor.set(e.clientX, e.clientY)
   
         const bb = fileElem.getBoundingClientRect()
-        const center = new Vector(bb.left - 5, bb.top - 5).sub(x.get(), y.get())
+        const center = new Vector(bb.left - dragged * 10, bb.top - 5).sub(x.get(), y.get())
 
         translate = cursor.subv(center)
 
@@ -58,12 +67,20 @@ export default function File({ file, enableControls }) {
         y.set(translate.y)
       }
   
-      document.querySelector('#explorer').addEventListener('dragover', onDragOver)
+      explorer.addEventListener('dragover', onDragOver)
   
       return () => {
-        document.querySelector('#explorer').removeEventListener('dragover', onDragOver)
-        x.set(0)
-        y.set(0)
+        explorer.removeEventListener('dragover', onDragOver)
+
+        if (file.parentId == activeFileId) {
+          x.set(0)
+          y.set(0)
+        }
+
+        else {
+          setMoved(true)
+        }
+
         fileElem.classList.remove(style.higherZ)
       }
     }
@@ -83,7 +100,7 @@ export default function File({ file, enableControls }) {
     }
 
     for (const id of getSelection()) {
-      useAppStore.getState().setDragging(id, true)
+      useAppStore.getState().setDragging(id)
     }
   };
 
@@ -107,8 +124,8 @@ export default function File({ file, enableControls }) {
       const selection = getSelection()
   
       if (selection.length && !selection.filter(id => !contractState.isRelocatable(id, file.id)).length) {
-        relocateFiles(getSelection(), activeFileId, file.id);
-        clearSelection()
+        relocateFiles(selection, activeFileId, file.id);
+        clearSelection();
       }
     }
 
@@ -139,6 +156,8 @@ export default function File({ file, enableControls }) {
 
   const onFileClick = (e) => {
     e.stopPropagation();
+    e.preventDefault();
+    document.getSelection().removeAllRanges();
     
     const appState = useAppStore.getState()
 
@@ -160,7 +179,7 @@ export default function File({ file, enableControls }) {
           if (appState.holdingShift && appState.firstSelected) {
             clearSelection(false)
 
-            const children = contractState.getChildren(activeFileId)
+            const children = isSearching ? contractState.searchFiles(search) : contractState.getChildren(activeFileId)
             const folders = children.filter(x => x.contentType == 'folder')
             const files = children.filter(x => x.contentType != 'folder')
 
@@ -238,13 +257,13 @@ export default function File({ file, enableControls }) {
       ref={fileRef}
       animate={{ 
         opacity: file.pending ? 0.5 : 1,
-        scale: dragged ? 0.5 : 1
+        scale: moved ? 0.25 : (dragged ? 0.5 : 1)
       }}
       style={{
         x, y
       }}
       className={`${isFolder ? style.folder : style.file} ${selected ? style.selected : "" }`}
-      draggable={!file.pending}
+      draggable={!file.pending && !isSearching}
       onDragStart={onFileDragStart}
       onDragEnd={onFileDragEnd}
       onDrop={onFileDrop}

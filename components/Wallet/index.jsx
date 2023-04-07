@@ -78,20 +78,20 @@ export default function Wallet() {
         initial={{
           height, 
           opacity: 0,
-          scale: scale * 0.9,
+          scale: scale * 0.95,
           transformOrigin: 'top right',
           pointerEvents: 'none'
         }}
         animate={{ 
           height, 
           opacity: showWallet ? 1 : 0,
-          scale: showWallet ? scale : scale * 0.9,
+          scale: showWallet ? scale : scale * 0.95,
           transformOrigin: 'top right',
           pointerEvents: showWallet ? 'auto' : 'none'
         }}
         transition={{ 
           type: 'spring',
-          damping: 16,
+          damping: 15,
           stiffness: 250
         }}
       >

@@ -70,6 +70,10 @@ export default class ContractState {
     getChildren(id: string): ContractFile[] | undefined {
         return this.getFile(id).children?.map(childId => this.getFile(childId))
     }
+    
+    getChildrenIds(id: string): string[] | undefined {
+        return this.getFile(id).children
+    }
 
     getAncestors(id: string): ContractFile[] {
         const ancestors: ContractFile[] = []

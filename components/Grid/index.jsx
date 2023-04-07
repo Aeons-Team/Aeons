@@ -1,5 +1,6 @@
+import { useRouter } from "next/router"
 import { useLayoutEffect, useRef, useState } from "react"
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { useAppState } from "../../stores/AppStore"
 import File from "../File"
 
@@ -18,10 +19,21 @@ function GridItem({ file, itemWidth, x, y }) {
                 zIndex: dragged ? 10 : 1
             }}
             initial={{
-                x, y
+                x, 
+                y: y + 10,
+                opacity: 0,
+                transition: {
+                    delay: 1
+                }
             }}
             animate={{
-                x, y
+                x, 
+                y,
+                opacity: 1
+            }}
+            exit={{
+                y: y + 10,
+                opacity: 0
             }}
             transition={{  
                 type: 'spring',
@@ -35,6 +47,8 @@ function GridItem({ file, itemWidth, x, y }) {
 }
 
 export default function Grid({ files, minWidth, gap = 10, height, gapScale }) {
+    const { id: activeFileId } = useRouter().query
+
     const gridRef = useRef()
     const [width, setWidth] = useState(0)
 
@@ -60,19 +74,22 @@ export default function Grid({ files, minWidth, gap = 10, height, gapScale }) {
     let itemHeight = height + ((itemWidth - minWidth) / minWidth) * gapScale * height
 
     return (
-        <div 
+        <motion.div 
             ref={gridRef}
-            style={{ position: 'relative', height: rows * itemHeight }}
+            style={{ position: 'relative' }}
+            animate={{ height: rows * itemHeight }}
         >
+            <AnimatePresence>
             {
                 width &&
                 files.map((file, i) => {
                     const x = (i % maxCols) * (itemWidth + gap)
                     const y = Math.floor(i / maxCols) * (itemHeight + gap)
 
-                    return <GridItem key={file.id} file={file} itemWidth={itemWidth} x={x} y={y} />
+                    return <GridItem key={file.id + (activeFileId ?? '')} file={file} itemWidth={itemWidth} x={x} y={y} />
                 })
             }
-        </div>
+            </AnimatePresence>
+        </motion.div>
     )
 }

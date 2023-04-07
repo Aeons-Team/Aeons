@@ -40,7 +40,11 @@
     border-radius: 6px;
     object-fit: cover;
     pointer-events: none;
-    background-color: var(--color-primary-3);
+}
+
+.fileDetails > * {
+    color: var(--color-secondary-5);
+    font-weight: 400;
 }
 
 .fileDetails > *:nth-child(2) {

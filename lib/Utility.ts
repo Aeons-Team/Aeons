@@ -45,4 +45,19 @@ export default class Utility {
 
     return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`
   }
+
+  static genColor(input: string, start: number, range: number): string {
+    const color = [0, 0, 0]
+
+    for (let i = 0; i < input.length; ++i) {
+      let code = input.charCodeAt(i)
+      color[i % 3] += code
+    }
+
+    for (let i = 0; i < 3; ++i) {
+      color[i] = start + color[i] % range
+    }
+
+    return `rgb(${color[0]}, ${color[1]}, ${color[2]})`
+  }
 }

@@ -42,7 +42,7 @@ export default function FolderInfo({ file }) {
             }
 
             <div className={style.folderHeader}>
-                <Icon name='folder' width='2rem' height='2rem' fill />
+                <Icon name='folder' width='2rem' height='2rem' fill fillColor='var(--color-active)' />
 
                 <span className={style.folderName}>{file.name}</span>
             </div>

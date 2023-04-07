@@ -39,11 +39,15 @@ export default class BundlrClient {
   networkName: string
   networkCurrencySym: string
   networkCurrency: string
+  log: Function
 
-  async initialize(provider: ethers.providers.Web3Provider) {
+  async initialize(provider: ethers.providers.Web3Provider, log: Function) {
     this.provider = provider
     this.address = await this.provider.getSigner().getAddress();
     this.network = await this.provider.getNetwork();
+    this.log = log
+
+    this.log('Connecting to Bundlr.network')
 
     const networkInfo = networkInfos[this.network.name]
 

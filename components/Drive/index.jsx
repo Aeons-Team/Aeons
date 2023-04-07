@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import Topbar from '../Topbar';
 import Sidebar from '../Sidebar';
 import UploadQueue from "../UploadQueue"
@@ -8,7 +9,16 @@ export default function Drive({ children }) {
     <div className={style.drive}>
       <Topbar />
       <Sidebar />
-      {children}
+      <motion.div 
+        initial={{  
+          y: 100
+        }}
+        animate={{
+          y: 0
+        }}
+      >
+        {children}
+      </motion.div>
       <UploadQueue />
     </div>
   );

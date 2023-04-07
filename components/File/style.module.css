@@ -7,6 +7,7 @@
   padding-bottom: 0.75rem;
   border-radius: 6px;
   transition: background-color 400ms ease-in-out;
+  box-shadow: 0 0 var(--shadow-blur-2) 0 var(--color-shadow);
 }
 
 .folder {
@@ -15,6 +16,7 @@
   background-color: var(--color-primary-2);
   border-radius: 6px;
   transition: background-color 400ms ease-in-out;
+  box-shadow: 0 0 var(--shadow-blur-2) 0 var(--color-shadow);
 }
 
 .file:not(.selected):hover {

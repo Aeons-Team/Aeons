@@ -15,13 +15,14 @@ export default function Sidebar() {
             strokeWidth,
             width: size,
             height: size,
-            fill: 'none',
-            stroke: 'var(--color-secondary)',
+            fill: 'var(--color-background)',
+            stroke: 'var(--color-secondary-5)',
             opacity: opacity
         },
 
         selected: {
-            fill: 'var(--color-secondary)',
+            fill: 'var(--color-active)',
+            stroke: 'var(--color-active)',
             opacity: 1
         },
 
@@ -34,12 +35,12 @@ export default function Sidebar() {
         normal: {
             height: 0,
             width: '2px',
-            backgroundColor: 'var(--color-secondary)'
+            backgroundColor: 'var(--color-active)'
         },
 
         selected: {
             height: '180%',
-            backgroundColor: 'var(--color-secondary)'
+            backgroundColor: 'var(--color-active)'
         },
 
         hover: {
@@ -51,13 +52,13 @@ export default function Sidebar() {
         normal: {
             height: '2px',
             width: 0,
-            backgroundColor: 'var(--color-secondary)'
+            backgroundColor: 'var(--color-active)'
         },
 
         selected: {
             height: '2px',
             width: '150%',
-            backgroundColor: 'var(--color-secondary)'
+            backgroundColor: 'var(--color-active)'
         },
 
         hover: {
@@ -67,7 +68,14 @@ export default function Sidebar() {
     }
 
     return (
-        <div className={style.sidebar}>
+        <motion.div
+            initial={{ 
+                x: isMobile ? 0 : -65,
+                y: isMobile ? 70 : 0
+            }} 
+            animate={{ x: 0, y : 0 }} 
+            className={style.sidebar}
+        >
             <motion.span 
                 className={style.sidebarOption} 
                 onClick={() => router.push('/drive/root')}
@@ -123,9 +131,9 @@ export default function Sidebar() {
 
                 <Icon 
                     name='archive' 
-                    variants={iconVariants(8, '1.6rem', 0.6)}
+                    variants={iconVariants(9, '1.6rem', 0.6)}
                 />
             </motion.span>
-        </div>
+        </motion.div>
     )
 }

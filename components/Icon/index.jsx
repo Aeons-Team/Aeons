@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 
-export default function Icon({ name, fill, width, height, strokeWidth, invert = false, ...remaining }) {
+export default function Icon({ name, fill, fillColor, width, height, strokeWidth, invert = false, ...remaining }) {
     const style = fill ? {
         fill: !invert ? 'var(--color-secondary)' : 'var(--color-primary)',
         stroke: 'none'
@@ -12,6 +12,8 @@ export default function Icon({ name, fill, width, height, strokeWidth, invert = 
 
     if (width) style.width = width 
     if (height) style.height = height
+
+    if (fill && fillColor) style.fill = fillColor
 
     switch (name) {
         case 'upload-file': 
@@ -63,7 +65,7 @@ export default function Icon({ name, fill, width, height, strokeWidth, invert = 
             </motion.svg>
 
         case 'drive':
-            return <motion.svg {...remaining} style={style} viewBox="0 0 262 318" fill="none" xmlns="http://www.w3.org/2000/svg">
+            return <motion.svg {...remaining} style={style} viewBox="0 0 262 318" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10.3334 53.0418C10.3334 41.0739 15.0876 29.5961 23.5502 21.1336C32.0128 12.671 43.4905 7.91675 55.4584 7.91675H207.542C219.51 7.91675 230.987 12.671 239.45 21.1336C247.912 29.5961 252.667 41.0739 252.667 53.0418V189.417H10.3334V53.0418ZM10.3334 265.958V220.833H252.667V265.958C252.667 277.926 247.912 289.404 239.45 297.867C230.987 306.329 219.51 311.083 207.542 311.083H55.4584C43.4905 311.083 32.0128 306.329 23.5502 297.867C15.0876 289.404 10.3334 277.926 10.3334 265.958ZM146.708 250.25C142.542 250.25 138.547 251.905 135.601 254.851C132.655 257.797 131 261.792 131 265.958C131 270.125 132.655 274.12 135.601 277.066C138.547 280.012 142.542 281.667 146.708 281.667H192.333C196.499 281.667 200.495 280.012 203.441 277.066C206.387 274.12 208.042 270.125 208.042 265.958C208.042 261.792 206.387 257.797 203.441 254.851C200.495 251.905 196.499 250.25 192.333 250.25H146.708Z" />
             </motion.svg>
             

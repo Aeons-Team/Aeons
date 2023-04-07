@@ -71,7 +71,7 @@ export default function Explorer() {
       onClick={clearSelection}
     >
       <ExplorerBar />
-      <ExplorerFiles files={activeFileChildren} />
+      <ExplorerFiles files={activeFileChildren} className={style.explorerFiles} />
     </div>
   );
 }

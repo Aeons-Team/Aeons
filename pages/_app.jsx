@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useDriveState } from "../stores/DriveStore";
 import { useAppStore } from "../stores/AppStore";
 import Drive from "../components/Drive";
+import Loading from "../components/Loading";
 import "../styles/globals.css";
 
 function App({ Component, pageProps }) {
@@ -72,13 +73,19 @@ function App({ Component, pageProps }) {
     };
   }, []);
 
-  if (initialized) {
-    return (
-      <Drive>
-        <Component {...pageProps} />
-      </Drive>
-    )
-  }
+  return (
+    <>
+    {
+      initialized ? (
+        <Drive>
+          <Component {...pageProps} />
+        </Drive>
+      ) : (
+        <Loading />
+      )
+    }
+    </>
+  )
 }
 
 export default App;

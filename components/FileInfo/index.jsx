@@ -39,7 +39,7 @@ export default function FileInfo({ file }) {
 
               activateContextMenu(true, {
                 type: "file",
-                file,
+                file
               })
             }}
           />

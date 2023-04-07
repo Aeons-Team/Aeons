@@ -35,6 +35,6 @@ export default function FilePreview({ src, contentType, className, enableControl
     }
 
     return <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Icon name='file' width='2.25rem' height='2.25rem' fill />
+        <Icon name='file' width='2.5rem' height='2.5rem' fill />
     </div>
 }

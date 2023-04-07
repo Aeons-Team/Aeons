@@ -5,6 +5,13 @@
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 0 var(--shadow-blur) 0 var(--color-shadow);
+  background-color: var(--color-primary);
+}
+
+.explorerFiles {
+  height: calc(100% - 50px);
+  overflow: hidden;
+  border-bottom-right-radius: 15px;
 }
 
 .explorer > *:nth-child(1) {

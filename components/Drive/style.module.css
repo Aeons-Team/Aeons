@@ -19,7 +19,6 @@
 .drive > div:nth-child(3) {
   grid-row: 2;
   grid-column: 2;
-  background-color: var(--color-primary);
 }
 
 @media (max-width: 820px) {

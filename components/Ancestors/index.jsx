@@ -1,3 +1,5 @@
+import { AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Icon from '../Icon'
 import { useDriveStore } from '../../stores/DriveStore'
 import style from './style.module.css'
@@ -22,18 +24,41 @@ export default function Ancestors({ id, itemStyle, gap, iconSize, ...remaining }
 
     return (
         <div className={style.ancestors} style={{ gap }}>
+            <AnimatePresence>
             {
-                ancestors.map((file, i) => (
-                    <div className={style.ancestorItem} style={{ gap }} key={file.id}>
-                        <Ancestor file={file} style={itemStyle} {...remaining} />
-
-                        {
-                            i != ancestors.length - 1 &&
-                            <Icon name='arrow-head-right' width={iconSize} height={iconSize} />
-                        }
-                    </div>
-                ))
-            }
+                    ancestors.map((file, i) => (
+                        <motion.div 
+                            className={style.ancestorItem} 
+                            style={{ gap }} 
+                            key={file.id}
+                            initial={{
+                                opacity: 0,
+                                y: 4
+                            }}
+                            animate={{
+                                opacity: 1,
+                                y: 0
+                            }}
+                            exit={{
+                                opacity: 0,
+                                y: 4
+                            }}
+                        >
+                            <Ancestor file={file} style={itemStyle} {...remaining} />
+    
+                            <Icon 
+                                name='arrow-head-right'
+                                width={iconSize} 
+                                height={iconSize} 
+                                animate={{
+                                    opacity: i != ancestors.length - 1 ? 1 : 0,
+                                    y: (i != ancestors.length - 1 ? 0 : 4) + 2
+                                }}
+                            />
+                        </motion.div>
+                    ))
+                }
+            </AnimatePresence>
         </div>
     )
 }

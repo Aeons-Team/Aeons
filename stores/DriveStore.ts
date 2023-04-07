@@ -26,6 +26,7 @@ interface DriveStoreData {
     currentUploader: ChunkingUploader | null
     uploadSpeed: number,
     bytesUploaded: number | null,
+    loadingText: string,
     fetchWalletBalance: Function,
     fetchLoadedBalance: Function,
     uploadNext: (name?: string) => Promise<void>,
@@ -52,7 +53,7 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
     currentName: '',
     currentUploader: null,
     bytesUploaded: null,
-    
+    loadingText: 'Initializing',
     
     fetchWalletBalance: async () => {
         const walletBalance = await get().client.getWalletBalance();
@@ -65,9 +66,14 @@ export const useDriveStore = create<DriveStoreData>((set, get) => ({
     },
 
     initialize: async (provider: ethers.providers.Web3Provider) => {
+        set({ initialized: false })
+
         const { client, contract, fetchWalletBalance, fetchLoadedBalance } = get()
-        await client.initialize(provider);
-        await contract.initialize(provider, client);
+
+        const log = (text) => set({ loadingText: text })
+
+        await client.initialize(provider, log);
+        await contract.initialize(provider, client, log);
 
         contract.updateUIAction = () => set({ contractState: contract.state.copy() })
         

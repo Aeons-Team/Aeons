@@ -8,6 +8,7 @@
     padding-top: 1rem;
     width: 400px;
     overflow: hidden;
+    z-index: 5;
 }
 
 .queueTopPreview {

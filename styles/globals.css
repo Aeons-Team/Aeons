@@ -10,12 +10,15 @@
   --color-secondary-2: #222222;
   --color-secondary-3: #444444;
   --color-secondary-4: #666666;
+  --color-secondary-5: #7f7f7f;
+  --color-secondary-5: #8f8f8f;
   --color-selected: #f0f0ff;
   --color-active: #3e98f7;
   --color-active-2: #4ea0f7;
   --color-hover: #e0e0e0;
   --color-shadow: #ccc;
   --shadow-blur: 2px;
+  --shadow-blur: 1px;
 }
 
 *,
@@ -61,9 +64,5 @@ input[type=number] {
 }
 
 body {
-  background-image: url(../assets/background.jpg);
-  background-size: cover;
-  backdrop-filter: blur(24px);
-
-
+  background-color: #f0f0f0;
 }

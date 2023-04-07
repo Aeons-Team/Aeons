@@ -20,7 +20,7 @@ export default function SearchExplorer() {
 
   return (
     <div className={style.searchExplorer} onClick={() => clearSelection()}>
-      <ExplorerFiles files={searchItems} />
+      <ExplorerFiles files={searchItems} className={style.explorerFiles} />
     </div>
   );
 }

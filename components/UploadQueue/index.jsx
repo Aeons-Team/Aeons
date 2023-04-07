@@ -93,14 +93,11 @@ export default function UploadQueue() {
                                             </div>
                                         }
 
-                                        {   
-                                            !minimized && 
-                                            <div className={style.currentUploadInfoBottom}>
-                                                <span>{uploadedPerc.toFixed(1)}%</span>
-                                                <span>{Utility.formatBytes(bytesUploaded)} / {Utility.formatBytes(currentUpload.size)}</span> 
-                                                <span>{Utility.formatBytes(uploadSpeed)}/s</span>
-                                            </div>
-                                        }
+                                        <div className={style.currentUploadInfoBottom}>
+                                            <span>{uploadedPerc.toFixed(1)}%</span>
+                                            <span>{Utility.formatBytes(bytesUploaded)} / {Utility.formatBytes(currentUpload.size)}</span> 
+                                            <span>{Utility.formatBytes(uploadSpeed)}/s</span>
+                                        </div>
                                     </div>
                                 }
 

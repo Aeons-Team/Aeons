@@ -54,6 +54,7 @@ export default function ExplorerFiles({ files, className }) {
                         minWidth={isMobile ? 150 : 200} 
                         height={scale * 160} 
                         gapScale={scale * 0.1}
+                        gap={isMobile ? 8 : 10}
                         files={files.filter((x) => x.contentType == "folder")}
                     />
                 </div>
@@ -67,6 +68,7 @@ export default function ExplorerFiles({ files, className }) {
                         minWidth={isMobile ? 150 : 200} 
                         height={scale * 260} 
                         gapScale={scale * 0.9}
+                        gap={isMobile ? 8 : 10}
                         files={files.filter((x) => x.contentType != "folder")}
                     />
                 </div>

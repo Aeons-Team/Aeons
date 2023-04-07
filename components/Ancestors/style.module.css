@@ -10,11 +10,13 @@
 
 .ancestor {
     cursor: pointer;
-    border-radius: 2rem;
+    border-radius: 8px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     transition: background-color 400ms ease-in-out;
+    display: flex;
+    justify-content: center;
 }
 
 .ancestor:hover {

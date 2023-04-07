@@ -40,13 +40,13 @@
   position: absolute;
   right: 0;
   margin-top: 0.5rem;
-  margin-right: 0.6rem;
+  margin-right: 0.8rem;
   background-color: var(--color-primary);
   display: flex;
   width: 400px;
   overflow: hidden;
   z-index: 5;
-  border-radius: 8px;
+  border-radius: 2px;
   box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
 }
 
@@ -93,7 +93,7 @@
   color: var(--color-secondary);
   padding: 0.4rem 0.25rem;
   pointer-events: none;
-  border-radius: 5px;
+  border-radius: 3px;
   box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
 }
 

@@ -4,7 +4,7 @@
     right: 1rem;
     background-color: var(--color-primary);
     box-shadow: 0 0 var(--shadow-blur) 0 var(--color-shadow);
-    border-radius: 10px;
+    border-radius: 3px;
     padding-top: 1rem;
     width: 400px;
     overflow: hidden;
@@ -26,11 +26,14 @@
 }
 
 .currentUploadInfo {
+    margin-right: auto;
+    margin-left: 0;
+}
+
+.currentUploadInfoInner {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-right: auto;
-    margin-left: 0;
 }
 
 .currentUploadInfoTop {
@@ -169,4 +172,21 @@
 .remaining {
     font-size: 0.8rem;
     padding-left: 120px;
+}
+
+@media (max-width: 500px) {
+    .uploadQueue {
+        transform: scale(0.8);
+        transform-origin: right bottom;
+        right: 0.5rem;
+        bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 350px) {
+    .uploadQueue {
+        transform: scale(0.7);
+        right: 0.4rem;
+        bottom: 0.4rem;
+    }
 }

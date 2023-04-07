@@ -5,14 +5,13 @@
     top: 0;
     left: 0;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-secondary);
-    gap: 2rem;
+    background-color: var(--color-primary);
+    gap: 1rem;
 }
 
 .loadingText {
-    color: var(--color-primary);
+    color: var(--color-secondary);
     font-size: 0.9rem;
 }

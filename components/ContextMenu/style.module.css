@@ -6,6 +6,7 @@
   z-index: 5;
   display: flex;
   overflow: hidden;
+  border-radius: 2px;
 }
 
 .contextMenuButton {
@@ -49,7 +50,7 @@
 .moveFile p {
   margin: 0 0.2rem;
   width: 400px;
-  max-width: 95vw;
+  max-width: 100vw;
 }
 
 .separator {
@@ -67,6 +68,13 @@
 @media (max-width: 500px) {
   .contextMenu {
     transform: scale(0.8);
+    transform-origin: left top;
+  }
+}
+
+@media (max-width: 350px) {
+  .contextMenu {
+    transform: scale(0.7);
     transform-origin: left top;
   }
 }

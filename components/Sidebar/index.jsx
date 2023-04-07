@@ -5,7 +5,7 @@ import { useMediaQuery } from 'react-responsive'
 import Icon from '../Icon'
 import style from './style.module.css'
 
-export default function Sidebar() {
+export default function Sidebar({ transition }) {
     const router = useRouter()
     const [hovering, setHovering] = useState([false, false, false])
     const isMobile = useMediaQuery({ maxWidth: '820px' })
@@ -71,10 +71,16 @@ export default function Sidebar() {
         <motion.div
             initial={{ 
                 x: isMobile ? 0 : -65,
-                y: isMobile ? 70 : 0
+                y: isMobile ? 70 : 0,
+                opacity: 0
             }} 
-            animate={{ x: 0, y : 0 }} 
+            animate={{ 
+                x: 0, 
+                y: 0,
+                opacity: 1
+            }} 
             className={style.sidebar}
+            transition={transition}
         >
             <motion.span 
                 className={style.sidebarOption} 

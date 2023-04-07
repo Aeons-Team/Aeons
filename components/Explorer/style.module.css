@@ -2,7 +2,7 @@
   height: calc(100vh - 70px - 25px);
   margin-right: 35px;
   margin-bottom: 25px;
-  border-radius: 15px;
+  border-radius: 2px;
   overflow: hidden;
   box-shadow: 0 0 var(--shadow-blur) 0 var(--color-shadow);
   background-color: var(--color-primary);
@@ -11,7 +11,6 @@
 .explorerFiles {
   height: calc(100% - 50px);
   overflow: hidden;
-  border-bottom-right-radius: 15px;
 }
 
 .explorer > *:nth-child(1) {

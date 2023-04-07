@@ -4,7 +4,6 @@ import { useDriveStore } from "../../stores/DriveStore";
 import { useAppStore } from "../../stores/AppStore";
 import Icon from '../Icon'
 import style from "./style.module.css";
-import Input from "../Input";
 
 export default function Search() {
   const router = useRouter();
@@ -46,7 +45,7 @@ export default function Search() {
             height='1.6rem'
             animate={{
               opacity: searchActivated ? 1 : 0.5,
-              scale: searchActivated ? 1 : 0.9
+              stroke: searchActivated ? 'var(--color-active)' : 'var(--color-secondary)'
             }}
             transition={{
               duration: 0.2,
@@ -93,7 +92,9 @@ export default function Search() {
                   }
                 </span>        
 
-                {file.name}
+                <span>
+                  {file.name}
+                </span>
               </div>
             ))}
         </div>

@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import Spinner from 'react-spinner-material'
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useDriveState } from '../../stores/DriveStore';
 import FilePreview from "../FilePreview";
 import Utility from "../../lib/Utility"
@@ -53,23 +53,20 @@ export default function UploadQueue() {
             {(uploading || uploadQueue.length > 0) && (
                 <div className={style.uploadQueue}>
                     <div>
-                        {
-                            uploadQueue.length > 1 &&
-                            <div className={style.dropdown}>
-                                <IconButton 
-                                    name='minimize'
-                                    width='2rem' 
-                                    height='2rem' 
-                                    onClick={()=>setMinimized(!minimized)} 
-                                    animate={{ rotate: minimized ? '180deg' : '0deg' }}  
-                                    transition={{ 
-                                        type: 'spring',
-                                        damping: 14
-                                    }}
-                                    fill
-                                />
-                            </div>
-                        }
+                        <div className={style.dropdown}>
+                            <IconButton 
+                                name='minimize'
+                                width='2rem' 
+                                height='2rem' 
+                                onClick={()=>setMinimized(!minimized)} 
+                                animate={{ rotate: minimized ? '180deg' : '0deg' }}  
+                                transition={{ 
+                                    type: 'spring',
+                                    damping: 14
+                                }}
+                                fill
+                            />
+                        </div>
 
                         <div className={style.queueTop}>
                             <div className={style.currentUpload}>
@@ -82,22 +79,47 @@ export default function UploadQueue() {
                                 {
                                     uploading &&
                                     <div className={style.currentUploadInfo}>
-                                        <div className={style.currentUploadInfoTop}>
-                                            <span className={style.fileName}>{currentName}</span>
-                                        </div>
-
-                                        {
-                                            uploadSpeed > 0 && 
-                                            <div className={style.timeEstimate}>
-                                                {Utility.formatTime((uploadQueue[0].file.size - bytesUploaded) / uploadSpeed)} remaining
+                                        <div className={style.currentUploadInfoInner}>
+                                            <div className={style.currentUploadInfoTop}>
+                                                <span className={style.fileName}>{currentName}</span>
                                             </div>
-                                        }
 
-                                        <div className={style.currentUploadInfoBottom}>
-                                            <span>{uploadedPerc.toFixed(1)}%</span>
-                                            <span>{Utility.formatBytes(bytesUploaded)} / {Utility.formatBytes(currentUpload.size)}</span> 
-                                            <span>{Utility.formatBytes(uploadSpeed)}/s</span>
+                                            {
+                                                uploadSpeed > 0 && 
+                                                <div className={style.timeEstimate}>
+                                                    {Utility.formatTime((uploadQueue[0].file.size - bytesUploaded) / uploadSpeed)} remaining
+                                                </div>
+                                            }
                                         </div>
+
+                                        <AnimatePresence>
+                                        {
+                                            !minimized &&
+                                            <motion.div 
+                                                key='upload-stats'
+                                                initial={{
+                                                    height: 0,
+                                                    opacity: 0,
+                                                    marginTop: 0
+                                                }}
+                                                animate={{
+                                                    height: 10,
+                                                    opacity: 1,
+                                                    marginTop: 8
+                                                }}
+                                                exit={{
+                                                    height: 0,
+                                                    opacity: 0,
+                                                    marginTop: 0
+                                                }}
+                                                className={style.currentUploadInfoBottom}
+                                            >
+                                                <span>{uploadedPerc.toFixed(1)}%</span>
+                                                <span>{Utility.formatBytes(bytesUploaded)} / {Utility.formatBytes(currentUpload.size)}</span> 
+                                                <span>{Utility.formatBytes(uploadSpeed)}/s</span>
+                                            </motion.div>
+                                        }
+                                        </AnimatePresence>
                                     </div>
                                 }
 

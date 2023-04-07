@@ -9,8 +9,9 @@ import InputForm from '../InputForm'
 import style from './style.module.css';
 
 export default function Wallet() {
-  const isMobile = useMediaQuery({ maxWidth: 500 })
-  const scale = isMobile ? 0.8 : 1
+  const isMobile = useMediaQuery({ maxWidth: '500px' })
+  const isMobileSm = useMediaQuery({ maxWidth: '350px' })
+  const scale = isMobileSm ? 0.7 : (isMobile ? 0.8 : 1)
 
   const { client, loadedBalance, walletBalance, fetchLoadedBalance, fetchWalletBalance } = useDriveState(state => ({
     client: state.client,
@@ -69,30 +70,30 @@ export default function Wallet() {
           setShowWallet(!showWallet)
         }}
       >
-        <Icon name='wallet' transform='translate(0.5 0)' width='1.1rem' height='1.1rem' fill invert />
+        <Icon name='wallet' transform='translate(0.5 0)' width='1.1rem' height='1.1rem' fill />
       </div>
 
       <motion.div 
         className={style.walletInner} 
         ref={walletInnerRef}
         initial={{
-          height, 
+          height: 0, 
           opacity: 0,
-          scale: scale * 0.95,
+          scale: scale * 0.9,
           transformOrigin: 'top right',
           pointerEvents: 'none'
         }}
         animate={{ 
-          height, 
+          height: showWallet ? height : 0, 
           opacity: showWallet ? 1 : 0,
-          scale: showWallet ? scale : scale * 0.95,
+          scale: showWallet ? scale : scale * 0.9,
           transformOrigin: 'top right',
           pointerEvents: showWallet ? 'auto' : 'none'
         }}
         transition={{ 
           type: 'spring',
-          damping: 15,
-          stiffness: 250
+          damping: 22,
+          stiffness: 200
         }}
       >
         <AnimatePresence>
@@ -148,7 +149,7 @@ export default function Wallet() {
                     setFunding(true)
                   }}
                 >
-                  <Icon name='arrow-right' width='1.5rem' height='1.5rem' strokeWidth={0.8} invert />
+                  <Icon name='arrow-right' width='1.5rem' height='1.5rem' strokeWidth={0.8} />
                 </div>
     
                 <div className={style.walletBalance}>

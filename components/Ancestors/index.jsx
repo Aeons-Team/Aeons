@@ -18,12 +18,12 @@ function Ancestor({ file, onClick, onDrop, ...remaining }) {
 }
 
 
-export default function Ancestors({ id, itemStyle, gap, iconSize, ...remaining }) {
+export default function Ancestors({ id, itemStyle, listStyle = {}, gap, iconSize, ...remaining } = {}) {
     const contractState = useDriveStore(state => state.contractState)
     const ancestors = contractState.getAncestors(id)
 
     return (
-        <div className={style.ancestors} style={{ gap }}>
+        <div className={style.ancestors} style={{ gap, ...listStyle }}>
             <AnimatePresence>
             {
                     ancestors.map((file, i) => (
@@ -50,9 +50,10 @@ export default function Ancestors({ id, itemStyle, gap, iconSize, ...remaining }
                                 name='arrow-head-right'
                                 width={iconSize} 
                                 height={iconSize} 
+                                fill
                                 animate={{
                                     opacity: i != ancestors.length - 1 ? 1 : 0,
-                                    y: (i != ancestors.length - 1 ? 0 : 4) + 2
+                                    y: (i != ancestors.length - 1 ? 0 : 4) + 1
                                 }}
                             />
                         </motion.div>

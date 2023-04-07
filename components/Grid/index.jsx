@@ -46,7 +46,7 @@ function GridItem({ file, itemWidth, x, y }) {
     )
 }
 
-export default function Grid({ files, minWidth, gap = 10, height, gapScale }) {
+export default function Grid({ files, minWidth, gap, height, gapScale }) {
     const { id: activeFileId } = useRouter().query
 
     const gridRef = useRef()

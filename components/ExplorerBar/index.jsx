@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useMediaQuery } from 'react-responsive'
 import Ancestors from '../Ancestors'
 import ExplorerActions from '../ExplorerActions'
 import { useAppState, useAppStore } from '../../stores/AppStore'
@@ -8,6 +9,7 @@ import style from './style.module.css'
 export default function ExplorerBar() {
     const router = useRouter()
     const { id: activeFileId } = router.query
+    const isMobile = useMediaQuery({ maxWidth: '500px' })
 
     const { getSelection, clearSelection } = useAppState(state => ({
         getSelection: state.getSelection,
@@ -31,8 +33,12 @@ export default function ExplorerBar() {
                 }}
                 onDragEnter={(e) => e.preventDefault()}
                 gap='0.25rem'
+                listStyle={{
+                    paddingLeft: '0.25rem'
+                }}
                 itemStyle={{
-                    padding: '0.5rem 1rem',
+                    padding: isMobile ? '0.5rem 0rem' : '0.5rem 0.75rem',
+                    fontSize: isMobile ? '1.1rem' : '1.2rem',
                     minWidth: '3rem',
                     maxWidth: '10rem'
                 }}

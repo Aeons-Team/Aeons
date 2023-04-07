@@ -35,4 +35,13 @@
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 1rem;
   }
+
+  .explorerFilesInner {
+    padding: 1.25rem 0.75rem;
+  }
+
+  .sectionHeader {
+    font-size: 0.85rem;
+    padding-left: 0.1rem;
+  }
 }

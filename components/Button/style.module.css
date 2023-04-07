@@ -1,8 +1,8 @@
 .button {
   background-color: var(--color-active);
-  color: var(--color-primary);
-  border-radius: 6px;
-  padding: 0.7rem 1.5rem;
+  color: var(--color-secondary);
+  border-radius: 4px;
+  padding: 0.7rem 1.25rem;
   border: none;
   font-size: 0.75rem;
   display: flex;

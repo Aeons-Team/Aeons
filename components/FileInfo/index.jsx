@@ -18,7 +18,7 @@ export default function FileInfo({ file }) {
   return (
     <>
       <div className={style.fileHeader}>
-        <Icon name='folder' width='1.25rem' height='1.25rem' fill />
+        <Icon name='file' width='1.5rem' height='1.5rem' fill />
 
         <span className={style.fileName}>{file.name}</span>
 

@@ -179,7 +179,18 @@ export default class UserContract {
         this.log('Searching for contract internal wallet in local storage')
 
         const internalWalletJSON = localStorage.getItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-InternalOwner`)
-        internalWalletJSON ? this.internalWallet = JSON.parse(internalWalletJSON) : await this.createInternalOwner()
+
+        if (internalWalletJSON) {
+            this.internalWallet = JSON.parse(internalWalletJSON)
+
+            if (this.internalWallet.address != this.state.data?.internalOwner) {
+                await this.createInternalOwner()
+            }
+        }
+
+        else {
+            await this.createInternalOwner()
+        }
         
         await this.checkEvolve()
 

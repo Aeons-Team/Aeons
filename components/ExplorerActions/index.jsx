@@ -1,13 +1,14 @@
 import { useRouter } from 'next/router'
 import copy from 'clipboard-copy'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { useAppState } from '../../stores/AppStore'
-import { useDriveStore } from '../../stores/DriveStore'
+import { useDriveState } from '../../stores/DriveStore'
 import IconButton from '../IconButton'
 import style from './style.module.css'
 
 export default function ExplorerActions() {
     const router = useRouter()
+    const { id: activeFileId } = router.query
 
     const { selected, getSelection, activateContextMenu } = useAppState(state => ({
         selected: state.selected,
@@ -15,7 +16,10 @@ export default function ExplorerActions() {
         activateContextMenu: state.activateContextMenu
     }))
 
-    const contractState = useDriveStore((state) => state.contractState)
+    const { contractState, uploadFiles } = useDriveState((state) => ({
+        contractState: state.contractState,
+        uploadFiles: state.uploadFiles
+    }))
 
     const selection = getSelection()
 
@@ -133,8 +137,50 @@ export default function ExplorerActions() {
                     name='archive' 
                     width='1.05rem'
                     height='1.05rem'
-                    strokeWidth={12}
+                    strokeWidth={10}
                 />
+            }
+
+            {
+                selection.length == 0 &&
+                <div className={style.defaultActions}>
+                    <input 
+                        id='upload-file-2' 
+                        type='file'
+                        multiple 
+                        hidden 
+                        onChange={(e) => {
+                            uploadFiles(e.target.files, activeFileId)
+                            e.target.value = null
+                        }}
+                    />
+                    
+                    <IconButton 
+                        key='create-folder'
+                        {...animations}
+                        name='create-folder' 
+                        width='1rem'
+                        height='1rem'
+                        onClick={(e) => {
+                            e.stopPropagation()
+
+                            activateContextMenu(true, {
+                                type: 'explorer',
+                                action: 'creatingFolder'
+                            })
+                        }}
+                    />
+                    
+                    <IconButton 
+                        key='upload-file'
+                        {...animations}
+                        name='upload-file' 
+                        width='1rem'
+                        height='1rem'
+                        fill
+                        onClick={() => document.querySelector('#upload-file-2').click()}
+                    />
+                </div>
             }
             </AnimatePresence>
         </div>

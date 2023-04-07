@@ -1,17 +1,17 @@
 .search {
     position: relative;
-    flex-grow: 1;
-    max-width: 500px;
+    width: 500px;
+    max-width: 80vw;
 }
 
 .searchInner {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
     padding: 0.25rem 0.5rem;
     background-color: var(--color-primary);
     box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
@@ -36,7 +36,7 @@
     background: none;
     color: var(--color-secondary);
     flex-grow: 1;
-    padding: 0.6rem 0;
+    padding: 0.6rem 0.1rem;
 }
 
 .searchInner input::placeholder {
@@ -57,8 +57,8 @@
     position: absolute;
     width: 100%;
     z-index: 5;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
     box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
     overflow: hidden;
 }  
@@ -70,10 +70,11 @@
 
 .listItem {
     background-color: var(--color-primary);
-    padding: 0.85rem 0.5rem;
+    padding: 0.85rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    overflow: hidden;
 }
 
 .listItem:hover {
@@ -85,4 +86,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.listItem > *:nth-child(2) {
+    width: calc(100% - 1.5rem);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }

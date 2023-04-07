@@ -4,7 +4,7 @@ import style from "./style.module.css";
 import Icon from '../Icon'
 import Input from "../Input";
 
-export default function InputForm({ icon, heading, initialVal='', type='text', description, onClick, onBack }) {
+export default function InputForm({ icon, fillIcon = true, heading, initialVal='', type='text', description, onClick, onBack } = {}) {
   const [input, setInput] = useState(initialVal);
   const [loading, setLoading] = useState(false);
   const loadingRef = useRef()
@@ -23,7 +23,7 @@ export default function InputForm({ icon, heading, initialVal='', type='text', d
     <div className={style.form}>
       <div className={style.top}>
         <div className={style.header}>
-          <Icon width='1.75rem' height='1.75rem' name={icon} fill />
+          <Icon width='1.75rem' height='1.75rem' name={icon} fill={fillIcon} />
           <div className={style.title}>{heading}</div>
         </div>
         

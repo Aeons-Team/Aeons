@@ -6,12 +6,12 @@ export default function Loading() {
     const loadingText = useDriveStore(state => state.loadingText)
 
     return (
-        <div className={style.loading}>
-            <Spinner radius={64} color='var(--color-active)' stroke={2} />
-            
+        <div className={style.loading}>            
             <span className={style.loadingText}>
                 {loadingText}
             </span>
+
+            <Spinner radius={24} color='var(--color-active)' stroke={2} />
         </div>
     )
 }

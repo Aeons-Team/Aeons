@@ -17,6 +17,8 @@ export default function ContextMenu() {
   const router = useRouter()
   const { id: activeFileId } = router.query
   const isMobile = useMediaQuery({ maxWidth: '500px' })
+  const isMobileSm = useMediaQuery({ maxWidth: '350px' })
+  const scale = isMobileSm ? 0.7 : (isMobile ? 0.8 : 1)
 
   const { uploadFiles, renameFile, createFolder, contractState, relocateFiles } = useDriveState(state => ({
     uploadFiles: state.uploadFiles,
@@ -61,8 +63,6 @@ export default function ContextMenu() {
   }, [contextMenuActivated])
 
   useEffect(() => {
-    const scale = isMobile ? 0.8 : 1
-
     if (contextMenuActivated) {
       const elem = !contextMenuAction ? section1Ref.current.children[0] : section2Ref.current.children[0]
       const bb = elem.getBoundingClientRect()
@@ -82,7 +82,8 @@ export default function ContextMenu() {
     case "creatingFolder":
       var contextMenuInner = <InputForm 
         heading='Create Folder'
-        icon='folder'
+        fillIcon={false}
+        icon='create-folder'
         description='create a folder with a name of your choice'
         onBack={() => {
           useAppStore.setState({ contextMenuAction: '' })

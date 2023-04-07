@@ -1,5 +1,5 @@
 # XDrive
-Decentralized file storage powered by arweave, bundlr.network and warp contracts
+Decentralized file storage powered by Arweave
 
 ## Run locally
 to test the full extent of the application, we need to run it locally on a secure context (access localhost over https)

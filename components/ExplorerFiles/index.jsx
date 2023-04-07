@@ -1,11 +1,10 @@
 import { useMediaQuery } from "react-responsive";
 import { useAppState } from "../../stores/AppStore";
-import File from "../File"
 import ContextMenu from "../ContextMenu";
 import Grid from "../Grid"
 import style from './style.module.css'
 
-export default function ExplorerFiles({ files, animate = true }) {
+export default function ExplorerFiles({ files }) {
     const isMobile = useMediaQuery({ maxWidth: 500 })
     const scale = isMobile ? 0.8 : 1
 
@@ -32,35 +31,25 @@ export default function ExplorerFiles({ files, animate = true }) {
                         <span>Folders</span>
                     </h1>
 
-                    {
-                        animate ? (
-                            <Grid minWidth={isMobile ? 150 : 200} height={scale * 160} gapScale={scale * 0.1}>
-                                {files.filter((x) => x.contentType == "folder").map((x) => <File key={x.id} file={x} />)}
-                            </Grid>
-                        ) : ( 
-                            <div className={style.folders}>
-                                {files.filter((x) => x.contentType == "folder").map((x) => <File key={x.id} file={x} />)}
-                            </div>
-                        )
-                    }
+                    <Grid 
+                        minWidth={isMobile ? 150 : 200} 
+                        height={scale * 160} 
+                        gapScale={scale * 0.1}
+                        files={files.filter((x) => x.contentType == "folder")}
+                    />
                 </div>
 
-                <div className={style.section} style={{ marginTop: animate ? '1rem' : 0 }}>
+                <div className={style.section} style={{ marginTop: '1rem' }}>
                     <h1 className={style.sectionHeader}>
                         <span>Files</span>
                     </h1>
 
-                    {
-                        animate ? (
-                            <Grid minWidth={isMobile ? 150 : 200} height={scale * 260} gapScale={scale * 0.9}>
-                                {files.filter((x) => x.contentType != "folder").map((x) => <File key={x.id} file={x} />)}
-                            </Grid>
-                        ) : (
-                            <div className={style.files}>
-                                {files.filter((x) => x.contentType != "folder").map((x) => <File key={x.id} file={x} />)}
-                            </div>
-                        )
-                    }
+                    <Grid 
+                        minWidth={isMobile ? 150 : 200} 
+                        height={scale * 260} 
+                        gapScale={scale * 0.9}
+                        files={files.filter((x) => x.contentType != "folder")}
+                    />
                 </div>
                 
                 <ContextMenu />

@@ -22,12 +22,15 @@ interface AppStoreData {
   searchActivated: boolean,
   contextMenuAction: string,
   contextMenuActivation: number,
+  beingDragged: { [id: string]: boolean },
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => void
   select: (item: string) => void,
   selectItems: (items: string[]) => void,
   clearSelection: (clearFirstSelected: boolean) => void,
   getSelection: () => string[],
-  setShowWallet: (value: boolean) => void
+  setShowWallet: (value: boolean) => void,
+  setDragging: (id: string, value: boolean) => void,
+  clearDragging: Function
 }
 
 export const useAppStore = create<AppStoreData>((set, get) => ({
@@ -43,6 +46,7 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
   searchActivated: false,
   contextMenuAction: '',
   contextMenuActivation: 0,
+  beingDragged: {},
 
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => {
     const { cursorPosition, contextMenuPosition, contextMenuActivation } = get();
@@ -108,6 +112,15 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
 
   setShowWallet: (value: boolean) => {
     set({ showWallet: value })
+  },
+
+  setDragging: (id: string, value: boolean) => {
+    const { beingDragged } = get()    
+    set({ beingDragged: { ...beingDragged, [id]: value } })
+  },
+
+  clearDragging: () => {
+    set({ beingDragged: {} })
   }
 }));
 

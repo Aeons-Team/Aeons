@@ -10,6 +10,7 @@
 }
 
 .folder {
+  position: relative;
   padding: 1rem;
   background-color: var(--color-primary-2);
   border-radius: 6px;

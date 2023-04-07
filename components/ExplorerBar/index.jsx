@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import Ancestors from '../Ancestors'
 import ExplorerActions from '../ExplorerActions'
-import { useAppState } from '../../stores/AppStore'
+import { useAppState, useAppStore } from '../../stores/AppStore'
 import { useDriveStore } from '../../stores/DriveStore'
 import style from './style.module.css'
 
@@ -26,6 +26,7 @@ export default function ExplorerBar() {
                     if (file.id != activeFileId) {
                         relocateFiles(getSelection(), activeFileId, file.id)
                         clearSelection()
+                        useAppStore.getState().clearDragging()
                     }            
                 }}
                 onDragEnter={(e) => e.preventDefault()}

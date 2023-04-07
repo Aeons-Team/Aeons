@@ -46,6 +46,7 @@
   border: none;
   outline: none;
   background: none;
+  transition: background-color 400ms ease-in-out;
 }
 
 .back:not(:disabled):hover {

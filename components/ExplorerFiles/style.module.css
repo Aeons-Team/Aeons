@@ -18,18 +18,6 @@
   align-items: center;
 }
 
-.folders {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.files {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
 .explorerFilesInner {
   display: flex;
   flex-direction: column;

@@ -10,6 +10,7 @@
   justify-content: center;
   gap: 0.3rem;
   cursor: pointer;
+  transition: background-color 400ms ease-in-out;
 }
 
 .button:not(:disabled):hover {

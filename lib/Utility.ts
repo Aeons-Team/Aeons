@@ -16,22 +16,22 @@ export default class Utility {
 
   static formatBytes(size: number): string {
     if (size > 1e9) {
-      return `${(size / 1e9).toFixed(2)} GB`;
+      return `${(size / 1e9).toFixed(1)} GB`;
     }
 
     if (size > 1e6) {
-      return `${(size / 1e6).toFixed(2)} MB`;
+      return `${(size / 1e6).toFixed(1)} MB`;
     }
 
     if (size > 1e3) {
-      return `${(size / 1e3).toFixed(2)} KB`;
+      return `${(size / 1e3).toFixed(1)} KB`;
     }
 
-    return `${size.toFixed(2)} bytes`;
+    return `${size.toFixed(1)} bytes`;
   }
 
   static formatTime(seconds: number): string {
-    if (seconds < 60) return `${seconds.toFixed(1)} seconds`
+    if (seconds < 60) return `${Math.round(seconds)} seconds`
 
     if (seconds < 60 * 60) return `${Math.round(seconds / 60)} minutes`
 

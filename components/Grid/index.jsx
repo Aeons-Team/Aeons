@@ -1,7 +1,40 @@
-import React, { useLayoutEffect, useRef, useState } from "react"
+import { useLayoutEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
+import { useAppState } from "../../stores/AppStore"
+import File from "../File"
 
-export default function Grid({ children, minWidth, gap = 10, height, gapScale }) {
+function GridItem({ file, itemWidth, x, y }) {
+    const { dragged } = useAppState((state) => ({
+        dragged: state.beingDragged[file.id]
+    }))
+
+    return (
+        <motion.div 
+            style={{ 
+                position: 'absolute', 
+                top: 0, 
+                left: 0, 
+                width: itemWidth ,
+                zIndex: dragged ? 10 : 1
+            }}
+            initial={{
+                x, y
+            }}
+            animate={{
+                x, y
+            }}
+            transition={{  
+                type: 'spring',
+                damping: 18,
+                stiffness: 150
+            }}
+        >
+            <File file={file} />
+        </motion.div>
+    )
+}
+
+export default function Grid({ files, minWidth, gap = 10, height, gapScale }) {
     const gridRef = useRef()
     const [width, setWidth] = useState(0)
 
@@ -17,8 +50,7 @@ export default function Grid({ children, minWidth, gap = 10, height, gapScale })
         return () => window.removeEventListener('resize', calcWidth)
     }, [])
 
-    let count = React.Children.count(children)
-
+    let count = files.length
     let maxCols = width && (width + gap) / (minWidth + gap)
     let reminder = maxCols % 1
     
@@ -34,29 +66,12 @@ export default function Grid({ children, minWidth, gap = 10, height, gapScale })
         >
             {
                 width &&
-                React.Children.map(children, ((child, i) => {
+                files.map((file, i) => {
                     const x = (i % maxCols) * (itemWidth + gap)
                     const y = Math.floor(i / maxCols) * (itemHeight + gap)
 
-                    return (
-                        <motion.div 
-                            style={{ position: 'absolute', top: 0, left: 0, width: itemWidth }}
-                            initial={{
-                                x, y
-                            }}
-                            animate={{
-                                x, y
-                            }}
-                            transition={{  
-                                type: 'spring',
-                                damping: 18,
-                                stiffness: 150
-                            }}
-                        >
-                            {child}
-                        </motion.div>
-                    )
-                }))
+                    return <GridItem key={file.id} file={file} itemWidth={itemWidth} x={x} y={y} />
+                })
             }
         </div>
     )

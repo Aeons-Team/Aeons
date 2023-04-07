@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useRef } from "react";
-import { useAppState } from "../../stores/AppStore";
+import { useAppState, useAppStore } from "../../stores/AppStore";
 import { useDriveState } from "../../stores/DriveStore";
 import ExplorerBar from '../ExplorerBar'
 import ExplorerFiles from "../ExplorerFiles";
@@ -29,11 +29,12 @@ export default function Explorer() {
     countRef.current = 0
     explorerRef.current.classList.remove(style.dragEnter)
 
+    clearSelection();
+    useAppStore.getState().clearDragging();
+
     if (e.dataTransfer.files.length) {
       uploadFiles(e.dataTransfer.files, activeFileId);
     }
-    
-    clearSelection();
   };
 
   const onExplorerDragEnter = (e) => {
@@ -60,6 +61,7 @@ export default function Explorer() {
 
   return (
     <div
+      id='explorer'
       ref={explorerRef}
       className={style.explorer}
       onDrop={onExplorerDrop}

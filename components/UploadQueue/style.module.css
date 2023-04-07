@@ -2,10 +2,12 @@
     position: fixed;
     bottom: 1rem;
     right: 1rem;
-    background-color: rgba(0,0,0, 0.2);
-    backdrop-filter: blur(10px);
-    border-radius: 25px;
-    padding: 10px;
+    background-color: var(--color-primary);
+    box-shadow: 0 0 var(--shadow-blur) 0 var(--color-shadow);
+    border-radius: 10px;
+    padding-top: 1rem;
+    width: 400px;
+    overflow: hidden;
 }
 
 .queueTopPreview {
@@ -13,6 +15,7 @@
     height: 4rem;
     object-fit: cover;
     border-radius: 100%;
+    box-shadow: 0 0 var(--shadow-blur) 0 var(--color-shadow);
 }
 
 .currentUpload {
@@ -34,10 +37,26 @@
     gap: 0.5rem;
 }
 
+.fileName {
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
+.currentPrice {
+    font-size: 0.7rem;
+}
+
+.timeEstimate {
+    font-size: 0.7rem;
+}
+
 .currentUploadInfoBottom {
     display: flex;
     gap: 1rem;
-    font-size: 0.8rem;
+    font-size: 0.65rem;
     margin-right: 0;
     margin-left: auto;
 }   
@@ -53,11 +72,14 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    padding: 0.75rem;
+    padding-left: 1rem;
 }
 
 .loading {
     height: 4px;
     border-radius: 4px;
+    margin-top: 0.5rem;
     width: 100%;
     background-color: var(--color-primary-2);
 }
@@ -65,15 +87,21 @@
 .loadingInner {
     height: 4px;
     border-radius: 4px;
-    width: 50%;
     background-color: var(--color-secondary);
 }
 
 .queueItem {
-    padding: 0.5rem;
+    padding: 0.75rem;
+    padding-left: 1.5rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    border-top: 2px solid var(--color-primary-2);
+    transition: background-color 400ms ease-in-out;
+}
+
+.queueItem:hover {
+    background-color: var(--color-primary-2);
 }
 
 .queueItemPreview {
@@ -92,12 +120,14 @@
 
 .queueItemCancel {
     margin-left: auto; 
-    margin-right: 0;
+    margin-right: 0.35rem;
 }
 
 .confirmUpload {
     display: flex;
     gap: 0.5rem;
+    align-items: center;
+    flex-grow: 1;
 }
 
 .confirmUploadInfo {
@@ -116,8 +146,7 @@
 }
 
 .speedStatsLeft {
-    margin-left: 6rem; 
-    margin-right: auto;
+    margin-left: auto; 
 }
 
 .speedStatsRight {
@@ -125,12 +154,18 @@
     margin-right: 5.5rem;
 }
 
-.dropdown {
+.topCross {
     margin-left: auto; 
     margin-right: 0rem;
 }
 
+.dropdown {
+    position: absolute;
+    top: 0.35rem;
+    right: 1.15rem;
+}
+
 .remaining {
-    font-size: 1rem;
+    font-size: 0.8rem;
     padding-left: 120px;
 }

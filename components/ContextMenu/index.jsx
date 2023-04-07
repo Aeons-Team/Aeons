@@ -314,6 +314,7 @@ export default function ContextMenu() {
         left: contextMenuPosition.x + "px",
         top: contextMenuPosition.y + "px",
       }}
+      onClick={(e) => e.stopPropagation()}
     >
       <AnimatePresence>
         {

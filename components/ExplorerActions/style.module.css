@@ -1,0 +1,30 @@
+.actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-right: 0.5rem;
+    position: relative;
+}
+
+.defaultActions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: absolute;
+    right: 0;
+}
+
+@media (max-width: 500px) {
+    .actions {
+        gap: 0.5rem;
+        transform: scale(0.9);
+        transform-origin: right center;
+    }
+
+    .defaultActions {
+        gap: 0.5rem;
+        transform: scale(0.9);
+        transform-origin: right center;
+    }
+}

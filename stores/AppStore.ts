@@ -5,8 +5,8 @@ import { ContractFile } from '../lib/ContractState'
 
 interface ContextMenuOpts {
   type?: string,
-  copy?: boolean,
   file?: ContractFile
+  action?: string
 }
 
 interface AppStoreData {
@@ -15,10 +15,23 @@ interface AppStoreData {
   contextMenuOpts: ContextMenuOpts,
   contextMenuPosition: Vector2,
   selected: { [id: string]: boolean },
+  holdingShift: boolean,
+  holdingControl: boolean,
+  firstSelected: string | null,
+  showWallet: boolean,
+  searchActivated: boolean,
+  contextMenuAction: string,
+  contextMenuActivation: number,
+  dragCount: number,
+  beingDragged: { [id: string]: number },
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => void
   select: (item: string) => void,
-  clearSelection: (item: string) => void,
-  getSelection: () => string[]
+  selectItems: (items: string[]) => void,
+  clearSelection: (clearFirstSelected: boolean) => void,
+  getSelection: () => string[],
+  setShowWallet: (value: boolean) => void,
+  setDragging: (id: string, value: boolean) => void,
+  clearDragging: Function
 }
 
 export const useAppStore = create<AppStoreData>((set, get) => ({
@@ -27,31 +40,91 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
   contextMenuOpts: {},
   contextMenuPosition: new Vector2(),
   selected: {},
+  holdingShift: false,
+  holdingControl: false,
+  firstSelected: null,
+  showWallet: false,
+  searchActivated: false,
+  contextMenuAction: '',
+  contextMenuActivation: 0,
+  dragCount: 0,
+  beingDragged: {},
 
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => {
-    const { cursorPosition, contextMenuPosition } = get();
+    const { cursorPosition, contextMenuPosition, contextMenuActivation } = get();
     const partial: any = { contextMenuActivated: flag };
 
+    const explorerFiles = document.querySelector('#explorer-files')
+
+    if (!explorerFiles) throw new Error()
+
+    const explorerFilesBB = explorerFiles.getBoundingClientRect()
+    const { left, top } = explorerFilesBB
+
     if (flag) {
-      contextMenuPosition.copy(cursorPosition);
-      partial.contextMenuOpts = opts;
-    } else partial.contextMenuOpts = {};
+      contextMenuPosition.copy(cursorPosition.sub(left, top - explorerFiles.scrollTop - 2));
+      partial.contextMenuOpts = { type: opts.type, file: opts.file };
+      partial.contextMenuAction = opts.action;
+    } 
+    
+    else {
+      partial.contextMenuOpts = {};
+      partial.contextMenuAction = ''
+    }
+
+    partial.contextMenuActivation = contextMenuActivation + 1;
 
     set(partial);
   },
 
   select: (item: string) => {
-    const selected = get().selected 
-    set({ selected: { ...selected, [item]: !selected[item] } })
+    const { selected, firstSelected } = get()
+    selected[item] = !selected[item]
+
+    set({ selected: { ...selected }, firstSelected: firstSelected || item })
   },
 
-  clearSelection: () => {
-    set({ selected: {} })
+  selectItems: (items: string[]) => {
+    const selected = get().selected 
+        
+    items.forEach(item => selected[item] = true)
+
+    set({ selected: { ...selected }})
+  },
+
+  clearSelection: (clearFirstSelected: boolean = true) => {
+    const { selected } = get()
+    const partial: any = {}
+
+    if (clearFirstSelected) {
+      partial.firstSelected = null
+    }
+
+    if (Object.keys(selected).length) {
+      partial.selected = {}
+    }
+    
+    set(partial)
   },
 
   getSelection: () => {
     const selected = get().selected
     return Object.keys(selected).filter(x => selected[x])
+  },
+
+  setShowWallet: (value: boolean) => {
+    set({ showWallet: value })
+  },
+
+  setDragging: (id: string) => {
+    let { beingDragged, dragCount } = get()    
+    ++dragCount
+
+    set({ beingDragged: { ...beingDragged, [id]: dragCount }, dragCount })
+  },
+
+  clearDragging: () => {
+    set({ beingDragged: {}, dragCount: 0 })
   }
 }));
 

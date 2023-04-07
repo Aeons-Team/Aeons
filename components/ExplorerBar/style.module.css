@@ -1,0 +1,12 @@
+.explorerBar {
+    display: flex;
+    padding: 0.2rem;
+    font-size: 1.25rem;
+    box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
+}
+
+@media (max-width: 500px) {
+    .explorerBar {
+        padding: 0.2rem 0.125rem;        
+    }
+}

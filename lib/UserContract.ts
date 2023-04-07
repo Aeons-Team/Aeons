@@ -28,9 +28,12 @@ export default class UserContract {
     client: BundlrClient
     updateUIAction: Function
     internalWallet : Wallet
+    interactionQueue: any[]
+    log: Function
 
     constructor() {
         this.state = new ContractState()
+        this.interactionQueue = []
     }
 
     setContractSrcId(contractSrcId: string) {
@@ -40,9 +43,13 @@ export default class UserContract {
     async updateState() {
         const stateData = (await this.instance.readState()).cachedValue.state
         this.state.setData(stateData)
+
+        this.interactionQueue.forEach(x => this.localWrite(x))
     }
 
     async createContract() {
+        this.log('Creating new user contract')
+
         this.warp.use(new DeployPlugin())
 
         const contractUpload = await this.client.upload('', {
@@ -63,6 +70,8 @@ export default class UserContract {
     }
 
     async initializeContract() {
+        this.log('Searching for user contract in local storage')
+
         const contractId = localStorage.getItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractId`)
         const contractSrcId = localStorage.getItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-ContractSrcId`)
 
@@ -72,6 +81,8 @@ export default class UserContract {
         }
 
         else {
+            this.log('Searching for user contract in arweave graphql gateway')
+
             const res = await this.client.query({
                 query: gql`
                     query($owners: [String!]!, $clientAppName: String!) {
@@ -104,6 +115,8 @@ export default class UserContract {
             const edges = res.data.transactions.edges
 
             if (edges.length == 0) {
+                this.log('Searching for user contract in warp gateway')
+
                 const fetchUrl = `${process.env.NEXT_PUBLIC_WARP_GATEWAY_URL}/contracts-by-source?id=${process.env.NEXT_PUBLIC_CONTRACT_SRC_ID}&limit=${process.env.NEXT_PUBLIC_WARP_GATEWAY_FETCH_LIMIT}&sort=desc`
                 
                 const contractId = await fetch(fetchUrl)
@@ -134,15 +147,20 @@ export default class UserContract {
     }
 
     async checkEvolve() {
+        this.log('Checking for contract evolution')
+
         if (this.contractSrcId != process.env.NEXT_PUBLIC_CONTRACT_SRC_ID && this.state.getData().evolve != process.env.NEXT_PUBLIC_CONTRACT_SRC_ID) {
+            this.log('User contract evolution detected, evolving contract')
+            
             await this.instance.evolve(process.env.NEXT_PUBLIC_CONTRACT_SRC_ID ?? '')
             await this.updateState()
         }
     }
 
-    async initialize(provider: ethers.providers.Web3Provider, client: BundlrClient) {
+    async initialize(provider: ethers.providers.Web3Provider, client: BundlrClient, log: Function) {
         this.provider = provider
         this.client = client
+        this.log = log
 
         this.warp = WarpFactory.forMainnet()
 
@@ -152,12 +170,28 @@ export default class UserContract {
 
         const { evmSignature } = await import('warp-contracts-plugin-signature')
 
+        this.log('Evaluating contract state')
+
         this.instance = this.warp.contract<ContractStateData>(this.contractId)
         this.instance.connect({ signer: evmSignature, type: 'ethereum' })
         await this.updateState()
         
+        this.log('Searching for contract internal wallet in local storage')
+
         const internalWalletJSON = localStorage.getItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-InternalOwner`)
-        internalWalletJSON ? this.internalWallet = JSON.parse(internalWalletJSON) : await this.createInternalOwner()
+
+        if (internalWalletJSON) {
+            this.internalWallet = JSON.parse(internalWalletJSON)
+
+            if (this.internalWallet.address != this.state.data?.internalOwner) {
+                await this.createInternalOwner()
+            }
+        }
+
+        else {
+            await this.createInternalOwner()
+        }
+        
         await this.checkEvolve()
 
     }
@@ -217,9 +251,15 @@ export default class UserContract {
 
     async writeInteraction(action: any, shouldUpdateUI: boolean) {
         this.localWrite(action)
+        this.interactionQueue.push(action)
+
         shouldUpdateUI && this.updateUIAction()
+        
         await this.instance.writeInteraction(action)
+        this.interactionQueue = this.interactionQueue.filter(x => x != action)
+
         await this.updateState()
+        
         shouldUpdateUI && this.updateUIAction()
     }
 
@@ -239,6 +279,8 @@ export default class UserContract {
     }
 
     async createInternalOwner() {
+        this.log('Creating contract internal wallet')
+
         this.internalWallet = await this.warp.generateWallet()
         await this.writeInteraction({ function: 'setInternalOwner', value : this.internalWallet.address },false)
         localStorage.setItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-InternalOwner`, JSON.stringify(this.internalWallet))

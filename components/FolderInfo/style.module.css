@@ -1,0 +1,72 @@
+.folderInfo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.folderInfoMenu {
+    position: absolute;
+    right: -0.6rem;
+    top: 0rem;
+}
+
+.spinner {
+    position: absolute;
+    right: 0rem;
+    top: 0rem;
+}
+
+.folderHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.folderName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 85%;
+    font-size: 0.925rem;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.folderDetails {
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.folderDetails > span {
+    color: var(--color-secondary-5);
+    font-weight: 400;
+}
+
+.folderDetails > *:nth-child(2) {
+    margin-left: auto;
+}
+
+@media (max-width: 500px) {
+    .folderName {
+        font-size: 0.8rem;
+    }
+
+    .folderDetails {
+        font-size: 0.7rem;
+    }
+    
+    .folderHeader {
+        gap: 0.5rem;
+    }
+
+    .folderHeader svg {
+        transform: scale(0.8);
+        transform-origin: left center;
+    }
+
+    .folderInfo {
+        gap: 1.25rem;
+    }
+}

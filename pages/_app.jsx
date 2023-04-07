@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useDriveState } from "../stores/DriveStore";
 import { useAppStore } from "../stores/AppStore";
 import Drive from "../components/Drive";
+import Loading from "../components/Loading";
 import "../styles/globals.css";
 
 function App({ Component, pageProps }) {
@@ -17,8 +18,15 @@ function App({ Component, pageProps }) {
     async function init() {
       await window.ethereum.request({ method: "eth_requestAccounts" });
       
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      await initialize(provider);
+      initialize(new ethers.providers.Web3Provider(window.ethereum));
+
+      window.ethereum.on('accountsChanged', () => {
+        initialize(new ethers.providers.Web3Provider(window.ethereum));
+      })
+      
+      window.ethereum.on('chainChanged', () => {
+        initialize(new ethers.providers.Web3Provider(window.ethereum));
+      })
     }
 
     init();
@@ -30,20 +38,54 @@ function App({ Component, pageProps }) {
       );
     };
 
+    const onKeyDown = (e) => {
+      switch (e.key) {
+        case 'Shift':
+          useAppStore.setState({ holdingShift: true })
+          break 
+
+        case 'Control':
+          useAppStore.setState({ holdingControl: true })
+          break 
+      }
+    }
+
+    const onKeyUp = (e) => {
+      switch (e.key) {
+        case 'Shift':
+          useAppStore.setState({ holdingShift: false })
+          break 
+
+        case 'Control':
+          useAppStore.setState({ holdingControl: false })
+          break 
+      }
+    }
+
     document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("keyup", onKeyUp);
 
     return () => {
       document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("keyup", onKeyUp);
     };
   }, []);
 
-  if (initialized) {
-    return (
-      <Drive>
-        <Component {...pageProps} />
-      </Drive>
-    )
-  }
+  return (
+    <>
+    {
+      initialized ? (
+        <Drive>
+          <Component {...pageProps} />
+        </Drive>
+      ) : (
+        <Loading />
+      )
+    }
+    </>
+  )
 }
 
 export default App;

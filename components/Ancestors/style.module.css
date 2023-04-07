@@ -1,0 +1,29 @@
+.ancestors {
+    display: flex;
+    align-items: center;
+}
+
+.ancestorItem {
+    display: flex;
+    align-items: center;
+}
+
+.ancestor {
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: background-color 400ms ease-in-out;
+    display: flex;
+    justify-content: center;
+}
+
+.ancestor:hover {
+    background-color: var(--color-primary-2);
+}
+
+.dragStart {
+    background-color: var(--color-primary-2);
+    outline: 1px solid var(--color-active);
+}

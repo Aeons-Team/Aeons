@@ -1,23 +1,35 @@
-import Wallet from "../Wallet";
-import ContextMenu from "../ContextMenu";
-import Search from "../Search";
+import { motion } from 'framer-motion';
+import Topbar from '../Topbar';
+import Sidebar from '../Sidebar';
+import UploadQueue from "../UploadQueue"
 import style from "./style.module.css";
-import HomeButton from "../HomeButton";
-import ModeButton from "../ModeButton";
 
 export default function Drive({ children }) {
-  return (
-    <div className={style.drive}>
-      <ContextMenu />
-      <Wallet />
-      <div className={style.driveGrid}>
-        <div>
-          <HomeButton />
-          <ModeButton />
-          <Search />
-        </div>
-          {children}
-      </div>
-    </div>
-  );
+	const transition = {
+		ease: [.88,.08,.12,.93],
+		duration: 0.8
+	}
+
+	return (
+		<div className={style.drive}>
+			<Topbar transition={transition} />
+			<Sidebar transition={transition} />
+			
+			<motion.div 
+				initial={{  
+					opacity: 0,
+					y: 100
+				}}
+				animate={{
+					opacity: 1,
+					y: 0
+				}}
+				transition={transition}
+			>
+				{children}
+			</motion.div>
+			
+			<UploadQueue />
+		</div>
+	);
 }

@@ -1,28 +1,21 @@
-.explorer {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+.searchExplorer {
+  height: calc(100vh - 70px - 25px);
+  margin-right: 35px;
+  margin-bottom: 25px;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 0 var(--shadow-blur) 0 var(--color-shadow);
+  background-color: var(--color-primary);
 }
 
-.section {
-  margin-bottom: 2.5rem;
+.explorerFiles {
+  height: 100%;
+  overflow: hidden;
 }
 
-.sectionTitle {
-  font-size: 0.85rem;
-  font-weight: 400;
-  margin-bottom: 1.5rem;
-  color: var(--color-secondary);
-}
-
-.folders {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(100px, 1fr));
-  gap: 1rem;
-}
-
-.files {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(100px, 1fr));
-  gap: 1rem;
+@media (max-width: 820px) {
+  .searchExplorer {
+    height: calc(100vh - 110px);
+    margin-right: 0;
+  }  
 }

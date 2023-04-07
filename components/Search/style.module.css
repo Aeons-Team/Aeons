@@ -1,7 +1,96 @@
 .search {
-  display: grid;
-  width: 25vw;
-  height: 5vh;
-  float: left;
-  gap: 1rem;
+    position: relative;
+    width: 500px;
+    max-width: 80vw;
+}
+
+.searchInner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    padding: 0.25rem 0.5rem;
+    background-color: var(--color-primary);
+    box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
+}
+
+.searchInnerCollapse {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.searchInner > *:nth-child(1) {
+    display: inline-block;
+    height: 100%;
+    transform: translateX(4px);
+    display: flex;
+    align-items: center;
+}
+
+.searchInner input {
+    border: none;
+    outline: none;
+    background: none;
+    color: var(--color-secondary);
+    flex-grow: 1;
+    padding: 0.6rem 0.1rem;
+}
+
+.searchInner input::placeholder {
+    color: var(--color-secondary);
+    opacity: 0.6;
+    transition: opacity 200ms ease-in-out;
+}
+
+.searchInner input:focus::placeholder {
+    opacity: 1;
+}
+
+.list {
+    font-size: 0.85rem;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    width: 100%;
+    z-index: 5;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
+    overflow: hidden;
+}  
+
+.listInner {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.listItem {
+    background-color: var(--color-primary);
+    padding: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow: hidden;
+}
+
+.listItem:hover {
+    background-color: var(--color-primary-2);
+}
+
+.listItem > *:nth-child(1) {
+    width: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.listItem > *:nth-child(2) {
+    width: calc(100% - 1.5rem);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }

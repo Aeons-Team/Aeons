@@ -1,14 +1,19 @@
 import { useRouter } from "next/router";
-import { useAppState } from "../../stores/AppStore";
+import { useRef } from "react";
+import { useAppState, useAppStore } from "../../stores/AppStore";
 import { useDriveState } from "../../stores/DriveStore";
-import File from "../File";
+import ExplorerBar from '../ExplorerBar'
+import ExplorerFiles from "../ExplorerFiles";
 import style from "./style.module.css";
 
 export default function Explorer() {
+  const explorerRef = useRef()
+  const countRef = useRef(0)
+
   const { id: activeFileId } = useRouter().query;
-  const { activateContextMenu, clearSelection } = useAppState((state) => ({
-    activateContextMenu: state.activateContextMenu,
-    clearSelection: state.clearSelection,
+  const { getSelection, clearSelection } = useAppState((state) => ({
+    getSelection: state.getSelection,
+    clearSelection: state.clearSelection
   }));
   
   const { contractState, uploadFiles } = useDriveState((state) => ({
@@ -16,63 +21,57 @@ export default function Explorer() {
     uploadFiles: state.uploadFiles
   }));
 
-  const activeFile = contractState.getFile(activeFileId);
   const activeFileChildren = contractState.getChildren(activeFileId);
-  const isFileView = activeFile.contentType != "folder";
 
   const onExplorerDrop = async (e) => {
     e.preventDefault();
+
+    countRef.current = 0
+    explorerRef.current.classList.remove(style.dragEnter)
+
+    clearSelection();
+    useAppStore.getState().clearDragging();
+
     if (e.dataTransfer.files.length) {
       uploadFiles(e.dataTransfer.files, activeFileId);
     }
-    clearSelection();
+  };
+
+  const onExplorerDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    countRef.current++
+
+    if (!getSelection().length) {
+      explorerRef.current.classList.add(style.dragEnter)
+    }
+  };
+
+  const onExplorerDragLeave = (e) => {
+    if (--countRef.current == 0) {
+      explorerRef.current.classList.remove(style.dragEnter)
+    }
   };
 
   const onExplorerDragOver = (e) => {
     e.preventDefault();
     e.stopPropagation();
-  };
-
-  const onExplorerContextMenu = (e) => {
-    e.preventDefault();
-    activateContextMenu(true, {
-      type: "explorer",
-    });
-  };
+  }
 
   return (
     <div
-      className={isFileView ? style.fileView : style.explorer}
+      id='explorer'
+      ref={explorerRef}
+      className={style.explorer}
       onDrop={onExplorerDrop}
+      onDragEnter={onExplorerDragEnter}
+      onDragLeave={onExplorerDragLeave}
       onDragOver={onExplorerDragOver}
       onClick={clearSelection}
-      onContextMenu={onExplorerContextMenu}
     >
-      {isFileView ? (
-        <File file={activeFile} enableControls />
-      ) : (
-        <>
-          <div className={style.section}>
-            <h1 className={style.sectionTitle}>Folders</h1>
-            <div className={style.folders}>
-              {activeFileChildren &&
-                activeFileChildren
-                  .filter((x) => x.contentType == "folder")
-                  .map((x) => <File key={x.id} file={x} />)}
-            </div>
-          </div>
-
-          <div className={style.section}>
-            <h1 className={style.sectionTitle}>Files</h1>
-            <div className={style.files}>
-              {activeFileChildren &&
-                activeFileChildren
-                  .filter((x) => x.contentType != "folder")
-                  .map((x) => <File key={x.id} file={x} />)}
-            </div>
-          </div>
-        </>
-      )}
+      <ExplorerBar />
+      <ExplorerFiles files={activeFileChildren} className={style.explorerFiles} />
     </div>
   );
 }

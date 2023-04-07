@@ -20,4 +20,8 @@ export default class Vector {
   sub(x: number, y: number): Vector {
     return new Vector(this.x - x, this.y - y);
   }
+
+  subv(other: Vector): Vector {
+    return new Vector(this.x - other.x, this.y - other.y);
+  }
 }

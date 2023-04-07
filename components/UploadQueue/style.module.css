@@ -1,0 +1,192 @@
+.uploadQueue {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background-color: var(--color-primary);
+    box-shadow: 0 0 var(--shadow-blur) 0 var(--color-shadow);
+    border-radius: 3px;
+    padding-top: 1rem;
+    width: 400px;
+    overflow: hidden;
+    z-index: 5;
+}
+
+.queueTopPreview {
+    width: 4rem;
+    height: 4rem;
+    object-fit: cover;
+    border-radius: 100%;
+    box-shadow: 0 0 var(--shadow-blur) 0 var(--color-shadow);
+}
+
+.currentUpload {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.currentUploadInfo {
+    margin-right: auto;
+    margin-left: 0;
+}
+
+.currentUploadInfoInner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.currentUploadInfoTop {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.fileName {
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
+.currentPrice {
+    font-size: 0.7rem;
+}
+
+.timeEstimate {
+    font-size: 0.7rem;
+}
+
+.currentUploadInfoBottom {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.65rem;
+    margin-right: 0;
+    margin-left: auto;
+}   
+
+.currentUploadRight {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 0.4rem;
+}
+
+.queueTop {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    padding-left: 1rem;
+}
+
+.loading {
+    height: 4px;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    width: 100%;
+    background-color: var(--color-primary-2);
+}
+
+.loadingInner {
+    height: 4px;
+    border-radius: 4px;
+    background-color: var(--color-secondary);
+}
+
+.queueItem {
+    padding: 0.75rem;
+    padding-left: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-top: 2px solid var(--color-primary-2);
+    transition: background-color 400ms ease-in-out;
+}
+
+.queueItem:hover {
+    background-color: var(--color-primary-2);
+}
+
+.queueItemPreview {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: cover;
+    border-radius: 100%;
+}
+
+.queueItemInfo {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.7rem;
+    gap: 0.25rem;
+}
+
+.queueItemCancel {
+    margin-left: auto; 
+    margin-right: 0.35rem;
+}
+
+.confirmUpload {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.confirmUploadInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.speedStats {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    align-items: center;
+}
+
+.speedStatsLeft {
+    margin-left: auto; 
+}
+
+.speedStatsRight {
+    margin-left: auto; 
+    margin-right: 5.5rem;
+}
+
+.topCross {
+    margin-left: auto; 
+    margin-right: 0rem;
+}
+
+.dropdown {
+    position: absolute;
+    top: 0.35rem;
+    right: 1.15rem;
+}
+
+.remaining {
+    font-size: 0.8rem;
+    padding-left: 120px;
+}
+
+@media (max-width: 500px) {
+    .uploadQueue {
+        transform: scale(0.8);
+        transform-origin: right bottom;
+        right: 0.5rem;
+        bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 350px) {
+    .uploadQueue {
+        transform: scale(0.7);
+        right: 0.4rem;
+        bottom: 0.4rem;
+    }
+}

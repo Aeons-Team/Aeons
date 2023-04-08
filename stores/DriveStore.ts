@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { shallow } from "zustand/shallow";
+import { subscribeWithSelector } from "zustand/middleware"
 import { ethers } from "ethers";
 import fileReaderStream from "filereader-stream";
 import { ChunkingUploader } from "@bundlr-network/client/build/common/chunkingUploader";
@@ -39,187 +40,189 @@ interface DriveStoreData {
     pauseOrResume: Function
 }
 
-export const useDriveStore = create<DriveStoreData>((set, get) => ({
-    initialized: false, 
-    client: new BundlrClient(),
-    contract: new UserContract(),
-    contractState: null,
-    walletBalance: null,
-    loadedBalance: null,
-    uploading: false,
-    uploadSpeed: 0,
-    paused: false,
-    uploadQueue: [],
-    currentName: '',
-    currentUploader: null,
-    bytesUploaded: null,
-    loadingText: 'Initializing',
-    
-    fetchWalletBalance: async () => {
-        const walletBalance = await get().client.getWalletBalance();
-        set({ walletBalance })
-    },
-
-    fetchLoadedBalance: async () => {
-        const loadedBalance = await get().client.getLoadedBalance();
-        set({ loadedBalance })
-    },
-
-    initialize: async (provider: ethers.providers.Web3Provider) => {
-        set({ initialized: false })
-
-        const { client, contract, fetchWalletBalance, fetchLoadedBalance } = get()
-
-        const log = (text) => set({ loadingText: text })
-
-        await client.initialize(provider, log);
-        await contract.initialize(provider, client, log);
-
-        contract.updateUIAction = () => set({ contractState: contract.state.copy() })
+export const useDriveStore = create(
+    subscribeWithSelector<DriveStoreData>((set, get) => ({
+        initialized: false, 
+        client: new BundlrClient(),
+        contract: new UserContract(),
+        contractState: null,
+        walletBalance: null,
+        loadedBalance: null,
+        uploading: false,
+        uploadSpeed: 0,
+        paused: false,
+        uploadQueue: [],
+        currentName: '',
+        currentUploader: null,
+        bytesUploaded: null,
+        loadingText: 'Initializing',
         
-        set({ 
-            initialized: true,
-            contractState: contract.state
-        })
+        fetchWalletBalance: async () => {
+            const walletBalance = await get().client.getWalletBalance();
+            set({ walletBalance })
+        },
 
-        fetchWalletBalance();
-        fetchLoadedBalance();
-    },
-    
-    uploadNext: async (name?: string) => {
-        const { client, contract, fetchLoadedBalance, uploadQueue } = get()
-        const first = uploadQueue[0]
+        fetchLoadedBalance: async () => {
+            const loadedBalance = await get().client.getLoadedBalance();
+            set({ loadedBalance })
+        },
 
-        set({ 
-            uploading: true, 
-            bytesUploaded: 0,
-            currentName: name || first.file.name
-        })    
+        initialize: async (provider: ethers.providers.Web3Provider) => {
+            set({ initialized: false })
 
-        const startTimes: any = {}
-        const initialTime = new Date().getTime() / 1000
-        const sizes: number[] = []
-        const durations: number[] = []
-        
-        let batchSize = Number(process.env.NEXT_PUBLIC_CHUNKED_UPLOADER_BATCH_SIZE)
-        let nextChunk = batchSize + 1
-        let index = 0
+            const { client, contract, fetchWalletBalance, fetchLoadedBalance } = get()
 
-        const uploader = client.uploadChunked(
-            fileReaderStream(first.file), 
-            {
-                tags: [
-                    { name: 'Content-Type', value: first.file.type }
-                ]
-            }, 
-            {
-                chunkUpload: (info) => {
-                    if (get().currentUploader != uploader) return
+            const log = (text) => set({ loadingText: text })
 
-                    const partial: any = { bytesUploaded: info.totalUploaded }
+            await client.initialize(provider, log);
+            await contract.initialize(provider, client, log);
 
-                    if (info.id != 1) {                        
-                        const now = new Date().getTime() / 1000
-                        const duration = now - (startTimes[info.id] || initialTime) 
-    
-                        if (durations.length < batchSize) {
-                            durations.push(duration)
-                            sizes.push(info.size)
-                        }
-                        
-                        else {
-                            durations[index % batchSize] = duration
-                            sizes[index++ % batchSize] = info.size
-                        }
-    
-                        startTimes[++nextChunk] = now
-                        partial.uploadSpeed = sizes.reduce((x, y) => x + y, 0) / durations.reduce((x, y) => Math.max(x, y), 0) 
-                    }
-
-                    set(partial)   
-                },
-                done: (result) => {
-                    set({ uploading: false, uploadQueue: uploadQueue.slice(1), bytesUploaded: 0 })
-
-                    fetchLoadedBalance()
-
-                    contract.insert({
-                        id: result.data.id,
-                        contentType: first.file.type,
-                        name: name || first.file.name,
-                        parentId: first.parentId,
-                        size: first.file.size,
-                        createdAt: new Date().getTime()
-                    })
-                }
-            }
-        )
-
-        set({ currentUploader: uploader })
-    },
-
-    uploadFiles: async (files: File[], parentId: string) => {
-        const { uploadQueue } = get()
-
-        for (const file of files) {
-            uploadQueue.push({  
-                file,
-                parentId
+            contract.updateUIAction = () => set({ contractState: contract.state.copy() })
+            
+            set({ 
+                initialized: true,
+                contractState: contract.state
             })
-        }
 
-        set({ uploadQueue: [...uploadQueue] })
-    },
+            fetchWalletBalance();
+            fetchLoadedBalance();
+        },
+        
+        uploadNext: async (name?: string) => {
+            const { client, contract, fetchLoadedBalance, uploadQueue } = get()
+            const first = uploadQueue[0]
 
-    createFolder: async (name: string, parentId: string) => {
-        const { contract } = get()
+            set({ 
+                uploading: true, 
+                bytesUploaded: 0,
+                currentName: name || first.file.name
+            })    
 
-        await contract.insert({
-            name,
-            parentId,
-            contentType: "folder",
-            createdAt: new Date().getTime()
-        })
-    },
+            const startTimes: any = {}
+            const initialTime = new Date().getTime() / 1000
+            const sizes: number[] = []
+            const durations: number[] = []
+            
+            let batchSize = Number(process.env.NEXT_PUBLIC_CHUNKED_UPLOADER_BATCH_SIZE)
+            let nextChunk = batchSize + 1
+            let index = 0
 
-    renameFile: async (id: string, newName: string) => {
-        const { contract } = get()
-        await contract.rename(id, newName)
-    },
-    
-    relocateFiles: async (ids: string[], oldParentId: string, newParentId: string) => {
-        const { contract } = get()
-        await contract.relocate(ids, oldParentId, newParentId)
-    },
+            const uploader = client.uploadChunked(
+                fileReaderStream(first.file), 
+                {
+                    tags: [
+                        { name: 'Content-Type', value: first.file.type }
+                    ]
+                }, 
+                {
+                    chunkUpload: (info) => {
+                        if (get().currentUploader != uploader) return
 
-    removeFromUploadQueue: (i: number) => {
-        const { uploadQueue, currentUploader } = get()
+                        const partial: any = { bytesUploaded: info.totalUploaded }
 
-        if (i == 0) {
-            currentUploader?.pause()
+                        if (info.id != 1) {                        
+                            const now = new Date().getTime() / 1000
+                            const duration = now - (startTimes[info.id] || initialTime) 
+        
+                            if (durations.length < batchSize) {
+                                durations.push(duration)
+                                sizes.push(info.size)
+                            }
+                            
+                            else {
+                                durations[index % batchSize] = duration
+                                sizes[index++ % batchSize] = info.size
+                            }
+        
+                            startTimes[++nextChunk] = now
+                            partial.uploadSpeed = sizes.reduce((x, y) => x + y, 0) / durations.reduce((x, y) => Math.max(x, y), 0) 
+                        }
 
-            set({ currentUploader: null, uploading: false, uploadQueue: uploadQueue.slice(1), bytesUploaded: 0, paused : false })
-        }
+                        set(partial)   
+                    },
+                    done: (result) => {
+                        set({ uploading: false, uploadQueue: uploadQueue.slice(1), bytesUploaded: 0, uploadSpeed: 0 })
 
-        else {
-            uploadQueue.splice(i, 1)
+                        fetchLoadedBalance()
+
+                        contract.insert({
+                            id: result.data.id,
+                            contentType: first.file.type,
+                            name: name || first.file.name,
+                            parentId: first.parentId,
+                            size: first.file.size,
+                            createdAt: new Date().getTime()
+                        })
+                    }
+                }
+            )
+
+            set({ currentUploader: uploader })
+        },
+
+        uploadFiles: async (files: File[], parentId: string) => {
+            const { uploadQueue } = get()
+
+            for (const file of files) {
+                uploadQueue.push({  
+                    file,
+                    parentId
+                })
+            }
+
             set({ uploadQueue: [...uploadQueue] })
+        },
+
+        createFolder: async (name: string, parentId: string) => {
+            const { contract } = get()
+
+            await contract.insert({
+                name,
+                parentId,
+                contentType: "folder",
+                createdAt: new Date().getTime()
+            })
+        },
+
+        renameFile: async (id: string, newName: string) => {
+            const { contract } = get()
+            await contract.rename(id, newName)
+        },
+        
+        relocateFiles: async (ids: string[], oldParentId: string, newParentId: string) => {
+            const { contract } = get()
+            await contract.relocate(ids, oldParentId, newParentId)
+        },
+
+        removeFromUploadQueue: (i: number) => {
+            const { uploadQueue, currentUploader } = get()
+
+            if (i == 0) {
+                currentUploader?.pause()
+
+                set({ currentUploader: null, uploading: false, uploadQueue: uploadQueue.slice(1), bytesUploaded: 0, paused : false })
+            }
+
+            else {
+                uploadQueue.splice(i, 1)
+                set({ uploadQueue: [...uploadQueue] })
+            }
+        },
+
+        pauseOrResume: () => {
+            const { currentUploader, paused } = get()
+
+            if (paused) {
+                currentUploader?.resume()
+            }
+
+            else {
+                currentUploader?.pause()
+            }
+
+            set({ paused: !get().paused })
         }
-    },
-
-    pauseOrResume: () => {
-        const { currentUploader, paused } = get()
-
-        if (paused) {
-            currentUploader?.resume()
-        }
-
-        else {
-            currentUploader?.pause()
-        }
-
-        set({ paused: !get().paused })
-    }
-}));
+    })
+));
 
 export const useDriveState = (selector: (state: DriveStoreData) => DriveStoreData) => useDriveStore<DriveStoreData>(selector, shallow);

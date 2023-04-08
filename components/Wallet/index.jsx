@@ -127,7 +127,7 @@ export default function Wallet() {
                     onMouseEnter={() => setHoveringAddress(true)} 
                     onMouseLeave={() => setHoveringAddress(false)}
                   >
-                    <div>{client.address.substring(0, 6) + '...' + client.address.substring(client.address.length - 3)}</div>
+                    <div>{client.address.substring(0, 6) + '....' + client.address.substring(client.address.length - 4)}</div>
                     <Icon name='copy-clipboard' fill width='1rem' height='1rem' />
                   </div>
 

@@ -1,43 +1,85 @@
 import { useRef, useEffect, useState } from 'react';
 import Spinner from 'react-spinner-material'
 import { AnimatePresence, motion } from 'framer-motion';
-import { useDriveState } from '../../stores/DriveStore';
+import { shallow } from 'zustand/shallow'
+import { useDriveState, useDriveStore } from '../../stores/DriveStore';
 import FilePreview from "../FilePreview";
 import Utility from "../../lib/Utility"
 import Button from "../Button";
 import IconButton from "../IconButton"
 import style from './style.module.css';
 
-export default function UploadQueue() {
+function QueueItem({ i, item }) {
+    const { removeFromUploadQueue } = useDriveState((state) => ({
+        removeFromUploadQueue: state.removeFromUploadQueue
+    }));
+
+    const [loading, setLoading] = useState(true)
+
+    return (
+        <div className={style.queueItem}>
+            <div className={style.queueItemPreviewParent}>
+                {
+                    loading && <Spinner className={style.queueItemSpinner} radius={24} stroke={2} color='var(--color-active)' />
+                }
+
+                <FilePreview
+                    className={style.queueItemPreview}
+                    file={item.file}
+                    contentType={item.file.type}
+                    size={64}
+                    onLoad={() => setLoading(false)}
+                />
+            </div>
+
+            <div className={style.queueItemInfo}>
+                <span className={style.fileName}>{item.file.name}</span>
+                <span className={style.fileSize}>{Utility.formatBytes(item.file.size)}</span>
+            </div>
+            <div className={style.queueItemCancel}>
+                <IconButton name='cross' width='1.5rem' height='1.5rem' onClick={() => removeFromUploadQueue(i+1)}/>
+            </div>
+        </div>
+    )
+}
+
+function QueueTop({ minimized }) {
     const {
         client,
         paused,
         uploading, 
         uploadQueue, 
-        bytesUploaded, 
         pauseOrResume, 
         uploadNext, 
         currentName,
         removeFromUploadQueue,
-        uploadSpeed
      } = useDriveState((state) => ({
-         client: state.client,
-         paused: state.paused,
+        client: state.client,
+        paused: state.paused,
         uploading: state.uploading,
         uploadQueue: state.uploadQueue,
-        bytesUploaded: state.bytesUploaded,
         pauseOrResume: state.pauseOrResume,
         uploadNext: state.uploadNext,
         currentName: state.currentName,
-        removeFromUploadQueue: state.removeFromUploadQueue,
-        uploadSpeed: state.uploadSpeed
+        removeFromUploadQueue: state.removeFromUploadQueue
     }));
 
     const currentUpload = uploadQueue.length && uploadQueue[0].file
-    const uploadedPerc = currentUpload && (bytesUploaded / currentUpload.size) * 100
     const currentNameRef = useRef()
     const [currentPrice, setCurrentPrice] = useState()
-    const [minimized, setMinimized] = useState(false)
+
+    const statEstimateRef = useRef()
+    const statPercRef = useRef()
+    const statBytesRef = useRef()
+    const statSpeedRef = useRef()
+    const progressBarRef = useRef()
+    const initialValsRef = useRef()
+
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        setLoading(true)
+    }, [currentUpload])
 
     useEffect(() => {
         if (currentUpload) {
@@ -47,6 +89,162 @@ export default function UploadQueue() {
             client.getPrice(currentUpload.size).then(price => setCurrentPrice(price))        
         }
     }, [currentUpload])
+
+    useEffect(() => {
+        useDriveStore.subscribe(
+            (state) => [state.uploadSpeed, state.bytesUploaded, state.uploadQueue, state.uploading],
+            (stats) => {
+                const [uploadSpeed, bytesUploaded, uploadQueue, uploading] = stats
+
+                if (uploading) {
+                    const currentUpload = uploadQueue[0].file
+                    const uploadedPerc = (bytesUploaded / currentUpload.size) * 100
+
+                    initialValsRef.current = [
+                        `${Utility.formatTime((uploadQueue[0].file.size - bytesUploaded) / uploadSpeed)} remaining`,
+                        `${uploadedPerc.toFixed(1)}%`,
+                        `${Utility.formatBytes(bytesUploaded)} / ${Utility.formatBytes(currentUpload.size)}`,
+                        `${Utility.formatBytes(uploadSpeed)}/s`
+                    ]
+    
+                    if (statPercRef.current) statPercRef.current.innerHTML = initialValsRef.current[1]
+                    if (statBytesRef.current) statBytesRef.current.innerHTML = initialValsRef.current[2]
+
+                    if (uploadSpeed > 0) {
+                        if (statSpeedRef.current) statSpeedRef.current.innerHTML = initialValsRef.current[3]
+
+                        if (statEstimateRef.current) {
+                            statEstimateRef.current.hidden = false
+                            statEstimateRef.current.innerHTML = initialValsRef.current[0]
+                        }
+                    }
+
+                    else {
+                        if (statEstimateRef.current) statEstimateRef.current.hidden = true
+                    }
+
+                    if (progressBarRef.current) progressBarRef.current.style.width = `${uploadedPerc}%`
+                }
+
+                else {
+                    if (progressBarRef.current) progressBarRef.current.style.width = `0%`
+                }
+            }, 
+            { equalityFn: shallow }
+        )
+    }, [])
+
+    return (
+        <div className={style.queueTop}>
+            <div className={style.currentUpload}>
+                <div className={style.currentUploadPreview}>
+                    {
+                        loading && <Spinner className={style.currentUploadSpinner} radius={32} stroke={2} color='var(--color-active)' />
+                    }
+
+                    <FilePreview
+                        className={style.queueTopPreview}
+                        contentType={currentUpload.type}
+                        file={currentUpload}
+                        size={128}
+                        onLoad={() => setLoading(false)}
+                    />
+                </div>
+
+                {
+                    uploading &&
+                    <div className={style.currentUploadInfo}>
+                        <div className={style.currentUploadInfoInner}>
+                            <div className={style.currentUploadInfoTop}>
+                                <span className={style.fileName}>{currentName}</span>
+                            </div>
+
+                            <div ref={statEstimateRef} hidden className={style.timeEstimate}>{initialValsRef.current[0]}</div>
+                        </div>
+
+                        <AnimatePresence>
+                        {
+                            !minimized &&
+                            <motion.div 
+                                key='upload-stats'
+                                initial={{
+                                    height: 0,
+                                    opacity: 0,
+                                    marginTop: 0
+                                }}
+                                animate={{
+                                    height: 10,
+                                    opacity: 1,
+                                    marginTop: 8
+                                }}
+                                exit={{
+                                    height: 0,
+                                    opacity: 0,
+                                    marginTop: 0
+                                }}
+                                className={style.currentUploadInfoBottom}
+                            >
+                                <span ref={statPercRef}>{initialValsRef.current[1]}</span>
+                                <span ref={statBytesRef}>{initialValsRef.current[2]}</span> 
+                                <span ref={statSpeedRef}>{initialValsRef.current[3]}</span>
+                            </motion.div>
+                        }
+                        </AnimatePresence>
+                    </div>
+                }
+
+                {
+                    !uploading &&
+                    <div className={style.confirmUpload}>
+                        <div className={style.confirmUploadInfo}>
+                            <span 
+                                contentEditable 
+                                suppressContentEditableWarning
+                                onInput={(e) => currentNameRef.current = e.target.innerHTML}
+                                className={style.topFileName}
+                            >
+                                {currentUpload.name}
+                            </span>
+
+                            <span className={style.currentPrice}>
+                                {
+                                    currentPrice == -1 
+                                        ? <Spinner radius={10} stroke={1} color='var(--color-active)' />
+                                        : `${Number(currentPrice).toFixed(6)} ${client.networkCurrencySym}`
+                                }
+                            </span>
+                        </div>
+                        <div className={style.speedStatsLeft}>
+                            <Button onClick={() => uploadNext(currentNameRef.current)}>
+                                Confirm
+                            </Button>
+                        </div>
+                    </div>
+                }
+                <div className={style.currentUploadRight}>
+                    <div className={style.speedStats}>
+                        {uploading && <IconButton name={paused ? 'play' : 'pause'} width='0.8rem' height='0.8rem' onClick={pauseOrResume} fill />}
+                        <div className={style.topCross}>
+                            <IconButton name='cross' width='1.5rem' height='1.5rem' onClick={() => removeFromUploadQueue(0)}/>
+                        </div>
+                    </div>       
+                </div>
+            </div>
+
+            <div className={style.loading}> 
+                <div ref={progressBarRef} className={style.loadingInner} />
+            </div>
+        </div>
+    )
+}
+
+export default function UploadQueue() {
+    const [minimized, setMinimized] = useState(false)
+
+    const { uploading,  uploadQueue } = useDriveState((state) => ({
+        uploading: state.uploading,
+        uploadQueue: state.uploadQueue,
+    }));
 
     return (
         <>        
@@ -68,132 +266,20 @@ export default function UploadQueue() {
                             />
                         </div>
 
-                        <div className={style.queueTop}>
-                            <div className={style.currentUpload}>
-                                <FilePreview
-                                    className={style.queueTopPreview}
-                                    src={URL.createObjectURL(currentUpload)}
-                                    contentType={currentUpload.type}
-                                />
-
-                                {
-                                    uploading &&
-                                    <div className={style.currentUploadInfo}>
-                                        <div className={style.currentUploadInfoInner}>
-                                            <div className={style.currentUploadInfoTop}>
-                                                <span className={style.fileName}>{currentName}</span>
-                                            </div>
-
-                                            {
-                                                uploadSpeed > 0 && 
-                                                <div className={style.timeEstimate}>
-                                                    {Utility.formatTime((uploadQueue[0].file.size - bytesUploaded) / uploadSpeed)} remaining
-                                                </div>
-                                            }
-                                        </div>
-
-                                        <AnimatePresence>
-                                        {
-                                            !minimized &&
-                                            <motion.div 
-                                                key='upload-stats'
-                                                initial={{
-                                                    height: 0,
-                                                    opacity: 0,
-                                                    marginTop: 0
-                                                }}
-                                                animate={{
-                                                    height: 10,
-                                                    opacity: 1,
-                                                    marginTop: 8
-                                                }}
-                                                exit={{
-                                                    height: 0,
-                                                    opacity: 0,
-                                                    marginTop: 0
-                                                }}
-                                                className={style.currentUploadInfoBottom}
-                                            >
-                                                <span>{uploadedPerc.toFixed(1)}%</span>
-                                                <span>{Utility.formatBytes(bytesUploaded)} / {Utility.formatBytes(currentUpload.size)}</span> 
-                                                <span>{Utility.formatBytes(uploadSpeed)}/s</span>
-                                            </motion.div>
-                                        }
-                                        </AnimatePresence>
-                                    </div>
-                                }
-
-                                {
-                                    !uploading &&
-                                    <div className={style.confirmUpload}>
-                                        <div className={style.confirmUploadInfo}>
-                                            <span 
-                                                contentEditable 
-                                                suppressContentEditableWarning
-                                                onInput={(e) => currentNameRef.current = e.target.innerHTML}
-                                                className={style.fileName}
-                                            >
-                                                {currentUpload.name}
-                                            </span>
-
-                                            <span className={style.currentPrice}>
-                                                {
-                                                    currentPrice == -1 
-                                                        ? <Spinner radius={10} stroke={1} color='var(--color-active)' />
-                                                        : `${Number(currentPrice).toFixed(6)} ${client.networkCurrencySym}`
-                                                }
-                                            </span>
-                                        </div>
-                                        <div className={style.speedStatsLeft}>
-                                            <Button onClick={() => uploadNext(currentNameRef.current)}>
-                                                Confirm
-                                            </Button>
-                                        </div>
-                                    </div>
-                                }
-                                <div className={style.currentUploadRight}>
-                                    <div className={style.speedStats}>
-                                        {uploading && <IconButton name={paused ? 'play' : 'pause'} width='0.8rem' height='0.8rem' onClick={pauseOrResume} fill />}
-                                        <div className={style.topCross}>
-                                            <IconButton name='cross' width='1.5rem' height='1.5rem' onClick={() => removeFromUploadQueue(0)}/>
-                                        </div>
-                                    </div>       
-                                </div>
-                            </div>
-
-                            <div className={style.loading}> 
-                                <div style={{ width: `${uploadedPerc}%` }} className={style.loadingInner} />
-                            </div>
-                        </div>
+                        <QueueTop minimized={minimized} />
 
                         <motion.div
                             style={{ overflow: 'hidden' }}
                             animate={{ height: minimized ? 0 : 'auto' }}
                         >
                             {uploadQueue.slice(1,5).map((item, i) => (
-                                <div key={i} className={style.queueItem}>
-                                    <FilePreview
-                                        className={style.queueItemPreview}
-                                        src={URL.createObjectURL(item.file)}
-                                        contentType={item.file.type}
-                                    />
-
-                                    <div className={style.queueItemInfo}>
-                                        <span className={style.fileName}>{item.name}</span>
-                                        <span>{Utility.formatBytes(item.file.size)}</span>
-                                    </div>
-                                    <div className={style.queueItemCancel}>
-                                        <IconButton name='cross' width='1.5rem' height='1.5rem' onClick={() => removeFromUploadQueue(i+1)}/>
-                                    </div>
-                                </div>
+                                <QueueItem key={item.file.name} i={i} item={item} />
                             ))}
 
                             {
                                 uploadQueue.length > 5 &&
-                                <div className={style.queueItem}>
-                                    <div className={style.remaining}>
-                                    + {uploadQueue.length - 5} more file{uploadQueue.length - 5 > 1 && 's'} remaining
-                                    </div>
+                                <div className={style.remaining}>
+                                + {uploadQueue.length - 5} more file{uploadQueue.length - 5 > 1 && 's'} remaining
                                 </div>
                             }
                         </motion.div>

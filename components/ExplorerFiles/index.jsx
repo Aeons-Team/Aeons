@@ -52,7 +52,7 @@ export default function ExplorerFiles({ files, className }) {
 
                     <Grid 
                         minWidth={isMobile ? 150 : 200} 
-                        height={scale * 160} 
+                        height={scale * (isMobile ? 170 : 160)} 
                         gapScale={scale * 0.1}
                         gap={isMobile ? 8 : 10}
                         files={files.filter((x) => x.contentType == "folder")}
@@ -66,7 +66,7 @@ export default function ExplorerFiles({ files, className }) {
 
                     <Grid 
                         minWidth={isMobile ? 150 : 200} 
-                        height={scale * 260} 
+                        height={scale * (isMobile ? 270 : 260)} 
                         gapScale={scale * 0.9}
                         gap={isMobile ? 8 : 10}
                         files={files.filter((x) => x.contentType != "folder")}

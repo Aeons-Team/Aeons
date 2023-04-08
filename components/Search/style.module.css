@@ -94,3 +94,9 @@
     overflow: hidden;
     white-space: nowrap;
 }
+
+@media (max-width: 500px) {
+    .list {
+        font-size: 0.7rem;
+    }
+}

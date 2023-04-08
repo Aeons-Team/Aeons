@@ -9,6 +9,7 @@ import InputForm from '../InputForm'
 import style from './style.module.css';
 
 export default function Wallet() {
+
   const isMobile = useMediaQuery({ maxWidth: '500px' })
   const isMobileSm = useMediaQuery({ maxWidth: '350px' })
   const scale = isMobileSm ? 0.7 : (isMobile ? 0.8 : 1)
@@ -21,10 +22,11 @@ export default function Wallet() {
     fetchWalletBalance: state.fetchWalletBalance
   }));
 
-  const { showWallet, setShowWallet, activateContextMenu } = useAppState(state => ({
+  const { showWallet, setShowWallet, activateContextMenu, errorMessage } = useAppState(state => ({
     showWallet: state.showWallet,
     setShowWallet: state.setShowWallet,
-    activateContextMenu: state.activateContextMenu
+    activateContextMenu: state.activateContextMenu,
+    errorMessage: state.errorMessage
   }));
 
   const [funding, setFunding] = useState(false)
@@ -60,7 +62,7 @@ export default function Wallet() {
     return () => {
       document.removeEventListener("click", onClick);
     };
-  }, []);
+  }, []);       
 
   return (
     <div className={style.wallet} ref={walletRef}>
@@ -197,4 +199,5 @@ export default function Wallet() {
       </motion.div>
     </div>
   );
+
 }

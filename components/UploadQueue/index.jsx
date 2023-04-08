@@ -9,28 +9,14 @@ import Button from "../Button";
 import IconButton from "../IconButton"
 import style from './style.module.css';
 
-function QueueItem({ i, item }) {
+function QueueItem({ i, item, preview }) {
     const { removeFromUploadQueue } = useDriveState((state) => ({
         removeFromUploadQueue: state.removeFromUploadQueue
     }));
 
-    const [loading, setLoading] = useState(true)
-
     return (
         <div className={style.queueItem}>
-            <div className={style.queueItemPreviewParent}>
-                {
-                    loading && <Spinner className={style.queueItemSpinner} radius={24} stroke={2} color='var(--color-active)' />
-                }
-
-                <FilePreview
-                    className={style.queueItemPreview}
-                    file={item.file}
-                    contentType={item.file.type}
-                    size={64}
-                    onLoad={() => setLoading(false)}
-                />
-            </div>
+            {preview}
 
             <div className={style.queueItemInfo}>
                 <span className={style.fileName}>{item.file.name}</span>
@@ -43,7 +29,7 @@ function QueueItem({ i, item }) {
     )
 }
 
-function QueueTop({ minimized }) {
+function QueueTop({ minimized, preview }) {
     const {
         client,
         paused,
@@ -137,19 +123,7 @@ function QueueTop({ minimized }) {
     return (
         <div className={style.queueTop}>
             <div className={style.currentUpload}>
-                <div className={style.currentUploadPreview}>
-                    {
-                        loading && <Spinner className={style.currentUploadSpinner} radius={32} stroke={2} color='var(--color-active)' />
-                    }
-
-                    <FilePreview
-                        className={style.queueTopPreview}
-                        contentType={currentUpload.type}
-                        file={currentUpload}
-                        size={128}
-                        onLoad={() => setLoading(false)}
-                    />
-                </div>
+                {preview}
 
                 {
                     uploading &&
@@ -246,6 +220,16 @@ export default function UploadQueue() {
         uploadQueue: state.uploadQueue,
     }));
 
+    const previews = uploadQueue.slice(0, 5).map((item, i) => (
+        <FilePreview
+            key={item.file.name}
+            className={i == 0 ? style.queueTopPreview : style.queueItemPreview}
+            contentType={item.file.type}
+            file={item.file}
+            size={i == 0 ? 128 : 64}
+        />
+    ))
+
     return (
         <>        
             {(uploading || uploadQueue.length > 0) && (
@@ -266,14 +250,14 @@ export default function UploadQueue() {
                             />
                         </div>
 
-                        <QueueTop minimized={minimized} />
+                        <QueueTop minimized={minimized} preview={previews[0]} />
 
                         <motion.div
                             style={{ overflow: 'hidden' }}
                             animate={{ height: minimized ? 0 : 'auto' }}
                         >
                             {uploadQueue.slice(1,5).map((item, i) => (
-                                <QueueItem key={item.file.name} i={i} item={item} />
+                                <QueueItem key={item.file.name} i={i} item={item} preview={previews[i+1]} />
                             ))}
 
                             {

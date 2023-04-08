@@ -1,53 +1,53 @@
+import Spinner from 'react-spinner-material'
 import { useEffect, useState } from "react";
 import Icon from '../Icon'
 
-export default function FilePreview({ src, file, contentType, className, enableControls, onLoad, size }) {
+export default function FilePreview({ src, file, contentType, className, enableControls, size }) {
     const [localSrc, setLocalSrc] = useState(src)
+    
+    const [loading, setLoading] = useState(
+        contentType.match('image/*') || (src && contentType.match('video/*'))
+    )
     
     useEffect(() => {
         const init = async () => {
-            if (file) {
-                if (contentType.startsWith('image/')) {
-                    setLocalSrc()
-                    const reader = new FileReader()
-    
-                    reader.onload = () => {
-                        const image = new Image()
-                        image.src = reader.result
-    
-                        image.onload = () => {
-                            let width = image.width 
-                            let height = image.height 
-    
-                            if (width > height) {
-                                let tempWidth = width
-                                width = size 
-                                height = (size / tempWidth) * height
-                            }
-    
-                            else {
-                                let tempHeight = height
-                                height = size
-                                width = (size / tempHeight) * width
-                            }
-    
-                            const canvas = document.createElement('canvas')
-                            canvas.width = width
-                            canvas.height = height
-    
-                            const ctx = canvas.getContext('2d')
-                            ctx.drawImage(image, 0, 0, width, height)
-    
-                            setLocalSrc(canvas.toDataURL(file.type))
+            if (file && contentType.startsWith('image/')) {
+                setLocalSrc()
+                const reader = new FileReader()
+
+                reader.onload = () => {
+                    const image = new Image()
+                    image.src = reader.result
+
+                    image.onload = () => {
+                        let width = image.width 
+                        let height = image.height 
+
+                        if (width > height) {
+                            let tempWidth = width
+                            width = size 
+                            height = (size / tempWidth) * height
                         }
+
+                        else {
+                            let tempHeight = height
+                            height = size
+                            width = (size / tempHeight) * width
+                        }
+
+                        const canvas = document.createElement('canvas')
+                        canvas.width = width
+                        canvas.height = height
+
+                        const ctx = canvas.getContext('2d')
+                        ctx.drawImage(image, 0, 0, width, height)
+
+                        setLocalSrc(canvas.toDataURL(file.type))
+                        setLoading(false)
                     }
-    
-                    reader.readAsDataURL(file)
                 }
-    
-                else {
-                    setLocalSrc(' ')
-                }
+
+                reader.readAsDataURL(file)
             }
         }
 
@@ -60,20 +60,22 @@ export default function FilePreview({ src, file, contentType, className, enableC
         }
     }, [file])
 
-    if (!localSrc || !contentType) return <div className={className} />
+    let preview
 
-    if (contentType.match("image/*")) {
-        return <img onLoad={onLoad} src={localSrc} className={className} width={size} height={size} />;
+    if (!contentType) preview = <div className={className} />
+
+    else if (contentType.match("image/*")) {
+        preview = <img src={localSrc} onLoad={() => setLoading(false)} className={className} width={size} height={size} />;
     }
 
-    if (src && contentType.match("video/*")) {
-        return (
+    else if (src && contentType.match("video/*")) {
+        preview = (
             <video  
-                onCanPlay={onLoad} 
                 onPause={(e) => {
                     e.target.currentTime = 0
                     e.target.play().catch(() => {})
                 }} 
+                onCanPlay={() => setLoading(false)}
                 autoPlay 
                 muted 
                 className={className} 
@@ -81,12 +83,29 @@ export default function FilePreview({ src, file, contentType, className, enableC
             >
                 <source src={localSrc + '#t=0,3'} />
             </video>
-        );
+        )
     }
 
-    onLoad()
+    else {
+        preview = (
+            <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Icon name='file' width='2.5rem' height='2.5rem' fill />
+            </div>
+        )
+    }
 
-    return <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Icon name='file' width='2.5rem' height='2.5rem' fill />
-    </div>
+    return (
+        <div className={className} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {
+                loading &&
+                <div style={{ position: 'absolute' }}>
+                    <Spinner radius={16} color='var(--color-active)' stroke={2} />
+                </div>
+            }
+
+            <div hidden={loading}>
+                {preview}
+            </div>
+        </div>
+    )
 }

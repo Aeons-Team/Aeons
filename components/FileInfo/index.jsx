@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import Spinner from 'react-spinner-material'
 import { useAppState, useAppStore } from '../../stores/AppStore'
 import FilePreview from '../FilePreview'
@@ -12,8 +11,6 @@ export default function FileInfo({ file }) {
     activateContextMenu: state.activateContextMenu,
     select: state.select
   }))
-
-  const [loading, setLoading] = useState(true)
 
   return (
     <>
@@ -54,14 +51,9 @@ export default function FileInfo({ file }) {
       <div className={style.previewContainer}>
         <FilePreview 
           className={style.preview}
-          onLoad={() => setLoading(false)}
           src={`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`} 
           contentType={file.contentType} 
         />
-
-        {
-          loading && <Spinner className={style.spinner} radius={20} stroke={2} color='var(--color-active)' />
-        }
       </div>
         
       <div className={style.fileDetails}>

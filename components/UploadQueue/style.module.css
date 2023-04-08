@@ -189,20 +189,6 @@
     border-top: 2px solid var(--color-primary-2);
 }
 
-.currentUploadPreview, .queueItemPreviewParent {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.currentUploadSpinner {
-    position: absolute;
-}
-
-.queueItemSpinner {
-    position: absolute;
-}
-
 @media (max-width: 500px) {
     .uploadQueue {
         transform: scale(0.8);

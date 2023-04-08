@@ -10,14 +10,15 @@ export default function Sidebar({ transition }) {
     const [hovering, setHovering] = useState([false, false, false])
     const isMobile = useMediaQuery({ maxWidth: '820px' })
 
-    const iconVariants = (strokeWidth, size, opacity) => ({
+    const iconVariants = (strokeWidth, size, opacity, disabledOpacity) => ({
         normal: {
             strokeWidth,
             width: size,
             height: size,
             fill: 'var(--color-background)',
             stroke: 'var(--color-secondary-5)',
-            opacity: opacity
+            opacity: opacity,
+            cursor: 'pointer'
         },
 
         selected: {
@@ -28,6 +29,11 @@ export default function Sidebar({ transition }) {
 
         hover: {
             opacity: opacity + 0.2
+        },
+
+        disabled: {
+            opacity: disabledOpacity,
+            cursor: 'default'
         }
     })
 
@@ -104,11 +110,13 @@ export default function Sidebar({ transition }) {
 
             <motion.span 
                 className={style.sidebarOption} 
-                onClick={() => router.push('/settings')}
+                // onClick={() => router.push('/settings')}
                 initial='normal'
                 onMouseEnter={() => setHovering([false, true, false])}
                 onMouseLeave={() => setHovering([false, false, false])}
-                animate={router.pathname.startsWith('/settings') ? 'selected' : (hovering[1] ? 'hover' : 'normal')}
+                // animate={router.pathname.startsWith('/settings') ? 'selected' : (hovering[1] ? 'hover' : 'normal')}
+                
+                animate='disabled'
             >
                 {
                     !isMobile 
@@ -118,7 +126,7 @@ export default function Sidebar({ transition }) {
 
                 <Icon 
                     name='settings' 
-                    variants={iconVariants(1, '1.65rem', 0.7)}
+                    variants={iconVariants(1, '1.65rem', 0.7, 0.35)}
                 />
             </motion.span>
 
@@ -127,7 +135,9 @@ export default function Sidebar({ transition }) {
                 initial='normal'
                 onMouseEnter={() => setHovering([false, false, true])}
                 onMouseLeave={() => setHovering([false, false, false])}
-                animate={router.pathname.startsWith('/archive') ? 'selected' : (hovering[2] ? 'hover' : 'normal')}
+                // animate={router.pathname.startsWith('/archive') ? 'selected' : (hovering[2] ? 'hover' : 'normal')}
+                
+                animate='disabled'
             >
                 {
                     !isMobile 
@@ -137,7 +147,7 @@ export default function Sidebar({ transition }) {
 
                 <Icon 
                     name='archive' 
-                    variants={iconVariants(9, '1.6rem', 0.6)}
+                    variants={iconVariants(7, '1.6rem', 0.6, 0.15)}
                 />
             </motion.span>
         </motion.div>

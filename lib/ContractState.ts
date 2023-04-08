@@ -58,7 +58,7 @@ export default class ContractState {
         const searchList: ContractFile[] = []
 
         for (const file of Object.values(files)) {
-            if (file.name == 'root') continue
+            if (['root', 'archive'].includes(file.id)) continue
 
             file.name.toLowerCase().includes(searchVal.trim().toLowerCase()) &&
                 searchList.push(file)

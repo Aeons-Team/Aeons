@@ -82,6 +82,10 @@ export default function Search() {
                   if (file.contentType == 'folder') {
                     router.push(`/drive/${file.id}`)
                   }
+                  
+                  else {
+                    window.open(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`)
+                  }
                 }}
               >      
                 <span>

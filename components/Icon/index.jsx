@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 
-export default function Icon({ name, fill, fillColor, width, height, strokeWidth, ...remaining }) {
+export default function Icon({ name, fill, color, width, height, strokeWidth, ...remaining }) {
     const style = fill ? {
         fill: 'var(--color-secondary)',
         stroke: 'none'
@@ -13,7 +13,10 @@ export default function Icon({ name, fill, fillColor, width, height, strokeWidth
     if (width) style.width = width 
     if (height) style.height = height
 
-    if (fill && fillColor) style.fill = fillColor
+    if (color) {
+        style.fill = color
+        style.stroke = color
+    }
 
     switch (name) {
         case 'upload-file': 

@@ -70,7 +70,7 @@ export default function Wallet() {
           setShowWallet(!showWallet)
         }}
       >
-        <Icon name='wallet' transform='translate(0.5 0)' width='1.1rem' height='1.1rem' fill />
+        <Icon name='wallet' transform='translate(0.5 0)' width='1.1rem' height='1.1rem' fill color='var(--color-inner)' />
       </div>
 
       <motion.div 
@@ -149,7 +149,7 @@ export default function Wallet() {
                     setFunding(true)
                   }}
                 >
-                  <Icon name='arrow-right' width='1.5rem' height='1.5rem' strokeWidth={0.8} />
+                  <Icon name='arrow-right' width='1.5rem' height='1.5rem' strokeWidth={0.8} color='var(--color-inner)' />
                 </div>
     
                 <div className={style.walletBalance}>

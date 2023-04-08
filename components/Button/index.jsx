@@ -8,7 +8,7 @@ export default function Button({ children, disabled = () => false, loading, ...r
 
       {
         loading &&
-        <Spinner radius={12} color='var(--color-secondary)' stroke={1.5} />
+        <Spinner radius={12} color='var(--color-inner)' stroke={1.5} />
       }
     </button>
   )

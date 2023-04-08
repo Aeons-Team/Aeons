@@ -5,6 +5,7 @@
     align-items: center;
     z-index: 5;
     padding-top: 7.5rem;
+    box-shadow: 0 0 var(--shadow-blur) 0 var(--color-shadow);
 }
 
 .sidebarOption {
@@ -13,7 +14,6 @@
     justify-content: center;
     width: 100%;
     position: relative;
-    cursor: pointer;
 }
 
 .sidebarOption > *:nth-child(1) {

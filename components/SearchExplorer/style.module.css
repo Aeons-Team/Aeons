@@ -4,7 +4,6 @@
   margin-bottom: 25px;
   border-radius: 2px;
   overflow: hidden;
-  box-shadow: 0 0 var(--shadow-blur) 0 var(--color-shadow);
   background-color: var(--color-primary);
 }
 

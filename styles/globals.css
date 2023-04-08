@@ -1,23 +1,23 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --color-background: #0f0f0f;
-  --color-primary: #0f0f0f;
-  --color-primary-2: #131313;
-  --color-primary-3: #1a1a1a;
-  --color-primary-4: #242424;
+  --color-background: #0a080d;
+  --color-primary: #0a080d;
+  --color-primary-2: #0c0b10;
+  --color-primary-3: #100f19;
+  --color-primary-4: #16151e;
   --color-secondary: #e8e8e8;
   --color-secondary-2: #e0e0e0;
   --color-secondary-3: #d8d8d8;
   --color-secondary-4: #d0d0d0;
   --color-secondary-5: #c8c8c8;
   --color-secondary-5: #c0c0c0;
-  --color-selected: #202030;
-  --color-active: #4963f8;
-  --color-active-2: #566ffb;
+  --color-selected: #1b1928;
+  --color-active: #623bef;
+  --color-active-2: #6a44f5;
   --color-inner: #f0f0f0;
   --color-hover: #e0e0e0;
-  --color-shadow: #484848;
+  --color-shadow: #383040;
   --shadow-blur: 2px;
   --shadow-blur: 1px;
 }
@@ -28,7 +28,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Inter";
+  font-family: "Poppins";
   color: var(--color-secondary);
 }
 

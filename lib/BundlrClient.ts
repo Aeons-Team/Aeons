@@ -19,12 +19,12 @@ const networkInfos = {
   'matic': {
     name: 'Polygon',
     currency: 'matic',
-    currencySym: 'MTC'
+    currencySym: 'MATIC'
   },
   'maticmum': {
     name: 'Polygon Testnet (Mumbai)',
     currency: 'matic',
-    currencySym: 'MTC'
+    currencySym: 'MATIC'
   }
 }
 

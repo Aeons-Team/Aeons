@@ -7,41 +7,47 @@ export default function FilePreview({ src, file, contentType, className, enableC
     useEffect(() => {
         const init = async () => {
             if (file) {
-                setLocalSrc()
-                const reader = new FileReader()
-
-                reader.onload = () => {
-                    const image = new Image()
-                    image.src = reader.result
-
-                    image.onload = () => {
-                        let width = image.width 
-                        let height = image.height 
-
-                        if (width > height) {
-                            let tempWidth = width
-                            width = size 
-                            height = (size / tempWidth) * height
+                if (contentType.startsWith('image/')) {
+                    setLocalSrc()
+                    const reader = new FileReader()
+    
+                    reader.onload = () => {
+                        const image = new Image()
+                        image.src = reader.result
+    
+                        image.onload = () => {
+                            let width = image.width 
+                            let height = image.height 
+    
+                            if (width > height) {
+                                let tempWidth = width
+                                width = size 
+                                height = (size / tempWidth) * height
+                            }
+    
+                            else {
+                                let tempHeight = height
+                                height = size
+                                width = (size / tempHeight) * width
+                            }
+    
+                            const canvas = document.createElement('canvas')
+                            canvas.width = width
+                            canvas.height = height
+    
+                            const ctx = canvas.getContext('2d')
+                            ctx.drawImage(image, 0, 0, width, height)
+    
+                            setLocalSrc(canvas.toDataURL(file.type))
                         }
-
-                        else {
-                            let tempHeight = height
-                            height = size
-                            width = (size / tempHeight) * width
-                        }
-
-                        const canvas = document.createElement('canvas')
-                        canvas.width = width
-                        canvas.height = height
-
-                        const ctx = canvas.getContext('2d')
-                        ctx.drawImage(image, 0, 0, width, height)
-
-                        setLocalSrc(canvas.toDataURL(file.type))
                     }
+    
+                    reader.readAsDataURL(file)
                 }
-
-                reader.readAsDataURL(file)
+    
+                else {
+                    setLocalSrc(' ')
+                }
             }
         }
 
@@ -54,21 +60,13 @@ export default function FilePreview({ src, file, contentType, className, enableC
         }
     }, [file])
 
-    useEffect(() => {
-        if (localSrc) {
-            if (!contentType.match('(image/*|video/*|audio/*)')) {
-                onLoad()
-            }
-        }
-    }, [localSrc])
-
     if (!localSrc || !contentType) return <div className={className} />
 
     if (contentType.match("image/*")) {
         return <img onLoad={onLoad} src={localSrc} className={className} width={size} height={size} />;
     }
 
-    if (contentType.match("video/*")) {
+    if (src && contentType.match("video/*")) {
         return (
             <video  
                 onCanPlay={onLoad} 
@@ -86,13 +84,7 @@ export default function FilePreview({ src, file, contentType, className, enableC
         );
     }
 
-    if (contentType.match("audio/*")) {
-        return (
-            <audio onLoad={onLoad} className={className} controls>
-                <source src={localSrc} />
-            </audio>
-        );
-    }
+    onLoad()
 
     return <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Icon name='file' width='2.5rem' height='2.5rem' fill />

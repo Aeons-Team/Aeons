@@ -8,7 +8,7 @@ import { CreateAndUploadOptions } from "@bundlr-network/client/build/common/type
 const networkInfos = {
   'homestead': {
     name: 'Ethereum',
-    currency: 'ether',
+    currency: 'Ethereum',
     currencySym: 'ETH'
   },
   'arbitrum': {
@@ -51,7 +51,7 @@ export default class BundlrClient {
 
     const networkInfo = networkInfos[this.network.name]
 
-    if (this.network.name == 'maticmum') {
+    if (this.network.name !== 'maticmum') {
       this.instance = new WebBundlr(process.env.NEXT_PUBLIC_BUNDLR_NODE_URL ?? '', networkInfo.currency, this.provider);
     }
 

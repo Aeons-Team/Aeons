@@ -26,13 +26,13 @@
 }
 
 .currentUploadInfo {
-
+    
 }
 
 .currentUploadInfoInner {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.25rem;
 }
 
 .currentUploadInfoTop {
@@ -53,7 +53,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 500;
 }
 
 .fileSize {
@@ -80,7 +81,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-right: 0.4rem;
+    margin-left: auto;
+    margin-right: 0.55rem;
 }
 
 .queueTop {
@@ -108,7 +110,7 @@
 
 .queueItem {
     padding: 0.75rem;
-    padding-left: 1.85rem;
+    padding-left: 1.8rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;

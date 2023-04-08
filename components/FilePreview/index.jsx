@@ -88,24 +88,18 @@ export default function FilePreview({ src, file, contentType, className, enableC
 
     else {
         preview = (
-            <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Icon name='file' width='2.5rem' height='2.5rem' fill />
+            <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-primary-3)' }}>
+                <Icon name='file' width='2rem' height='2rem' fill />
             </div>
         )
     }
 
-    return (
-        <div className={className} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {
-                loading &&
-                <div style={{ position: 'absolute' }}>
-                    <Spinner radius={16} color='var(--color-active)' stroke={2} />
-                </div>
-            }
-
-            <div hidden={loading}>
-                {preview}
+    return loading 
+        ? (
+            <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Spinner radius={16} color='var(--color-active)' stroke={2} />
+                <div hidden>{preview}</div>
             </div>
-        </div>
-    )
+        )
+        : preview
 }

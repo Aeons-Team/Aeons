@@ -130,7 +130,7 @@ function QueueTop({ minimized, preview }) {
                     <div className={style.currentUploadInfo}>
                         <div className={style.currentUploadInfoInner}>
                             <div className={style.currentUploadInfoTop}>
-                                <span className={style.fileName}>{currentName}</span>
+                                <span className={style.topFileName}>{currentName}</span>
                             </div>
 
                             <div ref={statEstimateRef} hidden className={style.timeEstimate}>{initialValsRef.current[0]}</div>
@@ -149,7 +149,7 @@ function QueueTop({ minimized, preview }) {
                                 animate={{
                                     height: 10,
                                     opacity: 1,
-                                    marginTop: 8
+                                    marginTop: 4
                                 }}
                                 exit={{
                                     height: 0,

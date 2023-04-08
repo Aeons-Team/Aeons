@@ -9,12 +9,14 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/drive/root'
+        destination: '/drive/root',
+        permanent: false
       },
 
       {
         source: '/drive',
-        destination: '/drive/root'
+        destination: '/drive/root',
+        permanent: false
       }
     ]
   }

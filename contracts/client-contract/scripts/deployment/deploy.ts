@@ -4,9 +4,9 @@ import { Warp } from 'warp-contracts'
 import { DeployPlugin, ArweaveSigner } from 'warp-contracts-plugin-deploy'
 
 const walletJwkPath = path.join(__dirname, '../../data/wallet.json')
-const contractSrcPath = path.join(__dirname, '../../pkg/xdrive_contract_bg.wasm')
+const contractSrcPath = path.join(__dirname, '../../pkg/aeons_contract_bg.wasm')
 const wasmSrcCodeDirPath = path.join(__dirname, '../../src')
-const wasmGlueCodePath = path.join(__dirname, '../../pkg/xdrive_contract.js')
+const wasmGlueCodePath = path.join(__dirname, '../../pkg/aeons_contract.js')
 const contractDeploymentPath = path.join(__dirname, '../../data/contract_deployment.txt')
 
 async function deploy(warp: Warp) {

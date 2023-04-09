@@ -1,4 +1,4 @@
-# XDrive
+# Aeons
 DApp for storing and managing files on Arweave using Bundlr.network and Warp smart contracts
 
 ## Run locally

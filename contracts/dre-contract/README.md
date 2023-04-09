@@ -1,7 +1,7 @@
-# XDrive DRE Contract
-Warp smart contracts for XDrive designed to run on DRE nodes
+# Aeons DRE Contract
+Warp smart contracts for Aeons designed to run on DRE nodes
 
-(This is not integrated into XDrive yet)
+(This is not integrated into Aeons yet)
 
 #### Building and testing
 building (esbuild)

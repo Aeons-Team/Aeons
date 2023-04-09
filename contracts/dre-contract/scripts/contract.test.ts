@@ -7,7 +7,7 @@ import { Wallet } from 'warp-contracts/lib/types/contract/testing/Testing'
 
 jest.setTimeout(20000)
 
-describe('testing xdrive DRE contract', () => {
+describe('testing aeons DRE contract', () => {
     let arlocal: ArLocal 
     let warp: Warp
     let ownerWallet: Wallet

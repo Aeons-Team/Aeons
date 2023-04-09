@@ -6,13 +6,13 @@ import { DeployPlugin } from 'warp-contracts-plugin-deploy'
 import { Wallet } from 'warp-contracts/lib/types/contract/testing/Testing'
 
 const initialStatePath = path.join(__dirname, '../data/initialState.json')
-const contractSrcPath = path.join(__dirname, '../pkg/xdrive_contract_bg.wasm')
+const contractSrcPath = path.join(__dirname, '../pkg/aeons_contract_bg.wasm')
 const wasmSrcCodeDirPath = path.join(__dirname, '../src')
-const wasmGlueCodePath = path.join(__dirname, '../pkg/xdrive_contract.js')
+const wasmGlueCodePath = path.join(__dirname, '../pkg/aeons_contract.js')
 
 jest.setTimeout(20000)
 
-describe('testing xdrive contract', () => {
+describe('testing aeons contract', () => {
     let arlocal: ArLocal 
     let warp: Warp
     let ownerWallet: Wallet

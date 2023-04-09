@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { shallow } from "zustand/shallow";
 import { subscribeWithSelector } from "zustand/middleware"
 import { ethers } from "ethers";
+import { v4 as uuidv4 } from 'uuid';
 import fileReaderStream from "filereader-stream";
 import { ChunkingUploader } from "@bundlr-network/client/build/common/chunkingUploader";
 import BundlrClient from "../lib/BundlrClient";
@@ -187,6 +188,7 @@ export const useDriveStore = create(
 
             await contract.insert({
                 name,
+                id: uuidv4(),
                 parentId,
                 contentType: "folder",
                 createdAt: new Date().getTime()

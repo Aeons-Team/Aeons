@@ -7,8 +7,6 @@ import BundlrClient from './BundlrClient'
 import initialState from '../contracts/client-contract/data/initialState.json'
 import { Wallet } from 'warp-contracts/lib/types/contract/testing/Testing'
 
-let seqNo = 1
-
 interface InsertData {
     id?: string,
     contentType: string,
@@ -202,7 +200,7 @@ export default class UserContract {
 
         switch (action.function) {
             case 'insert':
-                const id = action.id ?? `temp_id_${++seqNo}`
+                const id = action.id
 
                 files[id] = {
                     id,

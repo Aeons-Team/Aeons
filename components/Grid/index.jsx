@@ -86,7 +86,7 @@ export default function Grid({ files, minWidth, gap, height, gapScale }) {
                     const x = (i % maxCols) * (itemWidth + gap)
                     const y = Math.floor(i / maxCols) * (itemHeight + gap)
 
-                    return <GridItem key={file.id + (activeFileId ?? '')} file={file} itemWidth={itemWidth} x={x} y={y} />
+                    return <GridItem key={`${activeFileId ?? ''}/${file.id}`} file={file} itemWidth={itemWidth} x={x} y={y} />
                 })
             }
             </AnimatePresence>

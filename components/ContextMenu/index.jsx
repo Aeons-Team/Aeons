@@ -157,6 +157,7 @@ export default function ContextMenu() {
       />;
 
       break;
+
   }
 
   switch (contextMenuOpts.type) {
@@ -289,6 +290,11 @@ export default function ContextMenu() {
 
           <div
             className={style.contextMenuButton}
+            const onClick={async () => {
+              
+              activateContextMenu(false);
+              await relocateFiles(selection, activeFileId, "archive");
+            }}
           >
             <span>
               <Icon width='1.45rem' height='1.45rem' name='archive' strokeWidth={11} />

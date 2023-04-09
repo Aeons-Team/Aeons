@@ -16,17 +16,19 @@ function App({ Component, pageProps }) {
 
   useEffect(() => {
     async function init() {
-      await window.ethereum.request({ method: "eth_requestAccounts" });
+      try{
+        await window.ethereum.request({ method: "eth_requestAccounts" });
       
-      initialize(new ethers.providers.Web3Provider(window.ethereum));
+        initialize(new ethers.providers.Web3Provider(window.ethereum));
 
-      window.ethereum.on('accountsChanged', () => {
-        initialize(new ethers.providers.Web3Provider(window.ethereum));
-      })
+        window.ethereum.on('accountsChanged', () => {
+          initialize(new ethers.providers.Web3Provider(window.ethereum));
+        })
       
-      window.ethereum.on('chainChanged', () => {
-        initialize(new ethers.providers.Web3Provider(window.ethereum));
-      })
+        window.ethereum.on('chainChanged', () => {
+          initialize(new ethers.providers.Web3Provider(window.ethereum));
+        })
+      } catch(e) {}
     }
 
     init();

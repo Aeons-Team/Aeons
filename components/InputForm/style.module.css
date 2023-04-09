@@ -39,6 +39,12 @@
   font-size: 0.8rem;
 }
 
+.error {
+  font-size: 0.8rem;
+  color: var(--color-secondary-7);
+  padding-left: 10px;
+}
+
 .top {
   display: flex;
   flex-direction: column;

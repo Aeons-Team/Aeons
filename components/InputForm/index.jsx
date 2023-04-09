@@ -3,11 +3,14 @@ import Button from "../Button";
 import style from "./style.module.css";
 import Icon from '../Icon'
 import Input from "../Input";
+import { motion } from "framer-motion";
 
 export default function InputForm({ icon, fillIcon = true, heading, initialVal='', type='text', description, onClick, onBack } = {}) {
   const [input, setInput] = useState(initialVal);
   const [loading, setLoading] = useState(false);
   const loadingRef = useRef()
+  const [errorMessage, setErrorMessage] = useState('')
+
 
   const onButtonClick = async () => {
     if (loadingRef.current) return
@@ -15,8 +18,9 @@ export default function InputForm({ icon, fillIcon = true, heading, initialVal='
     loadingRef.current = true 
 
     setLoading(true)
-    await onClick(input)
+    await onClick(input,setErrorMessage)
     setLoading(false)
+    loadingRef.current = false
   }
 
   return (
@@ -38,6 +42,13 @@ export default function InputForm({ icon, fillIcon = true, heading, initialVal='
         onInput={(e) => {setInput(e.target.value)}}
         onKeyDown={(e) => { e.key === "Enter" && onClick()}}
       />
+
+      <motion.p 
+      animate={{height : errorMessage ? 'auto' : 0}}
+      className={style.error}
+      >
+        {errorMessage}
+      </motion.p>
 
       <div className={style.lower}>
         <button   

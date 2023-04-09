@@ -22,11 +22,9 @@ export default function Wallet() {
     fetchWalletBalance: state.fetchWalletBalance
   }));
 
-  const { showWallet, setShowWallet, activateContextMenu, errorMessage } = useAppState(state => ({
+  const { showWallet, setShowWallet } = useAppState(state => ({
     showWallet: state.showWallet,
     setShowWallet: state.setShowWallet,
-    activateContextMenu: state.activateContextMenu,
-    errorMessage: state.errorMessage
   }));
 
   const [funding, setFunding] = useState(false)
@@ -172,24 +170,28 @@ export default function Wallet() {
               animate={{ right: '0%', opacity: 1 }} 
               exit={{ right: '-60%', opacity: 0 }}
             >
+              
               <InputForm 
                 heading='Fund Bundlr'
                 icon='wallet'
                 type='number'
                 description='transfer funds to your internal bundlr wallet'
                 onBack={() => {
-                  setFunding(false)
-                }}
-
-                onClick={async (amount) => {
-                  activateContextMenu(false);
+                  setFunding(false)}
+                }
+                onClick={async (amount, setErrorMessage) => {
 
                   if (amount) {
-                    await client.fund(amount)
-
-                    fetchLoadedBalance()
-                    fetchWalletBalance()
+                    try {
+                      await client.fund(amount)
+                      fetchLoadedBalance()
+                      fetchWalletBalance()
+                    } 
+                    catch (e) {
+                      setErrorMessage('Insufficient funds')
+                    }
                   }
+
                 }}
               
               />

@@ -28,6 +28,7 @@ export default function FolderSelect({ disabled = () => false, itemDisabled = ()
     setLoading(true)
     await onClick(selectedFileId)
     setLoading(false)
+    loadingRef.current = false
   }
 
   return (

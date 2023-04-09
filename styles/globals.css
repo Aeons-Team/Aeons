@@ -19,8 +19,8 @@
   --color-inner: #f0f0f0;
   --color-hover: #e0e0e0;
   --color-shadow: #585060;
-  --shadow-blur: 2px;
   --shadow-blur: 1px;
+  --shadow-blur-2: 0px;
 }
 
 *,

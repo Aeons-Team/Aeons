@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
 import { useDriveStore } from "../../stores/DriveStore";
 import { useAppStore } from "../../stores/AppStore";
+import { motion } from "framer-motion";
 import Icon from '../Icon'
 import style from "./style.module.css";
 
@@ -37,7 +38,13 @@ export default function Search() {
 
   return (
     <div ref={searchRef} className={style.search}>
-      <div className={`${style.searchInner} ${isSearching ? style.searchInnerCollapse : ''}`}>
+      <motion.div 
+        className={`${style.searchInner} 
+        ${isSearching ? style.searchInnerCollapse : ''}`}
+        animate={{  
+          backgroundColor: searchActivated ? 'var(--color-primary-2)' : 'var(--color-primary)'
+        }}
+      >
         <span>
           <Icon 
             name='search' 
@@ -67,7 +74,7 @@ export default function Search() {
             }
           }}
         />
-      </div>
+      </motion.div>
 
       <div className={style.list}>
         <div className={style.listInner}>

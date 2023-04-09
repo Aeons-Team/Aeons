@@ -1,11 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --color-background: #0a080d;
+  --color-background: #0b090d;
   --color-primary: #0a080d;
-  --color-primary-2: #0c0b10;
-  --color-primary-3: #100f19;
-  --color-primary-4: #16151e;
+  --color-primary-2: #0f0e13;
+  --color-primary-3: #131218;
+  --color-primary-4: #1c1b20;
+  --color-primary-5: #252429;
   --color-secondary: #e8e8e8;
   --color-secondary-2: #e0e0e0;
   --color-secondary-3: #d8d8d8;
@@ -17,7 +18,7 @@
   --color-active-2: #6a44f5;
   --color-inner: #f0f0f0;
   --color-hover: #e0e0e0;
-  --color-shadow: #504858;
+  --color-shadow: #585060;
   --shadow-blur: 2px;
   --shadow-blur: 1px;
 }
@@ -33,17 +34,17 @@
 }
 
 *::-webkit-scrollbar {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-2);
   width: 9px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--color-primary-3);
+  background-color: var(--color-primary-4);
   border-radius: 4px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-primary-4);
+  background-color: var(--color-primary-5);
 }
 
 *::-webkit-scrollbar-thumb:active {

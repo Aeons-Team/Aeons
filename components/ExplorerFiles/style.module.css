@@ -23,6 +23,10 @@
   position: relative;
 }
 
+.explorerFilesInner::-webkit-scrollbar {
+  background-color: var(--color-primary);
+}
+
 @media (max-width: 500px) {
   .folders {
     display: grid;

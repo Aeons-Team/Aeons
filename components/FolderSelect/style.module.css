@@ -18,16 +18,16 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: var(--color-primary-2);
+  background-color: var(--color-primary-3);
 }
 
-.folderDisabled {
+.folderDisabled * {
   opacity: 0.5;
   cursor: default;
 }
 
 .folder:not(.selected, .folderDisabled):hover {
-  background-color: var(--color-primary-3);
+  background-color: var(--color-primary-4);
 }
 
 .selected {

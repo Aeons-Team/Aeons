@@ -2,7 +2,7 @@
     position: fixed;
     bottom: 0;
     right: 0.4rem;
-    background-color: var(--color-primary);
+    background-color: var(--color-primary-2);
     box-shadow: 0 0 var(--shadow-blur) 0 var(--color-shadow);
     border-radius: 3px;
     padding-top: 1rem;

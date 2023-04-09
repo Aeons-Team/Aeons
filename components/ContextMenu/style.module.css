@@ -1,6 +1,6 @@
 .contextMenu {
   position: absolute;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-2);
   font-size: 0.8rem;
   box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
   z-index: 5;

@@ -3,6 +3,20 @@
 version = 3
 
 [[package]]
+name = "aeons-contract"
+version = "0.1.0"
+dependencies = [
+ "js-sys",
+ "schemars",
+ "serde",
+ "serde-wasm-bindgen",
+ "serde_json",
+ "warp-contracts",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+]
+
+[[package]]
 name = "bumpalo"
 version = "3.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -291,18 +305,4 @@ checksum = "e33b99f4b23ba3eec1a53ac264e35a755f00e966e0065077d6027c0f575b0b97"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
-]
-
-[[package]]
-name = "aeons-contract"
-version = "0.1.0"
-dependencies = [
- "js-sys",
- "schemars",
- "serde",
- "serde-wasm-bindgen",
- "serde_json",
- "warp-contracts",
- "wasm-bindgen",
- "wasm-bindgen-futures",
 ]

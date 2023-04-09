@@ -13,7 +13,6 @@
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;
     padding: 0.25rem 0.5rem;
-    background-color: var(--color-primary);
     box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
 }
 
@@ -69,7 +68,7 @@
 }
 
 .listItem {
-    background-color: var(--color-primary);
+    background-color: var(--color-primary-2);
     padding: 0.85rem;
     display: flex;
     align-items: center;
@@ -78,7 +77,7 @@
 }
 
 .listItem:hover {
-    background-color: var(--color-primary-2);
+    background-color: var(--color-primary-3);
 }
 
 .listItem > *:nth-child(1) {

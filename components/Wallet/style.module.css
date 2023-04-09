@@ -21,7 +21,7 @@
 .avatar {
   height: 2.75rem;
   width: 2.75rem;
-  margin-right: 0.85rem;
+  margin-right: 0.6rem;
   background-color: var(--color-active);
   color: var(--color-primary);
   border-radius: 100%;
@@ -43,7 +43,7 @@
   right: 0;
   margin-top: 0.5rem;
   margin-right: 0.8rem;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-2);
   display: flex;
   width: 400px;
   overflow: hidden;
@@ -91,8 +91,8 @@
   position: absolute;
   width: 100px;
   text-align: center;
-  font-size: 0.8rem;
-  background-color: var(--color-primary);
+  font-size: 0.7rem;
+  background-color: var(--color-primary-2);
   color: var(--color-secondary);
   padding: 0.4rem 0.25rem;
   pointer-events: none;

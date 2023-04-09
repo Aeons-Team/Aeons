@@ -36,7 +36,7 @@ export default function InputForm({ icon, fillIcon = true, heading, initialVal='
         maxLength={32}
         step='0.0001'
         onInput={(e) => {setInput(e.target.value)}}
-        onKeyDown={(e) => { e.key === "Enter" && onClick()}}
+        onKeyDown={(e) => { e.key === "Enter" && onButtonClick()}}
       />
 
       <div className={style.lower}>

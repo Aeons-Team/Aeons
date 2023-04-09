@@ -21,7 +21,7 @@
 .avatar {
   height: 2.75rem;
   width: 2.75rem;
-  margin-right: 0.85rem;
+  margin-right: 0.6rem;
   background-color: var(--color-active);
   color: var(--color-primary);
   border-radius: 100%;

@@ -16,9 +16,10 @@ export default function ExplorerActions() {
         activateContextMenu: state.activateContextMenu
     }))
 
-    const { contractState, uploadFiles } = useDriveState((state) => ({
+    const { contractState, uploadFiles, relocateFiles } = useDriveState((state) => ({
         contractState: state.contractState,
-        uploadFiles: state.uploadFiles
+        uploadFiles: state.uploadFiles,
+        relocateFiles: state.relocateFiles
     }))
 
     const selection = getSelection()
@@ -138,6 +139,12 @@ export default function ExplorerActions() {
                     width='1.05rem'
                     height='1.05rem'
                     strokeWidth={10}
+
+                    onClick={(e) => {
+                        e.stopPropagation()
+
+                        relocateFiles(selection, activeFileId, "archive");
+                    }}
                 />
             }
 

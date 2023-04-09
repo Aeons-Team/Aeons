@@ -39,6 +39,8 @@ interface DriveStoreData {
     relocateFiles: (ids: string[], oldParentId: string, newParentId: string) => Promise<void>,
     removeFromUploadQueue: (i: number) => void,
     pauseOrResume: Function
+    insufficentBalance: boolean,
+    setInsufficientBalance: Function
 }
 
 export const useDriveStore = create(
@@ -57,6 +59,8 @@ export const useDriveStore = create(
         currentUploader: null,
         bytesUploaded: null,
         loadingText: 'Initializing',
+        insufficentBalance: false,
+        setInsufficientBalance: (value: boolean) => set({ insufficentBalance: value }),
         
         fetchWalletBalance: async () => {
             const walletBalance = await get().client.getWalletBalance();
@@ -154,6 +158,11 @@ export const useDriveStore = create(
                             size: first.file.size,
                             createdAt: new Date().getTime()
                         })
+                    },
+                    error: (error) => {
+                        if(error.message == 'Not enough funds to send data') {
+                            set({ insufficentBalance: true })
+                        }
                     }
                 }
             )

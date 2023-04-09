@@ -61,7 +61,8 @@ export default class BundlrClient {
       });
     }
 
-    await this.instance.ready();
+    try{
+      await this.instance.ready();
 
     const publicKey = this.instance.getSigner().publicKey;
     const ownerHash = await Arweave.crypto.hash(publicKey);
@@ -75,6 +76,8 @@ export default class BundlrClient {
       uri: `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/graphql`,
       cache: new InMemoryCache(),
     });
+  }
+  catch(e){}
   }
 
   async getWalletBalance() {
@@ -118,12 +121,14 @@ export default class BundlrClient {
 
   uploadChunked(data: any, opts: any, events: any) {
     const uploader = this.instance.uploader.chunkedUploader;
-    uploader.uploadData(data, opts);
+    const upload = uploader.uploadData(data, opts);
+    upload.catch(e => events.error(e))
 
     uploader.setBatchSize(Number(process.env.NEXT_PUBLIC_CHUNKED_UPLOADER_BATCH_SIZE));
     uploader.setChunkSize(Number(process.env.NEXT_PUBLIC_CHUNKED_UPLOADER_CHUNK_SIZE));
 
     for (const eventName in events) {
+      if(eventName === 'error') continue;
       uploader.on(eventName, events[eventName]);
     }
 

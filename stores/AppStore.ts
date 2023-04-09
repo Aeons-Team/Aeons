@@ -32,7 +32,7 @@ interface AppStoreData {
   setShowWallet: (value: boolean) => void,
   setDragging: (id: string, value: boolean) => void,
   clearDragging: Function,
-  errorMessage: (error: string) => void
+  setErrorMessage: (errorMessage: string) => void
 }
 
 export const useAppStore = create<AppStoreData>((set, get) => ({
@@ -113,7 +113,8 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
     return Object.keys(selected).filter(x => selected[x])
   },
 
-  errorMessage: (error: string) => {
+  setErrorMessage: (errorMessage: string) => {
+    if(errorMessage)
       return 'Uh oh! Something went wrong.';
   },
 

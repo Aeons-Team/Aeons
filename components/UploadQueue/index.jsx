@@ -39,6 +39,8 @@ function QueueTop({ minimized, preview }) {
         uploadNext, 
         currentName,
         removeFromUploadQueue,
+        insufficentBalance,
+        setInsufficientBalance
      } = useDriveState((state) => ({
         client: state.client,
         paused: state.paused,
@@ -47,7 +49,9 @@ function QueueTop({ minimized, preview }) {
         pauseOrResume: state.pauseOrResume,
         uploadNext: state.uploadNext,
         currentName: state.currentName,
-        removeFromUploadQueue: state.removeFromUploadQueue
+        removeFromUploadQueue: state.removeFromUploadQueue,
+        insufficentBalance: state.insufficentBalance,
+        setInsufficientBalance: state.setInsufficientBalance
     }));
 
     const currentUpload = uploadQueue.length && uploadQueue[0].file
@@ -122,6 +126,7 @@ function QueueTop({ minimized, preview }) {
 
     return (
         <div className={style.queueTop}>
+            {insufficentBalance && <div className={style.error}>Insufficient balance in Bundlr wallet. Please fund</div>}
             <div className={style.currentUpload}>
                 {preview}
 
@@ -199,7 +204,12 @@ function QueueTop({ minimized, preview }) {
                     <div className={style.speedStats}>
                         {uploading && <IconButton name={paused ? 'play' : 'pause'} width='0.8rem' height='0.8rem' onClick={pauseOrResume} fill />}
                         <div className={style.topCross}>
-                            <IconButton name='cross' width='1.5rem' height='1.5rem' onClick={() => removeFromUploadQueue(0)}/>
+                            <IconButton name='cross' width='1.5rem' height='1.5rem' 
+                                onClick={() => {
+                                    removeFromUploadQueue(0)
+                                    setInsufficientBalance(false)
+                                }}
+                            />
                         </div>
                     </div>       
                 </div>

@@ -191,6 +191,11 @@
     border-top: 2px solid var(--color-primary-2);
 }
 
+.error {
+    font-size: 0.8rem;
+    color: var(--color-secondary-7);
+  }
+
 @media (max-width: 500px) {
     .uploadQueue {
         transform: scale(0.8);

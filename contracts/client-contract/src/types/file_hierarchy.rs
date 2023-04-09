@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{ HashMap, HashSet };
 use schemars::JsonSchema;
 use serde::{ Serialize, Deserialize };
 
@@ -8,6 +8,7 @@ pub struct File {
     pub id: String,
     pub name: String,
     pub parent_id: Option<String>,
+    pub prev_parent_id: Option<String>,
     pub content_type: String,
     pub size: Option<u64>,
     pub created_at: Option<u64>,
@@ -36,6 +37,7 @@ impl FileHierarchy {
             id: "root".to_string(),
             name: "root".to_string(),
             parent_id: None,
+            prev_parent_id: None,
             content_type: "folder".to_string(),
             created_at: None,
             size: None,
@@ -61,5 +63,19 @@ impl FileHierarchy {
 
     pub fn contains(&self, id: &String) -> bool {
         self.files.contains_key(id)
+    }
+
+    pub fn get_ancestors(&self, id: &String) -> HashSet<String> {
+        let root = "root".to_string();
+        let mut ancestor = self.get_file(id).unwrap().parent_id.as_ref().unwrap_or(&root);
+        let mut ancestors = HashSet::new();
+
+        while !ancestor.eq(&root) {
+            ancestors.insert(ancestor.clone());
+            ancestor = self.get_file(ancestor).unwrap().parent_id.as_ref().unwrap_or(&root)
+        }
+
+        ancestors.insert(root);
+        ancestors
     }
 }

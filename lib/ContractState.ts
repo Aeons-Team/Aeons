@@ -3,6 +3,7 @@ export interface ContractFile {
     contentType: string,
     size?: number,
     parentId?: string,
+    prevParentId?: string,
     name: string,
     children?: string[],
     createdAt?: number,

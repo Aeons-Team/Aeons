@@ -63,7 +63,8 @@ pub struct ContractState {
 
 impl ContractState {
     pub fn is_owner(&self) -> bool {
-        self.internal_owner.as_ref().unwrap_or(&self.owner).eq(&SmartWeave::caller())
+        let caller = SmartWeave::caller();
+        self.owner.eq(&caller) || (self.internal_owner.is_some() && self.internal_owner.as_ref().unwrap().eq(&caller))
     }
 
     pub fn is_direct_owner(&self) -> bool {

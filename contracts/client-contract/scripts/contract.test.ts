@@ -60,7 +60,7 @@ describe('testing xdrive contract', () => {
         })
         
         await contract.writeInteraction({
-            function: 'insert', id: 'id3', name: 'file3', parentId: 'id1', contentType: 'image/png'
+            function: 'insert', id: 'id3', name: 'file3', parentId: 'id1', contentType: 'folder'
         })
         
         await contract.writeInteraction({
@@ -75,7 +75,7 @@ describe('testing xdrive contract', () => {
             function: 'setInternalOwner', value: 'internal'
         })
 
-        const state = (await contract.readState()).cachedValue.state as any
+        let state = (await contract.readState()).cachedValue.state as any
         let file2 = state.hierarchy.files['id2']
 
         expect(state.hierarchy.files['id1'].name).toBe('file1')
@@ -93,5 +93,16 @@ describe('testing xdrive contract', () => {
         expect(state.internalOwner).toBe('internal')
 
         expect(state.hierarchy.files['archive']).not.toBeUndefined()
+        
+        await contract.writeInteraction({
+            function: 'relocate', ids: ['id3'], oldParentId: 'id2', newParentId: 'id1'
+        })
+
+        state = (await contract.readState()).cachedValue.state as any
+        let file3 = state.hierarchy.files['id3']
+
+        expect(file3.parentId).toBe('id1')
+
+        expect(file3.prevParentId).toBe('id2')
     })
 })

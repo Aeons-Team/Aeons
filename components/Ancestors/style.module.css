@@ -15,8 +15,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     transition: background-color 400ms ease-in-out;
-    display: flex;
-    justify-content: center;
+    text-align: center;
 }
 
 .ancestor:hover {

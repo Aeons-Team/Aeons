@@ -6,7 +6,7 @@ use types::*;
 use warp_contracts::{ warp_contract, handler_result::WriteResult };
 
 #[warp_contract(write)]
-pub fn handle(state: ContractState, action: ContractAction) -> WriteResult<ContractState, ()> {
+pub fn handle(state: ContractState, action: ContractAction) -> WriteResult<ContractState, String> {
     match action {
         ContractAction::Insert(input) => insert(state, input),
         ContractAction::Relocate(input) => relocate(state, input),

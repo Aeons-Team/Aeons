@@ -112,6 +112,7 @@ export default function ContextMenu() {
         <p>Select the folder to which you'd like move all the selected files to</p>
 
         <FolderSelect 
+          itemDisabled={(id) => selection.includes(id)}
           disabled={(selectedFileId) => selection.filter((file) => !contractState.isRelocatable(file, selectedFileId)).length}
           onClick={async (selectedFileId) => {
             const activation = useAppStore.getState().contextMenuActivation

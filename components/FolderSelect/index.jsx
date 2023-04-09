@@ -7,7 +7,7 @@ import Ancestors from '../Ancestors'
 import Button from "../Button";
 import style from "./style.module.css";
 
-export default function FolderSelect({ disabled = () => false, onClick, onBack } = {}) {
+export default function FolderSelect({ disabled = () => false, itemDisabled = () => false, onClick, onBack } = {}) {
   const { id: activeFileId } = useRouter().query;
 
   const { contractState } = useDriveState((state) => ({
@@ -51,11 +51,11 @@ export default function FolderSelect({ disabled = () => false, onClick, onBack }
             .map((file) => (
               <div
                 key={file.id}
-                className={`${style.folder} ${
-                  file.id == selectedFileId ? style.selected : ""
-                }`}
+                className={`${style.folder} ${file.id == selectedFileId ? style.selected : ""} ${itemDisabled(file.id) ? style.folderDisabled : ""}`}
                 onClick={(e) => {
                   e.stopPropagation()
+
+                  if (itemDisabled(file.id)) return
 
                   if (selectedFileId == file.id) {
                     setCurrentFileId(file.id)

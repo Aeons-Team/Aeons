@@ -30,7 +30,7 @@ export default function Ancestors({ id, itemStyle, listStyle = {}, gap, iconSize
                         <motion.div 
                             className={style.ancestorItem} 
                             style={{ gap }} 
-                            key={file.id}
+                            key={i}
                             initial={{
                                 opacity: 0,
                                 y: 4

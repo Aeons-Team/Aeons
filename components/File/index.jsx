@@ -155,6 +155,8 @@ export default function File({ file }) {
   };
 
   const onFileClick = (e) => {
+    if (activeFileId != file.parentId) return
+
     e.stopPropagation();
     e.preventDefault();
     document.getSelection().removeAllRanges();
@@ -221,6 +223,8 @@ export default function File({ file }) {
   };
 
   const onFileContextMenu = (e) => {
+    if (activeFileId != file.parentId) return
+
     e.preventDefault();
     e.stopPropagation();
 

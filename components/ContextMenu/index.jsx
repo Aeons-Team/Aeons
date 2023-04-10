@@ -175,16 +175,17 @@ export default function ContextMenu() {
             }}
           />
 
-          <label
-            htmlFor='upload-file'
-            className={style.contextMenuButton}
-          >
-            <span>
-              <Icon width='1.5rem' height='1.5rem' name='upload-file' fill />
-            </span>
-
-            Upload File
-          </label>
+          <input 
+            id='upload-file-encrypted' 
+            type='file' 
+            multiple 
+            hidden 
+            onChange={(e) => {
+              uploadFiles(e.target.files, activeFileId, true)
+              e.target.value = null
+              activateContextMenu(false)
+            }}
+          />
 
           <div
             className={style.contextMenuButton}
@@ -194,11 +195,35 @@ export default function ContextMenu() {
             }}
           >
             <span>
-              <Icon width='1.55rem' height='1.55rem' name='create-folder' strokeWidth={1.25} />
+              <Icon width='1.35rem' height='1.35rem' name='create-folder' strokeWidth={1.25} />
             </span>
 
             Create Folder
           </div>
+
+          <div className={style.separator} />
+
+          <label
+            htmlFor='upload-file'
+            className={style.contextMenuButton}
+          >
+            <span>
+              <Icon width='1.3rem' height='1.3rem' name='upload-file' fill />
+            </span>
+
+            Upload Files
+          </label>
+
+          <label
+            htmlFor='upload-file-encrypted'
+            className={style.contextMenuButton}
+          >
+            <span>
+              <Icon width='1.2rem' height='1.2rem' name='encrypted' fill />
+            </span>
+
+            Upload Private Files
+          </label>
         </>
       );
 

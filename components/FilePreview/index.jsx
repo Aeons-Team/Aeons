@@ -1,62 +1,63 @@
-import Spinner from 'react-spinner-material'
+import Spinner from 'react-spinner-material';
 import { useEffect, useState } from "react";
+import { useDriveState } from '../../stores/DriveStore';
+import Crypto from '../../lib/Crypto';
+import Utility from '../../lib/Utility';
 import Icon from '../Icon'
 
-export default function FilePreview({ src, file, contentType, className, enableControls, size }) {
-    const [localSrc, setLocalSrc] = useState(src)
+export default function FilePreview({ src, file, contentType, encryption, className, size }) {
+    const [localSrc, setLocalSrc] = useState(null)
     
     const [loading, setLoading] = useState(
-        contentType.match('image/*') || (src && contentType.match('video/*'))
+        contentType.startsWith('image/')
     )
-    
+
+    const { contract } = useDriveState(state => ({
+        contract: state.contract
+    }))
+
     useEffect(() => {
         const init = async () => {
-            if (file && contentType.startsWith('image/')) {
-                setLocalSrc()
-                const reader = new FileReader()
-
-                reader.onload = () => {
-                    const image = new Image()
-                    image.src = reader.result
-
-                    image.onload = () => {
-                        let width = image.width 
-                        let height = image.height 
-
-                        if (width > height) {
-                            let tempWidth = width
-                            width = size 
-                            height = (size / tempWidth) * height
-                        }
-
-                        else {
-                            let tempHeight = height
-                            height = size
-                            width = (size / tempHeight) * width
-                        }
-
-                        const canvas = document.createElement('canvas')
-                        canvas.width = width
-                        canvas.height = height
-
-                        const ctx = canvas.getContext('2d')
-                        ctx.drawImage(image, 0, 0, width, height)
-
-                        setLocalSrc(canvas.toDataURL(file.type))
-                        setLoading(false)
+            if (contentType.startsWith('image/')) {
+                if (file) {
+                    setLocalSrc()
+                    const reader = new FileReader()
+    
+                    reader.onload = () => {
+                        Utility.resizeImage(reader.result, size).then(url => setLocalSrc(url))
                     }
+    
+                    reader.readAsDataURL(file)
                 }
 
-                reader.readAsDataURL(file)
+                else if (src) {
+                    if (encryption) {
+                        const { key, iv } = await Crypto.decrypt(encryption, contract.internalWallet.privateKey)
+
+                        const imgDataEncrypted = await fetch(src).then(res => res.arrayBuffer())
+
+                        const keyImported = await Crypto.aesImportKey(key)
+
+                        const imgData = await Crypto.aesDecrypt(imgDataEncrypted, keyImported, iv)
+
+                        const blob = new Blob([imgData])
+
+                        const url = URL.createObjectURL(blob)
+
+                        Utility.resizeImage(url, size).then(url => setLocalSrc(url))
+                    }
+
+                    else {
+                        Utility.resizeImage(src, size).then(url => setLocalSrc(url))
+                    }
+                }
             }
         }
 
         init()
 
-        if (file) {
-            return () => {
-                URL.revokeObjectURL(localSrc)
-            }
+        return () => {
+            URL.revokeObjectURL(localSrc)
         }
     }, [file])
 
@@ -65,25 +66,7 @@ export default function FilePreview({ src, file, contentType, className, enableC
     if (!contentType) preview = <div className={className} />
 
     else if (contentType.match("image/*")) {
-        preview = <img src={localSrc} onLoad={() => setLoading(false)} className={className} width={size} height={size} />;
-    }
-
-    else if (src && contentType.match("video/*")) {
-        preview = (
-            <video  
-                onPause={(e) => {
-                    e.target.currentTime = 0
-                    e.target.play().catch(() => {})
-                }} 
-                onCanPlay={() => setLoading(false)}
-                autoPlay 
-                muted 
-                className={className} 
-                controls={enableControls}
-            >
-                <source src={localSrc + '#t=0,3'} />
-            </video>
-        )
+        preview = <img src={localSrc} className={className} onLoad={() => setLoading(false)} />;
     }
 
     else {

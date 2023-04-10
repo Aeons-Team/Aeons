@@ -51,7 +51,7 @@ export default function ExplorerFiles({ files, className }) {
                     </h1>
 
                     <Grid 
-                        minWidth={isMobile ? 150 : 200} 
+                        minWidth={isMobile ? 155 : 200} 
                         height={scale * (isMobile ? 170 : 160)} 
                         gapScale={scale * 0.1}
                         gap={isMobile ? 8 : 10}
@@ -65,7 +65,7 @@ export default function ExplorerFiles({ files, className }) {
                     </h1>
 
                     <Grid 
-                        minWidth={isMobile ? 150 : 200} 
+                        minWidth={isMobile ? 155 : 200} 
                         height={scale * (isMobile ? 270 : 260)} 
                         gapScale={scale * 0.9}
                         gap={isMobile ? 8 : 10}

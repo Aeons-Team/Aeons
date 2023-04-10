@@ -8,7 +8,7 @@ import FolderInfo from "../FolderInfo";
 import style from "./style.module.css";
 import Vector from '../../lib/Vector2';
 
-export default function File({ file, enableControls }) {
+export default function File({ file }) {
   const router = useRouter();
   const fileRef = useRef();
   const countRef = useRef(0);
@@ -279,7 +279,6 @@ export default function File({ file, enableControls }) {
         <FileInfo
           file={file}
           className={style.filePreview}
-          enableControls={enableControls}
         />
       )}
     </motion.div>

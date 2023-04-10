@@ -19,6 +19,7 @@
     "big-number": "^2.0.0",
     "clipboard-copy": "^4.0.1",
     "crypto-js": "^4.1.1",
+    "eth-crypto": "^2.6.0",
     "ethers": "5.7",
     "filereader-stream": "^2.0.0",
     "framer-motion": "^9.0.7",

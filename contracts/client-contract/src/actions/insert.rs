@@ -21,6 +21,7 @@ pub fn insert(mut state: ContractState, input: Insert) -> WriteResult<ContractSt
         children: if input.content_type.eq("folder") { Some(Vec::new()) } else { None },
         created_at: input.created_at,
         content_type: input.content_type,
+        encryption: input.encryption,
     });
 
     let parent_id = input.parent_id.unwrap_or("root".to_string());

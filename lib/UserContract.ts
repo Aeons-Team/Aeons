@@ -5,7 +5,7 @@ import { gql } from '@apollo/client'
 import ContractState, { ContractStateData } from './ContractState'
 import BundlrClient from './BundlrClient'
 import initialState from '../contracts/client-contract/data/initialState.json'
-import { Wallet } from 'warp-contracts/lib/types/contract/testing/Testing'
+import { PromptArgs } from '../stores/DriveStore'
 
 interface InsertData {
     id?: string,
@@ -13,7 +13,8 @@ interface InsertData {
     size?: number,
     parentId: string,
     createdAt?: number,
-    name: string
+    name: string,
+    encryption?: string
 }
 
 export default class UserContract {
@@ -25,9 +26,10 @@ export default class UserContract {
     provider: ethers.providers.Web3Provider
     client: BundlrClient
     updateUIAction: Function
-    internalWallet : Wallet
+    internalWallet: ethers.Wallet
     interactionQueue: any[]
     log: Function
+    prompt: (args: PromptArgs) => void
 
     constructor() {
         this.state = new ContractState()
@@ -52,7 +54,7 @@ export default class UserContract {
 
         const contractUpload = await this.client.upload('', {
             tags: [
-                { name: 'Init-State', value: JSON.stringify({ ...initialState, owner: this.client.address }) },
+                { name: 'Init-State', value: JSON.stringify({ ...initialState, owner: this.client.address, internalOwner: this.internalWallet.address }) },
                 { name: 'App-Name', value: 'SmartWeaveContract' },
                 { name: 'App-Version', value: process.env.NEXT_PUBLIC_WARP_SDK_VERSION ?? '' },
                 { name: 'Content-Type', value: 'application/json' },
@@ -128,6 +130,7 @@ export default class UserContract {
                 }
 
                 else {
+                    await this.createInternalWallet()
                     await this.createContract()
                 }
             }
@@ -155,10 +158,11 @@ export default class UserContract {
         }
     }
 
-    async initialize(provider: ethers.providers.Web3Provider, client: BundlrClient, log: Function) {
+    async initialize(provider: ethers.providers.Web3Provider, client: BundlrClient, log: Function, prompt: (args: PromptArgs) => void) {
         this.provider = provider
         this.client = client
         this.log = log
+        this.prompt = prompt
 
         this.warp = WarpFactory.forMainnet()
 
@@ -166,32 +170,61 @@ export default class UserContract {
         
         await this.initializeContract()
 
-        const { evmSignature } = await import('warp-contracts-plugin-signature')
-
         this.log('Evaluating contract state')
+
+        const { evmSignature } = await import('warp-contracts-plugin-signature')
 
         this.instance = this.warp.contract<ContractStateData>(this.contractId)
         this.instance.connect({ signer: evmSignature, type: 'ethereum' })
+        
         await this.updateState()
         
-        this.log('Searching for contract internal wallet in local storage')
+        this.log('Searching for internal wallet in local storage')
 
-        const internalWalletJSON = localStorage.getItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-InternalOwner`)
+        if (!this.internalWallet) {
+            const internalWalletEncrypted = localStorage.getItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-InternalWalletEncrypted`)
+    
+            if (internalWalletEncrypted) {
+                const tryPassword = async (errorMessage = '') => {
+                    this.log('Enter the password set for encrypting internal wallet locally')
+        
+                    try {
+                        const password = await new Promise((resolve, reject) => {
+                            this.prompt({
+                                type: 'password',
+                                errorMessage,
+                                resolve
+                            })
+                        })
+            
+                        this.log('Decrypting internal wallet')
+            
+                        this.internalWallet = await ethers.Wallet.fromEncryptedJson(internalWalletEncrypted, password)
+                    }
 
-        if (internalWalletJSON) {
-            this.internalWallet = JSON.parse(internalWalletJSON)
+                    catch (error) {
+                        await tryPassword('Invalid password')
+                    }
+                }
 
-            if (this.internalWallet.address != this.state.data?.internalOwner) {
-                await this.createInternalOwner()
+                await tryPassword()
+            }
+    
+            else {
+                await this.recoverInternalWallet()
             }
         }
 
-        else {
-            await this.createInternalOwner()
-        }
+        const { buildEvmSignature } = await import('warp-contracts-plugin-signature/server')
+
+        this.log('Connecting the contract to internal wallet')
+
+        this.instance.connect({  
+            signer: buildEvmSignature(this.internalWallet),
+            type: 'ethereum'
+        })
         
         await this.checkEvolve()
-
     }
 
     localWrite(action: any) {
@@ -210,6 +243,7 @@ export default class UserContract {
                     name: action.name,
                     children: action.contentType == 'folder' ? [] : undefined,
                     createdAt: action.createdAt,
+                    encryption: action.encryption,
                     pending: true
                 }
 
@@ -262,25 +296,76 @@ export default class UserContract {
     }
 
     async insert(data: InsertData) {
-        this.instance.connect(this.internalWallet.jwk)
         await this.writeInteraction({ function: 'insert', ...data },true)
     }
 
     async rename(id: string, newName: string) {
-        this.instance.connect(this.internalWallet.jwk)
         await this.writeInteraction({ function: 'rename', id, newName },true)
     }
 
     async relocate(ids: string[], oldParentId: string, newParentId: string) {
-        this.instance.connect(this.internalWallet.jwk)
         await this.writeInteraction({ function: 'relocate', ids, oldParentId, newParentId },true)
     }
 
-    async createInternalOwner() {
-        this.log('Creating contract internal wallet')
+    async recoverInternalWallet() {
+        this.log('Enter mnemonic phrase to recover your internal wallet')
 
-        this.internalWallet = await this.warp.generateWallet()
-        await this.writeInteraction({ function: 'setInternalOwner', value : this.internalWallet.address },false)
-        localStorage.setItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-InternalOwner`, JSON.stringify(this.internalWallet))
+        const tryRecover = async (errorMessage = '') => {
+            this.log('Enter the password set for encrypting internal wallet locally')
+
+            try {
+                const mnemonic = await new Promise((resolve, reject) => {
+                    this.prompt({
+                        type: 'recover',
+                        errorMessage,
+                        resolve
+                    })
+                })
+        
+                this.internalWallet = ethers.Wallet.fromMnemonic(mnemonic)
+        
+                await this.encryptAndStoreInternalWallet()
+            }
+
+            catch (error) {
+                await tryRecover('Invalid mnemonic phrase')
+            }
+        }
+
+        await tryRecover()
+    }
+
+    async createInternalWallet() {
+        this.log('Creating new internal wallet')
+        
+        this.internalWallet = ethers.Wallet.createRandom()
+
+        this.log('Please write down your internal wallet\'s secret recovery phrase!')
+
+        await new Promise((resolve, reject) => {
+            this.prompt({
+                type: 'recovery',
+                value: this.internalWallet.mnemonic.phrase,
+                resolve
+            })
+        })
+
+        await this.encryptAndStoreInternalWallet()
+    }
+
+    async encryptAndStoreInternalWallet() {
+        this.log('Set a password for encrypting internal wallet locally')
+
+        const password = await new Promise((resolve, reject) => {
+            this.prompt({
+                type: 'password',
+                resolve
+            })
+        })
+
+        this.log('Encrypting internal wallet locally')
+
+        const internalWalletEncrypted = await this.internalWallet.encrypt(password)
+        localStorage.setItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-InternalWalletEncrypted`, internalWalletEncrypted)
     }
 }

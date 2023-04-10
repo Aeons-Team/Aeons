@@ -7,6 +7,7 @@ import FilePreview from "../FilePreview";
 import Utility from "../../lib/Utility"
 import Button from "../Button";
 import IconButton from "../IconButton"
+import Icon from '../Icon';
 import style from './style.module.css';
 
 function QueueItem({ i, item, preview }) {
@@ -88,7 +89,9 @@ function QueueTop({ minimized, preview }) {
 
                 if (uploading) {
                     const currentUpload = uploadQueue[0].file
-                    const uploadedPerc = (bytesUploaded / currentUpload.size) * 100
+                    const uploadedPerc = currentUpload.size  
+                        ? (bytesUploaded / currentUpload.size) * 100
+                        : 0
 
                     initialValsRef.current = [
                         `${Utility.formatTime((uploadQueue[0].file.size - bytesUploaded) / uploadSpeed)} remaining`,
@@ -231,13 +234,21 @@ export default function UploadQueue() {
     }));
 
     const previews = uploadQueue.slice(0, 5).map((item, i) => (
-        <FilePreview
-            key={item.file.name}
-            className={i == 0 ? style.queueTopPreview : style.queueItemPreview}
-            contentType={item.file.type}
-            file={item.file}
-            size={i == 0 ? 128 : 64}
-        />
+        <div className={style.previewParent} key={item.file.name}>
+            <FilePreview
+                className={i == 0 ? style.queueTopPreview : style.queueItemPreview}
+                contentType={item.file.type}
+                file={item.file}
+                size={i == 0 ? 128 : 64}
+            />
+
+            {
+                item.encrypted &&
+                <div className={style.encryptedIconParent}>
+                    <Icon name='encrypted' fill width='0.5rem' height='0.5rem' color='var(--color-inner)' />
+                </div>
+            }
+        </div>
     ))
 
     return (

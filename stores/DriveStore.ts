@@ -8,10 +8,20 @@ import { ChunkingUploader } from "@bundlr-network/client/build/common/chunkingUp
 import BundlrClient from "../lib/BundlrClient";
 import UserContract from "../lib/UserContract";
 import ContractState from "../lib/ContractState";
+import Crypto from "../lib/Crypto";
+import { encryptWithPublicKey } from 'eth-crypto'
 
 interface UploadQueueItem {
     file: File,
-    parentId: string
+    parentId: string,
+    encrypted?: boolean
+}
+
+export interface PromptArgs {
+    type: string,
+    value?: string,
+    resolve: Function,
+    errorMessage?: string
 }
 
 interface DriveStoreData {
@@ -31,6 +41,7 @@ interface DriveStoreData {
     loadingText: string,
     fetchWalletBalance: Function,
     fetchLoadedBalance: Function,
+    currentPrompt: PromptArgs | null,
     uploadNext: (name?: string) => Promise<void>,
     initialize: (provider: ethers.providers.Web3Provider) => Promise<void>,
     uploadFiles: (files: File[], parentId: string) => void,
@@ -38,9 +49,11 @@ interface DriveStoreData {
     renameFile: (id: string, newName: string) => Promise<void>,
     relocateFiles: (ids: string[], oldParentId: string, newParentId: string) => Promise<void>,
     removeFromUploadQueue: (i: number) => void,
-    pauseOrResume: Function
+    pauseOrResume: Function,
     insufficentBalance: boolean,
-    setInsufficientBalance: Function
+    setInsufficientBalance: Function,
+    prompt: (args: PromptArgs) => void,
+    reinitialize: (provider: ethers.providers.Web3Provider) => Promise<void>
 }
 
 export const useDriveStore = create(
@@ -60,6 +73,7 @@ export const useDriveStore = create(
         bytesUploaded: null,
         loadingText: 'Initializing',
         insufficentBalance: false,
+        currentPrompt: null,
         setInsufficientBalance: (value: boolean) => set({ insufficentBalance: value }),
         
         fetchWalletBalance: async () => {
@@ -73,17 +87,33 @@ export const useDriveStore = create(
         },
 
         initialize: async (provider: ethers.providers.Web3Provider) => {
-            set({ initialized: false })
-
             const { client, contract, fetchWalletBalance, fetchLoadedBalance } = get()
 
             const log = (text) => set({ loadingText: text })
 
             await client.initialize(provider, log);
-            await contract.initialize(provider, client, log);
+            await contract.initialize(provider, client, log, get().prompt);
 
             contract.updateUIAction = () => set({ contractState: contract.state.copy() })
             
+            set({ 
+                initialized: true,
+                contractState: contract.state
+            })
+
+            fetchWalletBalance();
+            fetchLoadedBalance();
+        },
+
+        reinitialize: async (provider: ethers.providers.Web3Provider) => {
+            const { client, contract, fetchWalletBalance, fetchLoadedBalance } = get()
+
+            set({ initialized: false })
+
+            const log = (text) => set({ loadingText: text })
+
+            await client.initialize(provider, log);
+
             set({ 
                 initialized: true,
                 contractState: contract.state
@@ -112,8 +142,17 @@ export const useDriveStore = create(
             let nextChunk = batchSize + 1
             let index = 0
 
+            let key = await Crypto.aesGenKey()
+            let keyExported = await Crypto.aesExportKey(key)
+
+            const encryption = await encryptWithPublicKey(contract.internalWallet.publicKey.substring(2), keyExported)
+
+            let data = first.encrypted 
+                ? await Crypto.aesEncryptFile(first.file, key, Buffer.from(encryption.iv, 'hex').buffer) 
+                : fileReaderStream(first.file) 
+
             const uploader = client.uploadChunked(
-                fileReaderStream(first.file), 
+                data, 
                 {
                     tags: [
                         { name: 'Content-Type', value: first.file.type }
@@ -156,7 +195,8 @@ export const useDriveStore = create(
                             name: name || first.file.name,
                             parentId: first.parentId,
                             size: first.file.size,
-                            createdAt: new Date().getTime()
+                            createdAt: new Date().getTime(),
+                            encryption: first.encrypted ? (encryption.iv + encryption.mac + encryption.ephemPublicKey + encryption.ciphertext) : undefined
                         })
                     },
                     error: (error) => {
@@ -170,13 +210,14 @@ export const useDriveStore = create(
             set({ currentUploader: uploader })
         },
 
-        uploadFiles: async (files: File[], parentId: string) => {
+        uploadFiles: async (files: File[], parentId: string, encrypted: boolean = false) => {
             const { uploadQueue } = get()
 
             for (const file of files) {
                 uploadQueue.push({  
                     file,
-                    parentId
+                    parentId,
+                    encrypted
                 })
             }
 
@@ -232,6 +273,10 @@ export const useDriveStore = create(
             }
 
             set({ paused: !get().paused })
+        },
+
+        prompt: (args: PromptArgs) => {
+            set({ currentPrompt: args })
         }
     })
 ));

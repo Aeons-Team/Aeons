@@ -27,7 +27,7 @@
 
 .contextMenuButton:hover {
   cursor: pointer;
-  background-color: var(--color-primary-2);
+  background-color: var(--color-primary-3);
 }
 
 .moveFile {

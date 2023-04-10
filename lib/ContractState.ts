@@ -7,7 +7,8 @@ export interface ContractFile {
     name: string,
     children?: string[],
     createdAt?: number,
-    pending: boolean
+    pending: boolean,
+    encryption?: string,
 }
 
 export interface ContractStateData {

@@ -7,9 +7,10 @@ import Loading from "../components/Loading";
 import "../styles/globals.css";
 
 function App({ Component, pageProps }) {
-  const { initialize, initialized } = useDriveState((state) => ({
+  const { initialize, initialized, reinitialize } = useDriveState((state) => ({
     initialize: state.initialize,
-    initialized: state.initialized
+    initialized: state.initialized,
+    reinitialize: state.reinitialize
   }));
 
   const cursorPosition = useAppStore((state) => state.cursorPosition);
@@ -19,14 +20,14 @@ function App({ Component, pageProps }) {
       try{
         await window.ethereum.request({ method: "eth_requestAccounts" });
       
-        initialize(new ethers.providers.Web3Provider(window.ethereum));
+        await initialize(new ethers.providers.Web3Provider(window.ethereum));
 
         window.ethereum.on('accountsChanged', () => {
-          initialize(new ethers.providers.Web3Provider(window.ethereum));
+          reinitialize(new ethers.providers.Web3Provider(window.ethereum));
         })
       
         window.ethereum.on('chainChanged', () => {
-          initialize(new ethers.providers.Web3Provider(window.ethereum));
+          reinitialize(new ethers.providers.Web3Provider(window.ethereum));
         })
       } catch(e) {}
     }

@@ -52,7 +52,9 @@ export default function FileInfo({ file }) {
         <FilePreview 
           className={style.preview}
           src={`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`} 
+          encryption={file.encryption}
           contentType={file.contentType} 
+          size={300}
         />
       </div>
         

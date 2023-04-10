@@ -12,7 +12,8 @@ pub struct File {
     pub content_type: String,
     pub size: Option<u64>,
     pub created_at: Option<u64>,
-    pub children: Option<Vec<String>>
+    pub children: Option<Vec<String>>,
+    pub encryption: Option<String>
 }
 
 impl File {
@@ -41,7 +42,8 @@ impl FileHierarchy {
             content_type: "folder".to_string(),
             created_at: None,
             size: None,
-            children: Some(Vec::new())
+            children: Some(Vec::new()),
+            encryption: None
         });
 
         hierarchy

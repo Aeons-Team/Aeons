@@ -67,7 +67,7 @@ export default function Grid({ files, minWidth, gap, height, gapScale }) {
     let count = files.length
     let maxCols = width && (width + gap) / (minWidth + gap)
     let reminder = maxCols % 1
-    
+
     maxCols = Math.floor(maxCols)
     let itemWidth = width && minWidth + reminder * (minWidth + gap) / maxCols
     let rows = width && Math.ceil(count / maxCols)

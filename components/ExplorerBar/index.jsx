@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router'
 import { useMediaQuery } from 'react-responsive'
 import Ancestors from '../Ancestors'
-import ExplorerActions from '../ExplorerActions'
 import { useAppState, useAppStore } from '../../stores/AppStore'
 import { useDriveStore } from '../../stores/DriveStore'
 import style from './style.module.css'
@@ -43,7 +42,6 @@ export default function ExplorerBar() {
                     maxWidth: '10rem'
                 }}
             />
-            <ExplorerActions />
         </div>
     )
 }

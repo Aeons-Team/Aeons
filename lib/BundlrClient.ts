@@ -47,9 +47,9 @@ export default class BundlrClient {
     this.network = await this.provider.getNetwork();
     this.log = log
 
-    this.log('Connecting to Bundlr.network')
-
     const networkInfo = networkInfos[this.network.name]
+
+    this.log(`Connecting to Bundlr.network`)
 
     if (this.network.name !== 'maticmum') {
       this.instance = new WebBundlr(process.env.NEXT_PUBLIC_BUNDLR_NODE_URL ?? '', networkInfo.currency, this.provider);

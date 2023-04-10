@@ -73,33 +73,6 @@
   margin-top: 0.4rem;
 }
 
-.walletAddress {
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-
-.address {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.walletAddress > *:nth-child(2) {
-  position: absolute;
-  width: 100px;
-  text-align: center;
-  font-size: 0.7rem;
-  background-color: var(--color-primary-2);
-  color: var(--color-secondary);
-  padding: 0.4rem 0.25rem;
-  pointer-events: none;
-  border-radius: 3px;
-  box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
-}
-
 .walletLower {
   display: flex;
   align-items: center;

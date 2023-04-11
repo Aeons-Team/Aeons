@@ -6,9 +6,11 @@ import Utility from "../../lib/Utility"
 import style from './style.module.css'
 
 export default function FileInfo({ file }) {
-  const { activateContextMenu, select } = useAppState(state => ({
+  const { activateContextMenu, select, getSelection, clearSelection } = useAppState(state => ({
     activateContextMenu: state.activateContextMenu,
-    select: state.select
+    select: state.select,
+    getSelection: state.getSelection,
+    clearSelection: state.clearSelection
   }))
 
   return (
@@ -25,6 +27,10 @@ export default function FileInfo({ file }) {
               const appState = useAppStore.getState()
 
               if (!appState.selected[file.id]) {
+                if (getSelection().length == 1) {
+                  clearSelection()
+                }
+                
                 select(file.id)
               }
 

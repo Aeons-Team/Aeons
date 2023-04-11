@@ -32,6 +32,8 @@ interface AppStoreData {
   setShowWallet: (value: boolean) => void,
   setDragging: (id: string, value: boolean) => void,
   clearDragging: Function,
+  funding: boolean,
+  setFunding: Function,
   setErrorMessage: (errorMessage: string) => void
 }
 
@@ -50,6 +52,8 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
   contextMenuActivation: 0,
   dragCount: 0,
   beingDragged: {},
+  funding: false,
+  setFunding: (value: boolean) => set({ funding: value }),
 
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => {
     const { cursorPosition, contextMenuPosition, contextMenuActivation } = get();

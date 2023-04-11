@@ -16,18 +16,18 @@ export default class Utility {
 
   static formatBytes(size: number): string {
     if (size > 1e9) {
-      return `${(size / 1e9).toFixed(1)} GB`;
+      return `${Math.round(size / 1e9)} GB`;
     }
 
     if (size > 1e6) {
-      return `${(size / 1e6).toFixed(1)} MB`;
+      return `${Math.round(size / 1e6)} MB`;
     }
 
     if (size > 1e3) {
-      return `${(size / 1e3).toFixed(1)} KB`;
+      return `${Math.round(size / 1e3)} KB`;
     }
 
-    return `${size.toFixed(1)} bytes`;
+    return `${Math.round(size)} bytes`;
   }
 
   static formatTime(seconds: number): string {
@@ -61,7 +61,7 @@ export default class Utility {
     return `rgb(${color[0]}, ${color[1]}, ${color[2]})`
   }
 
-  static async resizeImage(src: string, size: number): string {
+  static async resizeImage(src: string, size: number): Promise<string> {
     const image = new Image()
     image.src = src
     image.crossOrigin = 'anonymous'

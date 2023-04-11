@@ -60,7 +60,7 @@ export default function FileInfo({ file }) {
         
       <div className={style.fileBottom}>
         <span className={style.fileIcon}>
-          <Icon name='file' width='2rem' height='2rem' fill />
+          <Icon name='file' width='1.75rem' height='1.75rem' fill />
         </span>
       
         <div className={style.fileDetails}>
@@ -76,7 +76,7 @@ export default function FileInfo({ file }) {
                 file.encryption && 
                 <>
                   <span>•</span>
-                  <span>Encrypted</span>
+                  <span>Secure</span>
                 </>
               }
             </div>

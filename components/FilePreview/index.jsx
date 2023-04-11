@@ -72,7 +72,7 @@ export default function FilePreview({ src, file, contentType, encryption, classN
     else {
         preview = (
             <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Icon name='file' width='2rem' height='2rem' fill />
+                <Icon name='file' width='2.25rem' height='2.25rem' fill />
             </div>
         )
     }

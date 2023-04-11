@@ -41,7 +41,7 @@
 
 .folderDetails > span {
     color: var(--color-secondary-6);
-    font-weight: 400;
+    font-weight: 500;
 }
 
 .folderDetails > *:nth-child(2) {

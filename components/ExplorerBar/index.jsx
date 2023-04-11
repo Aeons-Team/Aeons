@@ -8,7 +8,7 @@ import style from './style.module.css'
 export default function ExplorerBar() {
     const router = useRouter()
     const { id: activeFileId } = router.query
-    const isMobile = useMediaQuery({ maxWidth: '500px' })
+    const isMobile = useMediaQuery({ maxWidth: '550px' })
 
     const { getSelection, clearSelection } = useAppState(state => ({
         getSelection: state.getSelection,

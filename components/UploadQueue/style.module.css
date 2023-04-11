@@ -216,7 +216,7 @@
     background-color: var(--color-active);    
 }
 
-@media (max-width: 500px) {
+@media (max-width: 550px) {
     .uploadQueue {
         transform: scale(0.8);
         transform-origin: right bottom;

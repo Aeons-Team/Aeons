@@ -10,7 +10,7 @@ import style from './style.module.css'
 export default function ExplorerFiles({ files, className }) {
     const { id: activeFileId } = useRouter().query
 
-    const isMobile = useMediaQuery({ maxWidth: 500 })
+    const isMobile = useMediaQuery({ maxWidth: 550 })
     const scale = isMobile ? 0.8 : 1
     const innerRef = useRef()
     const scrollMotion = useSpring(0, { stiffness: 100, damping: 15 })
@@ -51,8 +51,8 @@ export default function ExplorerFiles({ files, className }) {
                     </h1>
 
                     <Grid 
-                        minWidth={isMobile ? 155 : 200} 
-                        height={scale * (isMobile ? 170 : 160)} 
+                        minWidth={isMobile ? 180 : 235} 
+                        height={scale * (isMobile ? 190 : 175)} 
                         gapScale={scale * 0.1}
                         gap={isMobile ? 8 : 10}
                         files={files.filter((x) => x.contentType == "folder")}
@@ -65,8 +65,8 @@ export default function ExplorerFiles({ files, className }) {
                     </h1>
 
                     <Grid 
-                        minWidth={isMobile ? 155 : 200} 
-                        height={scale * (isMobile ? 270 : 260)} 
+                        minWidth={isMobile ? 180 : 235} 
+                        height={scale * (isMobile ? 330 : 325)} 
                         gapScale={scale * 0.9}
                         gap={isMobile ? 8 : 10}
                         files={files.filter((x) => x.contentType != "folder")}

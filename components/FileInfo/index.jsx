@@ -1,9 +1,8 @@
 import Spinner from 'react-spinner-material'
 import { useAppState, useAppStore } from '../../stores/AppStore'
 import FilePreview from '../FilePreview'
-import IconButton from '../IconButton'
-import Utility from "../../lib/Utility"
 import Icon from '../Icon'
+import Utility from "../../lib/Utility"
 import style from './style.module.css'
 
 export default function FileInfo({ file }) {
@@ -15,16 +14,11 @@ export default function FileInfo({ file }) {
   return (
     <>
       <div className={style.fileHeader}>
-        <Icon name='file' width='1.5rem' height='1.5rem' fill />
-
-        <span className={style.fileName}>{file.name}</span>
 
         {
           !file.pending &&
-          <IconButton 
-            name='dots-vertical' 
-            width='1.1rem'
-            height='1.1rem'
+          <div 
+            className={style.menuIcon}
             onClick={(e) => {
               e.stopPropagation()
 
@@ -39,12 +33,18 @@ export default function FileInfo({ file }) {
                 file
               })
             }}
-          />
+          >
+            <Icon 
+              name='dots-vertical' 
+              width='1.25rem'
+              height='1.25rem'
+            />
+          </div>
         }
 
         {
           file.pending &&
-          <Spinner className={style.spinner2} radius={13} stroke={1} color='var(--color-active)' />
+          <Spinner className={style.spinner2} radius={15} stroke={1} color='var(--color-active)' />
         }
       </div>
 
@@ -58,14 +58,34 @@ export default function FileInfo({ file }) {
         />
       </div>
         
-      <div className={style.fileDetails}>
-        <span>
-          {file.size && Utility.formatBytes(file.size)}
+      <div className={style.fileBottom}>
+        <span className={style.fileIcon}>
+          <Icon name='file' width='2rem' height='2rem' fill />
         </span>
+      
+        <div className={style.fileDetails}>
+          <span className={style.fileName}>{file.name}</span>
 
-        <span>
-          {Utility.formatDate(file.createdAt)}
-        </span>
+          <div className={style.fileDetailsBottom}>
+            <div>
+              <span>
+                {file.size && Utility.formatBytes(file.size)}
+              </span>
+
+              {
+                file.encryption && 
+                <>
+                  <span>•</span>
+                  <span>Encrypted</span>
+                </>
+              }
+            </div>
+
+            <span>
+              {Utility.formatDate(file.createdAt)}
+            </span>
+          </div>
+        </div>
       </div>
     </>
   )

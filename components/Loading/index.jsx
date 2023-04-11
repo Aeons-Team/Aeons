@@ -76,6 +76,7 @@ export default function Loading() {
                         <Input
                             ref={inputRef} 
                             style={{ width: '500px', maxWidth: '70vw' }} 
+                            type={ currentPrompt.type == 'recover' ? 'text' : 'password' }
                             placeholder={currentPrompt.type == 'recover' ? 'Mnemonic phrase' : 'Password'}
                             onKeyDown={(e) => {
                                 if (e.key == 'Enter') resolvePrompt(inputRef.current.value)

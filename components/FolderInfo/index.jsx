@@ -49,7 +49,6 @@ export default function FolderInfo({ file }) {
 
             <div className={style.folderDetails}>
                 <span>{file.children.length} files</span>
-
                 <span>{Utility.formatDate(file.createdAt)}</span>
             </div>
         </div>

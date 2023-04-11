@@ -94,7 +94,7 @@
     white-space: nowrap;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 550px) {
     .list {
         font-size: 0.7rem;
     }

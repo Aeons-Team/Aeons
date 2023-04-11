@@ -10,7 +10,7 @@ import CopyableText from '../CopyableText';
 
 export default function Wallet() {
 
-  const isMobile = useMediaQuery({ maxWidth: '500px' })
+  const isMobile = useMediaQuery({ maxWidth: '550px' })
   const isMobileSm = useMediaQuery({ maxWidth: '350px' })
   const scale = isMobileSm ? 0.7 : (isMobile ? 0.8 : 1)
 

@@ -36,11 +36,11 @@
     display: flex;
     align-items: center;
     font-size: 0.75rem;
-    margin-top: 0.5rem;
+    margin-top: 1.5rem;
 }
 
 .folderDetails > span {
-    color: var(--color-secondary-5);
+    color: var(--color-secondary-6);
     font-weight: 400;
 }
 
@@ -48,7 +48,7 @@
     margin-left: auto;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 550px) {
     .folderName {
         font-size: 0.8rem;
     }

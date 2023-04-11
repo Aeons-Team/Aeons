@@ -16,7 +16,7 @@ export default function ContextMenu() {
   const section2Ref = useRef()
   const router = useRouter()
   const { id: activeFileId } = router.query
-  const isMobile = useMediaQuery({ maxWidth: '500px' })
+  const isMobile = useMediaQuery({ maxWidth: '550px' })
   const isMobileSm = useMediaQuery({ maxWidth: '350px' })
   const scale = isMobileSm ? 0.7 : (isMobile ? 0.8 : 1)
 

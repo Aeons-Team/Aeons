@@ -17,7 +17,7 @@
   flex-direction: column;
   gap: 2rem;
   padding: 1.25rem;
-  height: 100%;
+  height: calc(100% - 10px);
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
@@ -27,7 +27,7 @@
   background-color: var(--color-primary);
 }
 
-@media (max-width: 500px) {
+@media (max-width: 550px) {
   .folders {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

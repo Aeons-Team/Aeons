@@ -71,7 +71,7 @@ export default function FilePreview({ src, file, contentType, encryption, classN
 
     else {
         preview = (
-            <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-primary-3)' }}>
+            <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Icon name='file' width='2rem' height='2rem' fill />
             </div>
         )

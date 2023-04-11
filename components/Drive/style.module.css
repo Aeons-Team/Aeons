@@ -3,7 +3,7 @@
   display: grid;
   grid-template-rows: 70px auto;
   grid-template-columns: 65px auto;
-  overflow-y: hidden;
+  overflow: hidden;
 }
 
 .drive > div:nth-child(1) {

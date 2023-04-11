@@ -22,12 +22,13 @@ export default function Wallet() {
     fetchWalletBalance: state.fetchWalletBalance
   }));
 
-  const { showWallet, setShowWallet } = useAppState(state => ({
+  const { showWallet, setShowWallet, funding, setFunding } = useAppState(state => ({
     showWallet: state.showWallet,
     setShowWallet: state.setShowWallet,
+    funding: state.funding,
+    setFunding: state.setFunding
   }));
 
-  const [funding, setFunding] = useState(false)
   const [height, setHeight] = useState(0)
   const section1Ref = useRef()
   const section2Ref = useRef()

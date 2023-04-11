@@ -130,6 +130,10 @@ export default class UserContract {
                 }
 
                 else {
+                    if (this.client.network.name == 'maticmum') {
+                        throw new Error('Cannot deploy contract from a testnet')
+                    }
+
                     await this.createInternalWallet()
                     await this.createContract()
                 }
@@ -308,10 +312,8 @@ export default class UserContract {
     }
 
     async recoverInternalWallet() {
-        this.log('Enter mnemonic phrase to recover your internal wallet')
-
         const tryRecover = async (errorMessage = '') => {
-            this.log('Enter the password set for encrypting internal wallet locally')
+            this.log('Enter mnemonic phrase to recover your internal wallet')
 
             try {
                 const mnemonic = await new Promise((resolve, reject) => {

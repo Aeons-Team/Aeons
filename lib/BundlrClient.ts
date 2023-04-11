@@ -51,14 +51,14 @@ export default class BundlrClient {
 
     this.log(`Connecting to Bundlr.network`)
 
-    if (this.network.name !== 'maticmum') {
-      this.instance = new WebBundlr(process.env.NEXT_PUBLIC_BUNDLR_NODE_URL ?? '', networkInfo.currency, this.provider);
-    }
-
-    else {
+    if (this.network.name == 'maticmum') {
       this.instance = new WebBundlr(process.env.NEXT_PUBLIC_DEV_BUNDLR_NODE_URL ?? '', 'matic', this.provider, { 
         providerUrl: 'https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78' 
       });
+    }
+
+    else {
+      this.instance = new WebBundlr(process.env.NEXT_PUBLIC_BUNDLR_NODE_URL ?? '', networkInfo.currency, this.provider);
     }
 
     try{

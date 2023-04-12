@@ -1,7 +1,7 @@
 .contextMenu {
   position: absolute;
   background-color: var(--color-primary-2);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
   z-index: 5;
   display: flex;
@@ -15,7 +15,9 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.5rem 0;
   padding-left: 1.25rem;
+  transition: background-color 400ms ease-in-out;
 }
 
 .contextMenuButton > *:nth-child(1) {

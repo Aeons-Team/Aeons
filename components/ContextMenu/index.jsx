@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMediaQuery } from "react-responsive";
+import Crypto from "../../lib/Crypto";
 import copy from "clipboard-copy";
 import { useSpring } from "framer-motion"
 import { useAppState, useAppStore } from "../../stores/AppStore";
@@ -24,12 +25,13 @@ export default function ContextMenu() {
   const x = useSpring(0, { stiffness: 200, damping: 24 })
   const y = useSpring(0, { stiffness: 200, damping: 24 })
 
-  const { uploadFiles, renameFile, createFolder, contractState, relocateFiles } = useDriveState(state => ({
+  const { uploadFiles, renameFile, createFolder, contractState, relocateFiles, contract } = useDriveState(state => ({
     uploadFiles: state.uploadFiles,
     renameFile: state.renameFile,
     createFolder: state.createFolder,
     contractState: state.contractState,
-    relocateFiles: state.relocateFiles
+    relocateFiles: state.relocateFiles,
+    contract: state.contract
   }))
   
   const { contextMenuActivated, contextMenuPosition, contextMenuOpts, activateContextMenu, getSelection, contextMenuAction, clearSelection } = useAppState((state) => ({
@@ -257,7 +259,7 @@ export default function ContextMenu() {
       var contextMenuItems = (
         <>
           {     
-            selection.length < 2 &&           
+            selection.length == 1 &&           
             <div
               className={style.contextMenuButton}
               onClick={() => {
@@ -280,7 +282,7 @@ export default function ContextMenu() {
             </div>
           }
 
-          {contextMenuOpts.file.contentType != 'folder' && selection.length < 2 && (
+          {contextMenuOpts.file.contentType != 'folder' && selection.length == 1 && (
             <div
               className={style.contextMenuButton}
               onClick={() => {
@@ -301,6 +303,37 @@ export default function ContextMenu() {
             </div>
           )}
 
+          {     
+            selection.length == 1 && contextMenuOpts.file.contentType != 'folder' &&       
+            <div
+              className={style.contextMenuButton}
+              onClick={async () => {
+                const file = contextMenuOpts.file
+                let src = `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`
+
+                if (file.encryption) {
+                  src = await Crypto.decryptContractFile(file, contract.internalWallet.privateKey)
+                }
+
+                const a = document.createElement('a')
+                a.download = file.name 
+                a.href = src
+
+                a.click()
+
+                URL.revokeObjectURL(src)
+
+                activateContextMenu(false)
+              }}
+            >
+              <span>
+                <Icon width='1.65rem' height='1.65rem' name='download' />
+              </span>
+
+              Download
+            </div>
+          }
+
           {
             selection.length == 1 &&
             <div className={style.separator} />
@@ -320,7 +353,7 @@ export default function ContextMenu() {
             Move
           </div>
 
-          {selection.length < 2 && (
+          {selection.length == 1 && (
             <div
               className={style.contextMenuButton}
               onClick={(e) => {

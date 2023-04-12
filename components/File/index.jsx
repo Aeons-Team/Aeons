@@ -13,8 +13,8 @@ export default function File({ file }) {
   const fileRef = useRef();
   const countRef = useRef(0);
   const { id: activeFileId } = router.query;
-  const x = useSpring(0, { stiffness: 100, damping: 15 })
-  const y = useSpring(0, { stiffness: 100, damping: 15 })
+  const x = useSpring(0, { stiffness: 200, damping: 25 })
+  const y = useSpring(0, { stiffness: 200, damping: 25 })
 
   const isSearching = router.pathname.startsWith('/drive/search')
   const { search } = router.query

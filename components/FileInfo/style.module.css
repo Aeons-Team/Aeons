@@ -4,16 +4,9 @@
 
 .menuIcon {
     position: absolute;
-    top: 0.9rem;
+    top: 0.95rem;
     right: 0.65rem;
-    border-radius: 100%;
-    width: 1.55rem;
-    height: 1.55rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     z-index: 5;
-    transition: background-color 400ms ease-in-out;
 }
 
 .menuIcon:hover {

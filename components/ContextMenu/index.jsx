@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMediaQuery } from "react-responsive";
 import copy from "clipboard-copy";
+import { useSpring } from "framer-motion"
 import { useAppState, useAppStore } from "../../stores/AppStore";
 import { useDriveState } from "../../stores/DriveStore";
 import style from "./style.module.css";
@@ -11,14 +12,17 @@ import InputForm from "../InputForm";
 import Icon from '../Icon';
 
 export default function ContextMenu() {
-  const menuRef = useRef();
-  const section1Ref = useRef()
-  const section2Ref = useRef()
   const router = useRouter()
   const { id: activeFileId } = router.query
   const isMobile = useMediaQuery({ maxWidth: '550px' })
   const isMobileSm = useMediaQuery({ maxWidth: '350px' })
-  const scale = isMobileSm ? 0.7 : (isMobile ? 0.8 : 1)
+  const scale = isMobileSm ? 0.7 : (isMobile ? 0.85 : 1)
+  const menuRef = useRef();
+  const section1Ref = useRef()
+  const section2Ref = useRef()
+  const explorerFilesRef = useRef()
+  const x = useSpring(0, { stiffness: 150, damping: 18 })
+  const y = useSpring(0, { stiffness: 150, damping: 18 })
 
   const { uploadFiles, renameFile, createFolder, contractState, relocateFiles } = useDriveState(state => ({
     uploadFiles: state.uploadFiles,
@@ -42,6 +46,7 @@ export default function ContextMenu() {
   const contextMenuActivatedRef = useRef()
   const [height, setHeight] = useState(0)
   const [width, setWidth] = useState(0)
+  const dimsRef = useRef([0, 0])
 
   useEffect(() => {
     const onClick = (e) => {
@@ -53,30 +58,49 @@ export default function ContextMenu() {
 
     document.addEventListener("click", onClick);
 
+    explorerFilesRef.current = document.querySelector('#explorer-files')
+
     return () => {
       document.removeEventListener("click", onClick);
     };
   }, []);
 
   useEffect(() => {
-    contextMenuActivatedRef.current = contextMenuActivated
-  }, [contextMenuActivated])
-
-  useEffect(() => {
     if (contextMenuActivated) {
       const elem = !contextMenuAction ? section1Ref.current.children[0] : section2Ref.current.children[0]
       const bb = elem.getBoundingClientRect()
 
-      setHeight(bb.height / scale)
-      setWidth(bb.width / scale)
+      dimsRef.current = [bb.height, bb.width]
+      setHeight(dimsRef.current[0] / scale)
+      setWidth(dimsRef.current[1] / scale)
     }
 
     else {
       setHeight(0)
       setWidth(240)
     }
-
   }, [contextMenuAction, contextMenuOpts, isMobile])
+
+  useEffect(() => {
+    contextMenuActivatedRef.current = contextMenuActivated
+
+    if (contextMenuActivated) {
+      const top = Math.min(contextMenuPosition.y, explorerFilesBB?.bottom + explorerFileScrollTop - explorerFilesBB?.top - dimsRef.current[0] - 8)
+      const left = Math.min(contextMenuPosition.x, explorerFilesBB?.right - explorerFilesBB?.left - dimsRef.current[1] - 8)
+      x.jump(left)
+      y.jump(top)
+    }
+
+  }, [contextMenuPosition.x, contextMenuPosition.y, contextMenuActivated])
+
+  useEffect(() => {
+    if (contextMenuActivated) {
+      const top = Math.min(contextMenuPosition.y, explorerFilesBB?.bottom + explorerFileScrollTop - explorerFilesBB?.top - dimsRef.current[0] - 8)
+      const left = Math.min(contextMenuPosition.x, explorerFilesBB?.right - explorerFilesBB?.left - dimsRef.current[1] - 8)
+      x.set(left)
+      y.set(top)
+    }
+  }, [contextMenuAction])
 
   switch (contextMenuAction) {
     case "creatingFolder":
@@ -327,6 +351,9 @@ export default function ContextMenu() {
       break;
   }
 
+  const explorerFilesBB = explorerFilesRef.current?.getBoundingClientRect()
+  const explorerFileScrollTop = explorerFilesRef.current?.scrollTop
+
   return (
     <motion.div
       ref={menuRef}
@@ -337,8 +364,8 @@ export default function ContextMenu() {
       }}
       style={{
         pointerEvents: contextMenuActivated ? "auto" : "none",
-        left: contextMenuPosition.x + "px",
-        top: contextMenuPosition.y + "px",
+        left: x,
+        top: y
       }}
       onClick={(e) => e.stopPropagation()}
     >

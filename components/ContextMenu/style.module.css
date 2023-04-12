@@ -67,7 +67,7 @@
 
 @media (max-width: 550px) {
   .contextMenu {
-    transform: scale(0.8);
+    transform: scale(0.85);
     transform-origin: left top;
   }
 }

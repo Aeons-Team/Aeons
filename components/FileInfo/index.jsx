@@ -1,6 +1,7 @@
 import Spinner from 'react-spinner-material'
 import { useAppState, useAppStore } from '../../stores/AppStore'
 import FilePreview from '../FilePreview'
+import IconButton from '../IconButton'
 import Icon from '../Icon'
 import Utility from "../../lib/Utility"
 import style from './style.module.css'
@@ -16,10 +17,9 @@ export default function FileInfo({ file }) {
   return (
     <>
       <div className={style.fileHeader}>
-
         {
           !file.pending &&
-          <div 
+          <IconButton 
             className={style.menuIcon}
             onClick={(e) => {
               e.stopPropagation()
@@ -39,13 +39,10 @@ export default function FileInfo({ file }) {
                 file
               })
             }}
-          >
-            <Icon 
-              name='dots-vertical' 
-              width='1.25rem'
-              height='1.25rem'
-            />
-          </div>
+            name='dots-vertical' 
+            width='1.25rem'
+            height='1.25rem'
+          />
         }
 
         {

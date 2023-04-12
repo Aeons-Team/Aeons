@@ -21,8 +21,8 @@ export default function ContextMenu() {
   const section1Ref = useRef()
   const section2Ref = useRef()
   const explorerFilesRef = useRef()
-  const x = useSpring(0, { stiffness: 150, damping: 18 })
-  const y = useSpring(0, { stiffness: 150, damping: 18 })
+  const x = useSpring(0, { stiffness: 200, damping: 24 })
+  const y = useSpring(0, { stiffness: 200, damping: 24 })
 
   const { uploadFiles, renameFile, createFolder, contractState, relocateFiles } = useDriveState(state => ({
     uploadFiles: state.uploadFiles,

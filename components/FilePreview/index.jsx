@@ -1,12 +1,14 @@
+import { useEffect, useState, useRef } from "react";
 import Spinner from 'react-spinner-material';
-import { useEffect, useState } from "react";
 import { useDriveState } from '../../stores/DriveStore';
+import { useAppState, useAppStore } from '../../stores/AppStore';
 import Crypto from '../../lib/Crypto';
 import Utility from '../../lib/Utility';
 import Icon from '../Icon'
 
 export default function FilePreview({ src, file, contentType, encryption, className, size }) {
     const [localSrc, setLocalSrc] = useState(null)
+    const localSrcRef = useRef()
     
     const [loading, setLoading] = useState(
         contentType.startsWith('image/')
@@ -16,6 +18,14 @@ export default function FilePreview({ src, file, contentType, encryption, classN
         contract: state.contract
     }))
 
+    const { cacheResource } = useAppState(state => ({
+        cacheResource: state.cacheResource
+    }))
+
+    useEffect(() => {
+        localSrcRef.current = localSrc
+    }, [localSrc])
+
     useEffect(() => {
         const init = async () => {
             if (contentType.startsWith('image/')) {
@@ -23,8 +33,10 @@ export default function FilePreview({ src, file, contentType, encryption, classN
                     setLocalSrc()
                     const reader = new FileReader()
     
-                    reader.onload = () => {
-                        Utility.resizeImage(reader.result, size).then(url => setLocalSrc(url))
+                    reader.onload = async () => {
+                        const resized = await Utility.resizeImage(reader.result, size)
+
+                        setLocalSrc(resized)
                     }
     
                     reader.readAsDataURL(file)
@@ -32,32 +44,37 @@ export default function FilePreview({ src, file, contentType, encryption, classN
 
                 else if (src) {
                     if (encryption) {
-                        const { key, iv } = await Crypto.decrypt(encryption, contract.internalWallet.privateKey)
+                        const decrypted = await Crypto.decryptFromUrl(src, encryption, contract.internalWallet.privateKey)
+                        const resized = await Utility.resizeImage(decrypted, size)
 
-                        const imgDataEncrypted = await fetch(src).then(res => res.arrayBuffer())
-
-                        const keyImported = await Crypto.aesImportKey(key)
-
-                        const imgData = await Crypto.aesDecrypt(imgDataEncrypted, keyImported, iv)
-
-                        const blob = new Blob([imgData])
-
-                        const url = URL.createObjectURL(blob)
-
-                        Utility.resizeImage(url, size).then(url => setLocalSrc(url))
+                        setLocalSrc(resized)
+                        cacheResource(src, resized)
                     }
 
                     else {
-                        Utility.resizeImage(src, size).then(url => setLocalSrc(url))
+                        const resized = await Utility.resizeImage(src, size)
+
+                        setLocalSrc(resized)
+                        cacheResource(src, resized)
                     }
                 }
             }
         }
 
-        init()
+        const cache = useAppStore.getState().resourceCache
 
-        return () => {
-            URL.revokeObjectURL(localSrc)
+        if (src && src in cache) {
+            setLocalSrc(cache[src])
+        }
+
+        else {
+            init()
+        }
+
+        if (file && contentType.startsWith('image/')) {
+            return () => {  
+                URL.revokeObjectURL(localSrcRef.current)
+            }
         }
     }, [file])
 

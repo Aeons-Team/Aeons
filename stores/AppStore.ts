@@ -4,7 +4,7 @@ import Vector2 from "../lib/Vector2";
 import { ContractFile } from '../lib/ContractState'
 
 interface ContextMenuOpts {
-  type?: string,
+  type?: string
   file?: ContractFile
   action?: string
 }
@@ -24,6 +24,7 @@ interface AppStoreData {
   contextMenuActivation: number,
   dragCount: number,
   beingDragged: { [id: string]: number },
+  resourceCache: { [id: string]: string },
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => void
   select: (item: string) => void,
   selectItems: (items: string[]) => void,
@@ -53,6 +54,7 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
   dragCount: 0,
   beingDragged: {},
   funding: false,
+  resourceCache: {},
   setFunding: (value: boolean) => set({ funding: value }),
 
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => {
@@ -135,6 +137,12 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
 
   clearDragging: () => {
     set({ beingDragged: {}, dragCount: 0 })
+  },
+
+  cacheResource: (key: string, url: string) => {
+    const { resourceCache } = get() 
+
+    set({ resourceCache: { ...resourceCache, [key]: url } })
   }
 }));
 

@@ -142,10 +142,8 @@ export const useDriveStore = create(
             let nextChunk = batchSize + 1
             let index = 0
 
-            let key = await Crypto.aesGenKey()
-            let keyExported = await Crypto.aesExportKey(key)
-
-            const encryption = await encryptWithPublicKey(contract.internalWallet.publicKey.substring(2), keyExported)
+            const key = await Crypto.aesGenKey()
+            const encryption = await Crypto.encryptKey(key, contract.internalWallet.publicKey.substring(2))
 
             let data = first.encrypted 
                 ? await Crypto.aesEncryptFile(first.file, key, Buffer.from(encryption.iv, 'hex').buffer) 

@@ -42,7 +42,7 @@
   position: absolute;
   right: 0;
   margin-top: 0.5rem;
-  margin-right: 0.8rem;
+  margin-right: 0.5rem;
   background-color: var(--color-primary-2);
   display: flex;
   width: 400px;
@@ -99,5 +99,9 @@
 @media (max-width: 820px) {
   .avatar {
     margin-right: 0;
+  }
+
+  .walletInner {
+    margin-right: 0.3rem;
   }
 }

@@ -13,8 +13,8 @@ export default function SearchExplorer() {
 
   if (searchItems.length == 0)
     return (
-      <div className={style.sectionTitle}>
-        <h1>No Results Found</h1>
+      <div className={style.noResults}>
+        No results found
       </div>
     );
 

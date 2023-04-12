@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAppState } from "../../../stores/AppStore";
+import DriveLayout from "../../../components/DriveLayout";
 import SearchExplorer from "../../../components/SearchExplorer";
 
 function Page() {
@@ -11,7 +12,15 @@ function Page() {
     clearSelection();
   }, [id])
 
-  return <SearchExplorer />
+  return (
+    <SearchExplorer />
+  )
 }
+
+Page.layout = (page) => (
+  <DriveLayout>
+    {page}
+  </DriveLayout>
+)
 
 export default Page;

@@ -9,7 +9,7 @@ import BundlrClient from "../lib/BundlrClient";
 import UserContract from "../lib/UserContract";
 import ContractState from "../lib/ContractState";
 import Crypto from "../lib/Crypto";
-import { encryptWithPublicKey } from 'eth-crypto'
+import { useAppStore } from "./AppStore";
 
 interface UploadQueueItem {
     file: File,
@@ -50,8 +50,6 @@ interface DriveStoreData {
     relocateFiles: (ids: string[], oldParentId: string, newParentId: string) => Promise<void>,
     removeFromUploadQueue: (i: number) => void,
     pauseOrResume: Function,
-    insufficentBalance: boolean,
-    setInsufficientBalance: Function,
     prompt: (args: PromptArgs) => void,
     reinitialize: (provider: ethers.providers.Web3Provider) => Promise<void>
 }
@@ -72,9 +70,7 @@ export const useDriveStore = create(
         currentUploader: null,
         bytesUploaded: null,
         loadingText: 'Initializing',
-        insufficentBalance: false,
         currentPrompt: null,
-        setInsufficientBalance: (value: boolean) => set({ insufficentBalance: value }),
         
         fetchWalletBalance: async () => {
             const walletBalance = await get().client.getWalletBalance();
@@ -198,9 +194,8 @@ export const useDriveStore = create(
                         })
                     },
                     error: (error) => {
-                        if(error.message == 'Not enough funds to send data') {
-                            set({ insufficentBalance: true })
-                        }
+                        useAppStore.setState({ errorMessage: error.message })
+                        set({ uploading: false, uploadQueue: uploadQueue.slice(1)})
                     }
                 }
             )

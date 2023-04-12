@@ -1,0 +1,42 @@
+.popUp {
+	display: flex;
+	flex-direction: row;
+	font-size: 0.8rem;
+	cursor: pointer;
+	position: absolute;
+	top: 35px;
+	padding-top: 25px;
+  padding-bottom: 30px;
+	padding-left: 25px;
+	padding-right: 35px;
+	background-color: var(--color-secondary-7);
+  border-radius: 4px;
+	z-index: 5;
+	max-width: 95vw;
+}
+
+.popUpParent {
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	width: 90vw;
+	height: 90vh;
+}
+
+.section {
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+}
+
+.oops {
+	font-size: 1rem;
+	font-weight: 500;
+}
+
+.close {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 2px;
+}

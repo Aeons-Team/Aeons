@@ -40,8 +40,6 @@ function QueueTop({ minimized, preview }) {
         uploadNext, 
         currentName,
         removeFromUploadQueue,
-        insufficentBalance,
-        setInsufficientBalance
      } = useDriveState((state) => ({
         client: state.client,
         paused: state.paused,
@@ -51,8 +49,6 @@ function QueueTop({ minimized, preview }) {
         uploadNext: state.uploadNext,
         currentName: state.currentName,
         removeFromUploadQueue: state.removeFromUploadQueue,
-        insufficentBalance: state.insufficentBalance,
-        setInsufficientBalance: state.setInsufficientBalance
     }));
 
     const currentUpload = uploadQueue.length && uploadQueue[0].file
@@ -64,7 +60,7 @@ function QueueTop({ minimized, preview }) {
     const statBytesRef = useRef()
     const statSpeedRef = useRef()
     const progressBarRef = useRef()
-    const initialValsRef = useRef()
+    const initialValsRef = useRef(['', '', '', ''])
 
     const [loading, setLoading] = useState(true)
 
@@ -129,13 +125,12 @@ function QueueTop({ minimized, preview }) {
 
     return (
         <div className={style.queueTop}>
-            {insufficentBalance && <div className={style.error}>Insufficient balance in Bundlr wallet. Please fund</div>}
             <div className={style.currentUpload}>
                 {preview}
 
                 {
                     uploading &&
-                    <div className={style.currentUploadInfo}>
+                    <div>
                         <div className={style.currentUploadInfoInner}>
                             <div className={style.currentUploadInfoTop}>
                                 <span className={style.topFileName}>{currentName}</span>
@@ -208,10 +203,7 @@ function QueueTop({ minimized, preview }) {
                         {uploading && <IconButton name={paused ? 'play' : 'pause'} width='0.8rem' height='0.8rem' onClick={pauseOrResume} fill />}
                         <div className={style.topCross}>
                             <IconButton name='cross' width='1.5rem' height='1.5rem' 
-                                onClick={() => {
-                                    removeFromUploadQueue(0)
-                                    setInsufficientBalance(false)
-                                }}
+                                onClick={() => removeFromUploadQueue(0)}
                             />
                         </div>
                     </div>       

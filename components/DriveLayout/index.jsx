@@ -1,12 +1,13 @@
 import { useEffect } from "react";
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ethers } from "ethers";
 import { useDriveState } from "../../stores/DriveStore";
-import { useAppStore } from "../../stores/AppStore";
+import { useAppStore, useAppState } from "../../stores/AppStore";
 import Topbar from '../Topbar';
 import Sidebar from '../Sidebar';
 import Loading from "../Loading";
 import UploadQueue from "../UploadQueue"
+import ErrorPopUp from "../ErrorPopUp";
 import style from "./style.module.css";
 
 export default function DriveLayout({ children }) {
@@ -15,8 +16,9 @@ export default function DriveLayout({ children }) {
 		initialized: state.initialized,
 		reinitialize: state.reinitialize
 	}));
-	
+
 	const cursorPosition = useAppStore((state) => state.cursorPosition);
+	const errorMessage = useAppState((state) => state.errorMessage);
 	
 	useEffect(() => {
 		async function init() {
@@ -93,6 +95,10 @@ export default function DriveLayout({ children }) {
 			<Topbar transition={transition} />
 			<Sidebar transition={transition} />
 			
+			<AnimatePresence>
+				{ errorMessage && <ErrorPopUp key='popUp' message={errorMessage}/> }
+			</AnimatePresence>
+
 			<motion.div 
 				initial={{  
 					opacity: 0,

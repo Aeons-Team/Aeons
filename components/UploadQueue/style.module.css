@@ -25,10 +25,6 @@
     gap: 0.6rem;
 }
 
-.currentUploadInfo {
-    
-}
-
 .currentUploadInfoInner {
     display: flex;
     flex-direction: column;
@@ -189,11 +185,6 @@
     text-align: center;
     padding: 1rem;
     border-top: 2px solid var(--color-primary-2);
-}
-
-.error {
-    font-size: 0.8rem;
-    color: var(--color-secondary-7);
 }
 
 .previewParent {

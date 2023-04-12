@@ -35,7 +35,8 @@ interface AppStoreData {
   clearDragging: Function,
   funding: boolean,
   setFunding: Function,
-  setErrorMessage: (errorMessage: string) => void
+  errorMessage: string,
+  setErrorMessage: Function,
 }
 
 export const useAppStore = create<AppStoreData>((set, get) => ({
@@ -56,6 +57,8 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
   funding: false,
   resourceCache: {},
   setFunding: (value: boolean) => set({ funding: value }),
+  errorMessage: '',
+  setErrorMessage: (error: string) => set({ errorMessage: error }),
 
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => {
     const { cursorPosition, contextMenuPosition, contextMenuActivation } = get();
@@ -117,11 +120,6 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
   getSelection: () => {
     const selected = get().selected
     return Object.keys(selected).filter(x => selected[x])
-  },
-
-  setErrorMessage: (errorMessage: string) => {
-    if(errorMessage)
-      return 'Uh oh! Something went wrong.';
   },
 
   setShowWallet: (value: boolean) => {

@@ -21,6 +21,7 @@ export interface PromptArgs {
     type: string,
     value?: string,
     resolve: Function,
+    reject?: Function,
     errorMessage?: string
 }
 
@@ -42,8 +43,9 @@ interface DriveStoreData {
     fetchWalletBalance: Function,
     fetchLoadedBalance: Function,
     currentPrompt: PromptArgs | null,
+    initializeError: string | null,
     uploadNext: (name?: string) => Promise<void>,
-    initialize: (provider: ethers.providers.Web3Provider) => Promise<void>,
+    initialize: () => Promise<void>,
     uploadFiles: (files: File[], parentId: string) => void,
     createFolder: (name: string, parentId: string) => Promise<void>,
     renameFile: (id: string, newName: string) => Promise<void>,
@@ -51,7 +53,7 @@ interface DriveStoreData {
     removeFromUploadQueue: (i: number) => void,
     pauseOrResume: Function,
     prompt: (args: PromptArgs) => void,
-    reinitialize: (provider: ethers.providers.Web3Provider) => Promise<void>
+    reinitialize: () => Promise<void>
 }
 
 export const useDriveStore = create(
@@ -70,6 +72,7 @@ export const useDriveStore = create(
         currentUploader: null,
         bytesUploaded: null,
         loadingText: 'Initializing',
+        initializeError: null,
         currentPrompt: null,
         
         fetchWalletBalance: async () => {
@@ -82,13 +85,33 @@ export const useDriveStore = create(
             set({ loadedBalance })
         },
 
-        initialize: async (provider: ethers.providers.Web3Provider) => {
-            const { client, contract, fetchWalletBalance, fetchLoadedBalance } = get()
+        initialize: async () => {
+            const { client, contract, fetchWalletBalance, fetchLoadedBalance, reinitialize } = get();
 
-            const log = (text) => set({ loadingText: text })
+            const log = (text, error) => {
+                set({ loadingText: text, initializeError: error });
+            }
 
-            await client.initialize(provider, log);
-            await contract.initialize(provider, client, log, get().prompt);
+            if (!window.ethereum) {
+                log('Metamask not installed', 'noMetamask')
+                return
+            }
+
+            await window.ethereum.request({ method: "eth_requestAccounts" });
+			
+            window.ethereum.on('accountsChanged', reinitialize)
+            window.ethereum.on('chainChanged', reinitialize)
+
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+            try {
+                await client.initialize(provider, log);
+                await contract.initialize(provider, client, log, get().prompt);
+            }
+
+            catch (error) {
+                return
+            }
 
             contract.updateUIAction = () => set({ contractState: contract.state.copy() })
             
@@ -101,14 +124,30 @@ export const useDriveStore = create(
             fetchLoadedBalance();
         },
 
-        reinitialize: async (provider: ethers.providers.Web3Provider) => {
+        reinitialize: async () => {
             const { client, contract, fetchWalletBalance, fetchLoadedBalance } = get()
 
             set({ initialized: false })
 
-            const log = (text) => set({ loadingText: text })
+            const log = (text, error) => {
+                set({ loadingText: text, initializeError: error })
+            }
 
-            await client.initialize(provider, log);
+            if (!window.ethereum) {
+                log('Metamask not installed', 'noMetamask')
+                return
+            }
+
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+            try {
+                await client.initialize(provider, log);
+                await contract.initialize(provider, client, log, get().prompt);
+            }
+
+            catch (error) {
+                return
+            }
 
             set({ 
                 initialized: true,

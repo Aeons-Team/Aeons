@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { AnimatePresence, motion } from 'framer-motion';
-import { ethers } from "ethers";
 import { useDriveState } from "../../stores/DriveStore";
 import { useAppStore, useAppState } from "../../stores/AppStore";
 import Topbar from '../Topbar';
@@ -11,34 +10,17 @@ import ErrorPopUp from "../ErrorPopUp";
 import style from "./style.module.css";
 
 export default function DriveLayout({ children }) {
-	const { initialize, initialized, reinitialize } = useDriveState((state) => ({
+	const { initialize, initialized } = useDriveState((state) => ({
 		initialize: state.initialize,
-		initialized: state.initialized,
-		reinitialize: state.reinitialize
+		initialized: state.initialized
 	}));
 
 	const cursorPosition = useAppStore((state) => state.cursorPosition);
 	const errorMessage = useAppState((state) => state.errorMessage);
 	
 	useEffect(() => {
-		async function init() {
-		  	try{
-				await window.ethereum.request({ method: "eth_requestAccounts" });
-			
-				await initialize(new ethers.providers.Web3Provider(window.ethereum));
-		
-				window.ethereum.on('accountsChanged', () => {
-					reinitialize(new ethers.providers.Web3Provider(window.ethereum));
-				})
-		  
-				window.ethereum.on('chainChanged', () => {
-				  	reinitialize(new ethers.providers.Web3Provider(window.ethereum));
-				})
-		  	} catch(e) {}
-		}
-	
 		if (!initialized) {
-			init();
+			initialize();
 		}
 	
 		const onMouseMove = (e) => {

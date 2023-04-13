@@ -8,9 +8,10 @@ import Input from '../Input'
 import style from './style.module.css'
 
 export default function Loading() {
-    const { loadingText, currentPrompt } = useDriveState(state => ({
+    const { loadingText, currentPrompt, initializeError } = useDriveState(state => ({
         loadingText: state.loadingText,
-        currentPrompt: state.currentPrompt
+        currentPrompt: state.currentPrompt,
+        initializeError: state.initializeError
     }))
 
     const inputRef = useRef()
@@ -30,7 +31,10 @@ export default function Loading() {
                         {loadingText}
                     </span>
                     
-                    <Spinner radius={24} color='var(--color-active)' stroke={2} />
+                    {
+                        !initializeError &&
+                        <Spinner className={style.spinner} radius={24} color='var(--color-active)' stroke={2} />
+                    }
                 </div>        
 
                 <AnimatePresence>
@@ -65,7 +69,7 @@ export default function Loading() {
                 }
                 
                 {
-                    currentPrompt && (currentPrompt.type == 'recover' || currentPrompt.type == 'password') &&
+                    currentPrompt && (currentPrompt.type == 'recover' || currentPrompt.type.startsWith('password')) &&
                     <motion.div 
                         initial={{ height: 0, y: 16, opacity: 0, marginTop: 0 }} 
                         animate={{ height: 'auto', y: 0, opacity: 1, marginTop: 32 }} 
@@ -77,17 +81,24 @@ export default function Loading() {
                             <Input
                                 ref={inputRef} 
                                 style={{ width: '500px', maxWidth: '70vw' }} 
-                                type={ currentPrompt.type == 'recover' ? 'text' : 'password' }
-                                placeholder={currentPrompt.type == 'recover' ? 'Mnemonic phrase' : 'Password'}
+                                type={ currentPrompt.type.startsWith('password') ? 'password' : 'text' }
+                                placeholder={currentPrompt.type.startsWith('password') ? 'Password' : 'Mnemonic phrase'}
                                 onKeyDown={(e) => {
                                     if (e.key == 'Enter') resolvePrompt(inputRef.current.value)
                                 }}
                             />
 
+                            <div className={style.inputBottom}>
                             {
                                 currentPrompt.errorMessage &&
                                 <span className={style.errorMessage}>{currentPrompt.errorMessage}</span>
                             }
+
+                            {
+                                currentPrompt.type == 'password' &&
+                                <span className={style.forgot} onClick={() => currentPrompt.reject()}>Forgot password</span>   
+                            }
+                            </div>
                         </div>
                         
                         <Button onClick={() => resolvePrompt(inputRef.current.value)} style={{ padding: '0.75rem 1.25rem' }}>Continue</Button>

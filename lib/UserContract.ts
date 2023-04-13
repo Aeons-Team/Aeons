@@ -191,16 +191,24 @@ export default class UserContract {
             if (internalWalletEncrypted) {
                 const tryPassword = async (errorMessage = '') => {
                     this.log('Enter the password set for encrypting internal wallet locally')
-        
+                    let password
+
                     try {
-                        const password = await new Promise((resolve, reject) => {
+                        password = await new Promise((resolve, reject) => {
                             this.prompt({
                                 type: 'password',
                                 errorMessage,
-                                resolve
+                                resolve,
+                                reject
                             })
                         })
-            
+                    }
+
+                    catch (error) {
+                        return await this.recoverInternalWallet()
+                    }
+                    
+                    try {
                         this.log('Decrypting internal wallet')
             
                         this.internalWallet = await ethers.Wallet.fromEncryptedJson(internalWalletEncrypted, password)
@@ -342,7 +350,7 @@ export default class UserContract {
         
         this.internalWallet = ethers.Wallet.createRandom()
 
-        this.log('Please write down your internal wallet\'s secret recovery phrase!')
+        this.log('Please write down your internal wallet\'s secret recovery phrase, its important!')
 
         await new Promise((resolve, reject) => {
             this.prompt({
@@ -360,7 +368,7 @@ export default class UserContract {
 
         const password = await new Promise((resolve, reject) => {
             this.prompt({
-                type: 'password',
+                type: 'passwordSet',
                 resolve
             })
         })

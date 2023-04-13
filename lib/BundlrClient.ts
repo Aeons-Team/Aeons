@@ -6,25 +6,35 @@ import { ApolloClient, InMemoryCache, NormalizedCacheObject, OperationVariables,
 import { CreateAndUploadOptions } from "@bundlr-network/client/build/common/types";
 
 const networkInfos = {
-  'homestead': {
+  1: {
     name: 'Ethereum',
     currency: 'Ethereum',
     currencySym: 'ETH'
   },
-  'arbitrum': {
+  288: {
+    name: 'Boba Network',
+    currency: 'boba-eth',
+    currencySym: 'ETH'
+  },
+  42161: {
     name: 'Aribtrum One',
     currency: 'arbitrum',
     currencySym: 'ETH'
   },
-  'matic': {
+  137: {
     name: 'Polygon',
     currency: 'matic',
     currencySym: 'MATIC'
   },
-  'maticmum': {
+  80001: {
     name: 'Polygon Testnet (Mumbai)',
     currency: 'matic',
     currencySym: 'MATIC'
+  },
+  43114: {
+    name: 'Avalanche C-Chain',
+    currency: 'avalanche',
+    currencySym: 'AVAX'
   }
 }
 
@@ -47,11 +57,17 @@ export default class BundlrClient {
     this.network = await this.provider.getNetwork();
     this.log = log
 
-    const networkInfo = networkInfos[this.network.name]
+    const networkInfo = networkInfos[this.network.chainId]
+
+    if (!networkInfo) {
+      this.log('This network is not supported, switch to ethereum, boba-eth, arbitrum one, polygon or avalanche', 'networkNotSupported')
+
+      throw new Error('Network not supported')
+    }
 
     this.log(`Connecting to Bundlr.network`)
 
-    if (this.network.name == 'maticmum') {
+    if (process.env.NODE_ENV == 'development' && this.network.chainId == 80001) {
       this.instance = new WebBundlr(process.env.NEXT_PUBLIC_DEV_BUNDLR_NODE_URL ?? '', 'matic', this.provider, { 
         providerUrl: 'https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78' 
       });
@@ -61,8 +77,7 @@ export default class BundlrClient {
       this.instance = new WebBundlr(process.env.NEXT_PUBLIC_BUNDLR_NODE_URL ?? '', networkInfo.currency, this.provider);
     }
 
-    try{
-      await this.instance.ready();
+    await this.instance.ready();
 
     const publicKey = this.instance.getSigner().publicKey;
     const ownerHash = await Arweave.crypto.hash(publicKey);
@@ -76,8 +91,6 @@ export default class BundlrClient {
       uri: `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/graphql`,
       cache: new InMemoryCache(),
     });
-  }
-  catch(e){}
   }
 
   async getWalletBalance() {

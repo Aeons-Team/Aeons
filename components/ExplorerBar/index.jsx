@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import { useMediaQuery } from 'react-responsive'
 import Ancestors from '../Ancestors'
+import IconButton from '../IconButton'
 import { useAppState, useAppStore } from '../../stores/AppStore'
 import { useDriveStore } from '../../stores/DriveStore'
 import style from './style.module.css'
@@ -10,9 +11,10 @@ export default function ExplorerBar() {
     const { id: activeFileId } = router.query
     const isMobile = useMediaQuery({ maxWidth: '550px' })
 
-    const { getSelection, clearSelection } = useAppState(state => ({
+    const { getSelection, clearSelection, activateContextMenu } = useAppState(state => ({
         getSelection: state.getSelection,
-        clearSelection: state.clearSelection   
+        clearSelection: state.clearSelection,
+        activateContextMenu: state.activateContextMenu
     }))
 
     const relocateFiles = useDriveStore(state => state.relocateFiles)
@@ -40,6 +42,21 @@ export default function ExplorerBar() {
                     fontSize: isMobile ? '0.9rem' : '1rem',
                     minWidth: '3rem',
                     maxWidth: '10rem'
+                }}
+            />
+
+            <IconButton 
+                name='add'
+                width='1.5rem'
+                height='1.5rem'
+                fill
+                color='var(--color-active)'
+                onClick={(e) => {
+                    e.stopPropagation()
+
+                    activateContextMenu(true, {
+                        type: 'explorer'
+                    })
                 }}
             />
         </div>

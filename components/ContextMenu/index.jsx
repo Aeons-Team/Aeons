@@ -87,8 +87,9 @@ export default function ContextMenu() {
     contextMenuActivatedRef.current = contextMenuActivated
 
     if (contextMenuActivated) {
-      const top = Math.min(contextMenuPosition.y, explorerFilesBB?.bottom + explorerFileScrollTop - explorerFilesBB?.top - dimsRef.current[0] - 8)
       const left = Math.min(contextMenuPosition.x, explorerFilesBB?.right - explorerFilesBB?.left - dimsRef.current[1] - 8)
+      const top = Math.max(0, Math.min(contextMenuPosition.y, explorerFilesBB?.bottom + explorerFileScrollTop - explorerFilesBB?.top - dimsRef.current[0] - 8))
+
       x.jump(left)
       y.jump(top)
     }
@@ -97,8 +98,9 @@ export default function ContextMenu() {
 
   useEffect(() => {
     if (contextMenuActivated) {
-      const top = Math.min(contextMenuPosition.y, explorerFilesBB?.bottom + explorerFileScrollTop - explorerFilesBB?.top - dimsRef.current[0] - 8)
       const left = Math.min(contextMenuPosition.x, explorerFilesBB?.right - explorerFilesBB?.left - dimsRef.current[1] - 8)
+      const top = Math.max(0, Math.min(contextMenuPosition.y, explorerFilesBB?.bottom + explorerFileScrollTop - explorerFilesBB?.top - dimsRef.current[0] - 8))
+
       x.set(left)
       y.set(top)
     }

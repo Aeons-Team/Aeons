@@ -285,13 +285,19 @@ export default function ContextMenu() {
           {contextMenuOpts.file.contentType != 'folder' && selection.length == 1 && (
             <div
               className={style.contextMenuButton}
-              onClick={() => {
+              onClick={async () => {
                 activateContextMenu(false);
                 useAppStore.setState({ contextMenuAction: '' });
+                
+                const file = contextMenuOpts.file
+                const decrypted = await Crypto.decrypt(file.encryption, contract.internalWallet.privateKey)
+                const fileKey = Buffer.from(decrypted.key).toString('hex')
+                const fileIv = Buffer.from(decrypted.iv).toString('hex')
+                
                 copy(
-                  `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${
-                    selection[0]
-                  }`
+                  file.encryption
+                  ? `https://${window.location.host}/file/${selection[0]}?key=${fileKey}&iv=${fileIv}&contentType=${file.contentType}` 
+                  : `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${selection[0]}`
                 );
               }}
             >

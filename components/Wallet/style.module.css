@@ -105,3 +105,11 @@
     margin-right: 0.3rem;
   }
 }
+
+@media (max-width: 550px) {
+  .avatar {
+    height: 2.5rem;
+    width: 2.5rem;
+    margin-right: 0.1rem;
+  }
+}

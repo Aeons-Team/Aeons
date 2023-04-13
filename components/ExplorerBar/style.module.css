@@ -1,7 +1,13 @@
 .explorerBar {
     display: flex;
+    align-items: center;
     padding: 0.2rem;
     box-shadow: 1px 0 var(--shadow-blur) 0 var(--color-shadow);
+}
+
+.explorerBar > *:nth-child(2) {
+    margin-left: auto;
+    margin-right: 0.9rem;
 }
 
 @media (max-width: 550px) {

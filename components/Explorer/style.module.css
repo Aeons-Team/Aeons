@@ -21,7 +21,7 @@
 
 @media (max-width: 820px) {
   .explorer {
-    height: calc(100vh - 105px);
+    height: calc(100vh - 105px - 2px);
     margin-right: 0;
   }  
 }

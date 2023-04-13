@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --color-background: #100f15;
-  --color-primary: #100f15;
+  --color-background: #111016;
+  --color-primary: #111016;
   --color-primary-2: #14131a;
   --color-primary-3: #18161d;
   --color-primary-4: #222127;
@@ -19,8 +19,8 @@
   --color-active-2: #6748f3;
   --color-inner: #f0f0f0;
   --color-hover: #e0e0e0;
-  --color-shadow: #323038;
-  --color-primary-transparent: #0e0d1355;
+  --color-shadow: #38363f;
+  --color-primary-transparent: #0e0d1366;
   --shadow-blur: 1px;
   --shadow-blur-2: 0px;
 }

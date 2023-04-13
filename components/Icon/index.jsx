@@ -112,9 +112,8 @@ export default function Icon({ name, fill, color, width, height, strokeWidth, ..
             </motion.svg>
 
         case 'add': 
-            return <motion.svg {...remaining} style={style} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 12H18" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M12 18V6" strokeLinecap="round" strokeLinejoin="round"/>
+            return <motion.svg {...remaining} style={style} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fillRule="evenodd" clipRule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10ZM12 7a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H8a1 1 0 1 1 0-2h3V8a1 1 0 0 1 1-1Z" />
             </motion.svg>
 
         case 'cross':

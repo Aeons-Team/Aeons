@@ -1,10 +1,11 @@
+import { useEffect, useRef } from "react";
 import IconButton from "../IconButton";
 import { useAppState } from "../../stores/AppStore";
 import style from './style.module.css';
-import { useEffect } from "react";
 import { motion } from "framer-motion";
 
 export default function ErrorPopUp({message}) {
+	const timeoutRef = useRef()
 
 	const { setErrorMessage, setFunding, setShowWallet } = useAppState((state) => ({
 		setErrorMessage: state.setErrorMessage,
@@ -13,7 +14,9 @@ export default function ErrorPopUp({message}) {
 	}));
 
 	useEffect(() => {
-		setTimeout(() => setErrorMessage(''), 5000);
+		if (timeoutRef.current) clearTimeout(timeoutRef.current)
+
+		timeoutRef.current = setTimeout(() => setErrorMessage(''), 5000);
 	}, [message])
 
 	let popUpMessage='Something went wrong, please try again';
@@ -56,30 +59,34 @@ export default function ErrorPopUp({message}) {
 	}
 
 	return(
-		<motion.div 
-			className={style.popUpParent}
-			initial={{
-				opacity: 0,
-				y : -20,
-				scale: 0.95
-			}}
-			animate={{
-				opacity: 1,
-				y : 0,
-				scale: 1
-			}}
-			exit={{
-				opacity: 0,
-				y : -20,
-				scale: 0.85
-			}}
-			transition={{
-				type: 'spring', 
-				damping: 13,
-				stiffness: 100, 
-			}}
-		>
-			<div className={style.popUp} onClick={popUpFunction}>
+		<div className={style.popUpParent}>
+			<motion.div 
+				className={style.popUp} 
+				onClick={popUpFunction}
+				initial={{
+					opacity: 0,
+					y : -35,
+					scaleX: 0.4,
+					scaleY: 0.55
+				}}
+				animate={{
+					opacity: 1,
+					y : 0,
+					scaleX: 1,
+					scaleY: 1
+				}}
+				exit={{
+					opacity: 0,
+					y : -35,
+					scaleX: 0.4,
+					scaleY: 0.55
+				}}
+				transition={{
+					type: 'spring', 
+					damping: 14,
+					stiffness: 150, 
+				}}
+			>
 				<div className={style.section}>
 					<motion.div 
 						className={style.oops}
@@ -93,14 +100,15 @@ export default function ErrorPopUp({message}) {
 						}}
 						transition={{
 							type: 'spring', 
-							damping: 13,
-							stiffness: 100,
+							damping: 15,
+							stiffness: 150,
 							delay: 0.1
 						}}
 						>
 							Oops!
 					</motion.div>
 					<motion.div
+						className={style.text}
 						initial={{
 							opacity: 0,
 							y : -5,
@@ -111,18 +119,35 @@ export default function ErrorPopUp({message}) {
 						}}
 						transition={{
 							type: 'spring', 
-							damping: 13,
-							stiffness: 100,
-							delay: 0.2
+							damping: 15,
+							stiffness: 150,
+							delay: 0.15
 						}}
 					>
 						{popUpMessage}
 					</motion.div>
 				</div>
+
+				<div className={style.progress}>
+					<motion.div 
+						className={style.progressInner} 
+						initial={{
+							width: '100%'
+						}}
+						animate={{
+							width: '0%'
+						}}
+						transition={{
+							type: 'linear',
+							duration: 5
+						}}
+					/>
+				</div>
+
 				<div className={style.close}>
 					<IconButton name='cross' width='1.5rem' height='1.5rem' onClick={closePopUp} />
 				</div>
-			</div>
-		</motion.div>
+			</motion.div>
+		</div>
 	)
 }

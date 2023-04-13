@@ -94,10 +94,6 @@ export default function DriveLayout({ children }) {
 		<div className={style.drive}>
 			<Topbar transition={transition} />
 			<Sidebar transition={transition} />
-			
-			<AnimatePresence>
-				{ errorMessage && <ErrorPopUp key='popUp' message={errorMessage}/> }
-			</AnimatePresence>
 
 			<motion.div 
 				initial={{  
@@ -112,6 +108,10 @@ export default function DriveLayout({ children }) {
 			>
 				{children}
 			</motion.div>
+
+			<AnimatePresence>
+				{ errorMessage && <ErrorPopUp key='popUp' message={errorMessage}/> }
+			</AnimatePresence>
 			
 			<UploadQueue />
 		</div>

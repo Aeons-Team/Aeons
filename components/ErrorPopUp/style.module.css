@@ -4,39 +4,62 @@
 	font-size: 0.8rem;
 	cursor: pointer;
 	position: absolute;
-	top: 35px;
-	padding-top: 25px;
-  padding-bottom: 30px;
+	top: 25px;
+	padding-top: 20px;
+  	padding-bottom: 23px;
 	padding-left: 25px;
 	padding-right: 35px;
-	background-color: var(--color-secondary-7);
-  border-radius: 4px;
+	background-color: var(--color-error);
+  	border-radius: 4px;
 	z-index: 5;
 	max-width: 95vw;
 }
 
 .popUpParent {
 	position: absolute;
+	top: 0;
+	left: 0;
 	display: flex;
 	justify-content: center;
-	width: 90vw;
-	height: 90vh;
+	width: 100vw;
+	height: 100vh;
 }
 
 .section {
 	display: flex;
 	flex-direction: column;
-	gap: 0.3rem;
+	gap: 0.25rem;
 }
 
 .oops {
-	font-size: 1rem;
+	font-size: 0.95rem;
 	font-weight: 500;
+	color: var(--color-secondary);
+}
+
+.text {
+	color: var(--color-secondary-2);
+	font-size: 0.8rem;
 }
 
 .close {
 	position: absolute;
-	top: 0;
-	right: 0;
-	padding: 2px;
+	top: 2px;
+	right: 2px;
+	transform: scale(0.9);
+}
+
+.progress {
+	position: absolute;
+	left: 0;
+	bottom: 0.4rem;
+	height: 3px;
+	width: 90%;
+	left: 5%;
+}
+
+.progressInner {
+	background-color: var(--color-secondary);
+	height: 100%;
+	border-radius: 10px;
 }

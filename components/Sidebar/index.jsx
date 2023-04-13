@@ -45,12 +45,12 @@ export default function Sidebar({ transition }) {
         },
 
         selected: {
-            height: '180%',
+            height: '125%',
             backgroundColor: 'var(--color-active)'
         },
 
         hover: {
-            height: '50%'
+            height: '30%'
         }
     }
     
@@ -63,13 +63,31 @@ export default function Sidebar({ transition }) {
 
         selected: {
             height: '2px',
-            width: '150%',
+            width: '160%',
             backgroundColor: 'var(--color-active)'
         },
 
         hover: {
             height: '2px',
             width: '50%'
+        }
+    }
+
+    const optionNameVariants = {
+        normal: {
+            opacity: 0.2
+        },
+
+        selected: {
+            opacity: 1
+        },
+
+        hover: {
+            opacity: 0.4
+        },
+
+        disabled: {
+            opacity: 0.125
         }
     }
 
@@ -104,8 +122,13 @@ export default function Sidebar({ transition }) {
 
                 <Icon 
                     name='drive' 
-                    variants={iconVariants(11, '1.55rem', 0.6)}
+                    variants={iconVariants(11, '1.55rem', 0.35)}
                 />
+
+                {
+                    !isMobile &&
+                    <motion.span variants={optionNameVariants} className={style.optionName}>Drive</motion.span>
+                }
             </motion.span>
 
             <motion.span 
@@ -126,8 +149,14 @@ export default function Sidebar({ transition }) {
 
                 <Icon 
                     name='settings' 
-                    variants={iconVariants(1, '1.65rem', 0.7, 0.35)}
+                    variants={iconVariants(1, '1.65rem', 0.45, 0.35)}
                 />
+
+                
+                    {
+                        !isMobile &&
+                        <motion.span variants={optionNameVariants} className={style.optionName}>Settings</motion.span>
+                    }
             </motion.span>
 
             <motion.span 
@@ -147,8 +176,13 @@ export default function Sidebar({ transition }) {
 
                 <Icon 
                     name='archive' 
-                    variants={iconVariants(7, '1.6rem', 0.6, 0.15)}
+                    variants={iconVariants(7, '1.6rem', 0.35, 0.15)}
                 />
+
+                {
+                    !isMobile &&
+                    <motion.span variants={optionNameVariants} className={style.optionName}>Archive</motion.span>
+                }
             </motion.span>
         </motion.div>
     )

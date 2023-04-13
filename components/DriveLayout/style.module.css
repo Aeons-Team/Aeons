@@ -1,7 +1,7 @@
 .drive {
   height: 100vh;
   display: grid;
-  grid-template-rows: 70px auto;
+  grid-template-rows: 60px auto;
   grid-template-columns: 65px auto;
   overflow: hidden;
 }
@@ -23,7 +23,7 @@
 
 @media (max-width: 820px) {
   .drive {
-    grid-template-rows: 60px calc(100vh - 110px) 50px;
+    grid-template-rows: 55px calc(100vh - 110px) 50px;
     grid-template-columns: auto;
   }
 

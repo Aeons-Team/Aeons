@@ -27,7 +27,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     width: 85%;
-    font-size: 0.925rem;
+    font-size: 0.9rem;
     font-weight: 400;
     white-space: nowrap;
 }
@@ -35,8 +35,8 @@
 .folderDetails {
     display: flex;
     align-items: center;
-    font-size: 0.75rem;
-    margin-top: 1.5rem;
+    font-size: 0.7rem;
+    margin-top: 1rem;
 }
 
 .folderDetails > span {

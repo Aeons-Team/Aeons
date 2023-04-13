@@ -12,7 +12,7 @@
     border-top-right-radius: 2px;
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;
-    padding: 0.25rem 0.5rem;
+    padding: 0.15rem 0.5rem;
     box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
 }
 

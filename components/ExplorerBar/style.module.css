@@ -1,7 +1,6 @@
 .explorerBar {
     display: flex;
     padding: 0.2rem;
-    font-size: 1.25rem;
     box-shadow: 1px 0 var(--shadow-blur) 0 var(--color-shadow);
 }
 

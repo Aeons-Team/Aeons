@@ -31,13 +31,13 @@ export default function ExplorerBar() {
                     }            
                 }}
                 onDragEnter={(e) => e.preventDefault()}
-                gap='0.25rem'
+                gap='0.1rem'
                 listStyle={{
                     paddingLeft: '0.25rem'
                 }}
                 itemStyle={{
-                    padding: isMobile ? '0.5rem 0rem' : '0.5rem 0.75rem',
-                    fontSize: isMobile ? '1.1rem' : '1.2rem',
+                    padding: isMobile ? '0.35rem 0rem' : '0.35rem 0.75rem',
+                    fontSize: isMobile ? '0.9rem' : '1rem',
                     minWidth: '3rem',
                     maxWidth: '10rem'
                 }}

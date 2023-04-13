@@ -1,18 +1,21 @@
 # Aeons
 DApp for storing and managing files on Arweave using Bundlr.network and Warp smart contracts
 
-## Run locally
-to test the full extent of the application, we need to run it locally on a secure context (access localhost over https)
+## Demo
 
-### generating certificates for localhost
+[![Aeons Demo](https://i.imgur.com/nkDedZN.png)](https://youtu.be/jzG8x5l3xf0)
+
+## Run locally
+to test the full extent of the application, you need to run it locally on a secure context (access localhost over https)
+
 you can generate certificates using [mkcert](https://github.com/FiloSottile/mkcert). the certificates should be inside /ssl folder
 
 ```shell
-cd ssl
+cd ./ssl
 mkcert localhost
 ```
 
-### run the development server
+to run the dev server
 
 ```shell
 npm run dev

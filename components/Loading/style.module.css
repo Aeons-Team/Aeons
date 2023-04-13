@@ -5,11 +5,16 @@
     top: 0;
     left: 0;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: var(--color-primary);
     font-size: 0.8rem;
+}
+
+.loadingInner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .loadingTop {
@@ -37,4 +42,20 @@
     bottom: -2.5rem;
     left: 0rem;
     color: var(--color-error);
+}
+
+@media (max-width: 500px) {
+    .loadingInner {
+        transform: scale(0.85);
+    }
+
+    .loadingTop {
+        flex-direction: column-reverse;
+        gap: 1.5rem;
+        max-width: 95vw; 
+    }
+
+    .loadingText {
+        width: 100%;
+    }
 }

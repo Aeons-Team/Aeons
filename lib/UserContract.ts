@@ -367,7 +367,7 @@ export default class UserContract {
 
         this.log('Encrypting internal wallet locally')
 
-        const internalWalletEncrypted = await this.internalWallet.encrypt(password)
+        const internalWalletEncrypted = await this.internalWallet.encrypt(password, { scrypt: { N: (1 << 16) } })
         localStorage.setItem(`${this.client.address}-${process.env.NEXT_PUBLIC_APP_NAME}-InternalWalletEncrypted`, internalWalletEncrypted)
     }
 }

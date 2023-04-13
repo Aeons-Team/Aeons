@@ -137,7 +137,7 @@ export default function ContextMenu() {
           <span>Move Files</span>
         </div>
 
-        <p>Select the folder to which you'd like move all the selected files to</p>
+        <p>Select the folder to which you would like move all the selected files to</p>
 
         <FolderSelect 
           itemDisabled={(id) => selection.includes(id)}

@@ -8,10 +8,69 @@
     align-items: center;
     justify-content: center;
     background-color: var(--color-primary);
+    font-size: 0.8rem;
+}
+
+.loadingInner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.spinner {
+    min-width: 24px;
+}
+
+.loadingTop {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 90vw; 
+}
+
+.loadingBottom {
+    display: flex;
+    align-items: center;
     gap: 1rem;
+    position: relative;  
 }
 
 .loadingText {
     color: var(--color-secondary);
-    font-size: 0.9rem;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.inputBottom {
+    position: absolute;
+    bottom: -2.5rem;
+    left: 0rem;
+    display: flex;
+    gap: 1rem;
+    font-weight: 400;
+}
+
+.errorMessage {
+    color: var(--color-error);
+}
+
+.forgot {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+@media (max-width: 500px) {
+    .loadingInner {
+        transform: scale(0.85);
+    }
+
+    .loadingTop {
+        flex-direction: column-reverse;
+        gap: 1.5rem;
+        max-width: 95vw; 
+    }
+
+    .loadingText {
+        width: 100%;
+    }
 }

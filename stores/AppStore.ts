@@ -4,7 +4,7 @@ import Vector2 from "../lib/Vector2";
 import { ContractFile } from '../lib/ContractState'
 
 interface ContextMenuOpts {
-  type?: string,
+  type?: string
   file?: ContractFile
   action?: string
 }
@@ -24,6 +24,7 @@ interface AppStoreData {
   contextMenuActivation: number,
   dragCount: number,
   beingDragged: { [id: string]: number },
+  resourceCache: { [id: string]: string },
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => void
   select: (item: string) => void,
   selectItems: (items: string[]) => void,
@@ -32,7 +33,10 @@ interface AppStoreData {
   setShowWallet: (value: boolean) => void,
   setDragging: (id: string, value: boolean) => void,
   clearDragging: Function,
-  setErrorMessage: (errorMessage: string) => void
+  funding: boolean,
+  setFunding: Function,
+  errorMessage: string,
+  setErrorMessage: Function,
 }
 
 export const useAppStore = create<AppStoreData>((set, get) => ({
@@ -50,6 +54,11 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
   contextMenuActivation: 0,
   dragCount: 0,
   beingDragged: {},
+  funding: false,
+  resourceCache: {},
+  setFunding: (value: boolean) => set({ funding: value }),
+  errorMessage: '',
+  setErrorMessage: (error: string) => set({ errorMessage: error }),
 
   activateContextMenu: (flag: boolean, opts: ContextMenuOpts) => {
     const { cursorPosition, contextMenuPosition, contextMenuActivation } = get();
@@ -113,11 +122,6 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
     return Object.keys(selected).filter(x => selected[x])
   },
 
-  setErrorMessage: (errorMessage: string) => {
-    if(errorMessage)
-      return 'Uh oh! Something went wrong.';
-  },
-
   setShowWallet: (value: boolean) => {
     set({ showWallet: value })
   },
@@ -131,6 +135,12 @@ export const useAppStore = create<AppStoreData>((set, get) => ({
 
   clearDragging: () => {
     set({ beingDragged: {}, dragCount: 0 })
+  },
+
+  cacheResource: (key: string, url: string) => {
+    const { resourceCache } = get() 
+
+    set({ resourceCache: { ...resourceCache, [key]: url } })
   }
 }));
 

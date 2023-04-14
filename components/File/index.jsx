@@ -3,18 +3,19 @@ import { useRouter } from "next/router";
 import { motion, useSpring } from "framer-motion";
 import { useAppState, useAppStore } from "../../stores/AppStore";
 import { useDriveState } from "../../stores/DriveStore";
+import Crypto from "../../lib/Crypto";
 import FileInfo from "../FileInfo";
 import FolderInfo from "../FolderInfo";
 import style from "./style.module.css";
 import Vector from '../../lib/Vector2';
 
-export default function File({ file, enableControls }) {
+export default function File({ file }) {
   const router = useRouter();
   const fileRef = useRef();
   const countRef = useRef(0);
   const { id: activeFileId } = router.query;
-  const x = useSpring(0, { stiffness: 100, damping: 15 })
-  const y = useSpring(0, { stiffness: 100, damping: 15 })
+  const x = useSpring(0, { stiffness: 200, damping: 25 })
+  const y = useSpring(0, { stiffness: 200, damping: 25 })
 
   const isSearching = router.pathname.startsWith('/drive/search')
   const { search } = router.query
@@ -29,10 +30,11 @@ export default function File({ file, enableControls }) {
     dragged: state.beingDragged[file.id]
   }));
 
-  const { contractState, uploadFiles, relocateFiles } = useDriveState((state) => ({
+  const { contractState, uploadFiles, relocateFiles, contract } = useDriveState((state) => ({
     contractState: state.contractState,
     uploadFiles: state.uploadFiles,
-    relocateFiles: state.relocateFiles
+    relocateFiles: state.relocateFiles,
+    contract: state.contract
   }));
 
   const [moved, setMoved] = useState(false)
@@ -155,6 +157,8 @@ export default function File({ file, enableControls }) {
   };
 
   const onFileClick = (e) => {
+    if (activeFileId != file.parentId) return
+
     e.stopPropagation();
     e.preventDefault();
     document.getSelection().removeAllRanges();
@@ -221,6 +225,8 @@ export default function File({ file, enableControls }) {
   };
 
   const onFileContextMenu = (e) => {
+    if (activeFileId != file.parentId) return
+
     e.preventDefault();
     e.stopPropagation();
 
@@ -240,13 +246,16 @@ export default function File({ file, enableControls }) {
     });
   };
 
-  const onFileDoubleClick = () => {
+  const onFileDoubleClick = async () => {
     if (file.pending) return
 
     if (file.contentType == 'folder') {
       router.push(`/drive/${file.id}`)
     }
-
+    else if(file.encryption) {
+      const decryptedUrl = await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
+      window.open(decryptedUrl)
+    }
     else {
       window.open(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`)
     }
@@ -279,7 +288,6 @@ export default function File({ file, enableControls }) {
         <FileInfo
           file={file}
           className={style.filePreview}
-          enableControls={enableControls}
         />
       )}
     </motion.div>

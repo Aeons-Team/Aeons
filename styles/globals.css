@@ -1,25 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --color-background: #0b090d;
-  --color-primary: #0a080d;
-  --color-primary-2: #0f0e13;
-  --color-primary-3: #131218;
-  --color-primary-4: #1c1b20;
-  --color-primary-5: #252429;
+  --color-background: #111016;
+  --color-primary: #111016;
+  --color-primary-2: #14131a;
+  --color-primary-3: #18161d;
+  --color-primary-4: #222127;
+  --color-primary-5: #27262d;
   --color-secondary: #e8e8e8;
   --color-secondary-2: #e0e0e0;
   --color-secondary-3: #d8d8d8;
   --color-secondary-4: #d0d0d0;
   --color-secondary-5: #c8c8c8;
-  --color-secondary-6: #cfcfcf;
-  --color-secondary-7: #ec5656;
+  --color-secondary-6: #b1b1b1;
+  --color-error: #ef364f;
   --color-selected: #1b1928;
-  --color-active: #623bef;
-  --color-active-2: #6a44f5;
+  --color-active: #5c3bef;
+  --color-active-2: #6748f3;
   --color-inner: #f0f0f0;
   --color-hover: #e0e0e0;
-  --color-shadow: #585060;
+  --color-shadow: #38363f;
+  --color-primary-transparent: #0e0d1366;
   --shadow-blur: 1px;
   --shadow-blur-2: 0px;
 }
@@ -70,7 +71,7 @@ body {
   background-color: var(--color-background);
 }
 
-@media (max-width: 500px) {
+@media (max-width: 550px) {
   *::-webkit-scrollbar {
     width: 6px;
   }

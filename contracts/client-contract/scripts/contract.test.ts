@@ -34,7 +34,8 @@ describe('testing aeons contract', () => {
             initState: JSON.stringify(
                 {
                     ...initialState,
-                    owner: ownerWallet.address
+                    owner: ownerWallet.address,
+                    internalOwner: 'internal'
                 }
             ),
             src: contractSrc,
@@ -69,10 +70,6 @@ describe('testing aeons contract', () => {
         
         await contract.writeInteraction({
             function: 'relocate', ids: ['id3'], oldParentId: 'id1', newParentId: 'id2'
-        })
-
-        await contract.writeInteraction({
-            function: 'setInternalOwner', value: 'internal'
         })
 
         let state = (await contract.readState()).cachedValue.state as any

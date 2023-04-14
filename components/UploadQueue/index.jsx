@@ -7,6 +7,7 @@ import FilePreview from "../FilePreview";
 import Utility from "../../lib/Utility"
 import Button from "../Button";
 import IconButton from "../IconButton"
+import Icon from '../Icon';
 import style from './style.module.css';
 
 function QueueItem({ i, item, preview }) {
@@ -39,8 +40,6 @@ function QueueTop({ minimized, preview }) {
         uploadNext, 
         currentName,
         removeFromUploadQueue,
-        insufficentBalance,
-        setInsufficientBalance
      } = useDriveState((state) => ({
         client: state.client,
         paused: state.paused,
@@ -50,8 +49,6 @@ function QueueTop({ minimized, preview }) {
         uploadNext: state.uploadNext,
         currentName: state.currentName,
         removeFromUploadQueue: state.removeFromUploadQueue,
-        insufficentBalance: state.insufficentBalance,
-        setInsufficientBalance: state.setInsufficientBalance
     }));
 
     const currentUpload = uploadQueue.length && uploadQueue[0].file
@@ -63,7 +60,7 @@ function QueueTop({ minimized, preview }) {
     const statBytesRef = useRef()
     const statSpeedRef = useRef()
     const progressBarRef = useRef()
-    const initialValsRef = useRef()
+    const initialValsRef = useRef(['', '', '', ''])
 
     const [loading, setLoading] = useState(true)
 
@@ -88,7 +85,9 @@ function QueueTop({ minimized, preview }) {
 
                 if (uploading) {
                     const currentUpload = uploadQueue[0].file
-                    const uploadedPerc = (bytesUploaded / currentUpload.size) * 100
+                    const uploadedPerc = currentUpload.size  
+                        ? (bytesUploaded / currentUpload.size) * 100
+                        : 0
 
                     initialValsRef.current = [
                         `${Utility.formatTime((uploadQueue[0].file.size - bytesUploaded) / uploadSpeed)} remaining`,
@@ -126,13 +125,12 @@ function QueueTop({ minimized, preview }) {
 
     return (
         <div className={style.queueTop}>
-            {insufficentBalance && <div className={style.error}>Insufficient balance in Bundlr wallet. Please fund</div>}
             <div className={style.currentUpload}>
                 {preview}
 
                 {
                     uploading &&
-                    <div className={style.currentUploadInfo}>
+                    <div>
                         <div className={style.currentUploadInfoInner}>
                             <div className={style.currentUploadInfoTop}>
                                 <span className={style.topFileName}>{currentName}</span>
@@ -205,10 +203,7 @@ function QueueTop({ minimized, preview }) {
                         {uploading && <IconButton name={paused ? 'play' : 'pause'} width='0.8rem' height='0.8rem' onClick={pauseOrResume} fill />}
                         <div className={style.topCross}>
                             <IconButton name='cross' width='1.5rem' height='1.5rem' 
-                                onClick={() => {
-                                    removeFromUploadQueue(0)
-                                    setInsufficientBalance(false)
-                                }}
+                                onClick={() => removeFromUploadQueue(0)}
                             />
                         </div>
                     </div>       
@@ -231,13 +226,21 @@ export default function UploadQueue() {
     }));
 
     const previews = uploadQueue.slice(0, 5).map((item, i) => (
-        <FilePreview
-            key={item.file.name}
-            className={i == 0 ? style.queueTopPreview : style.queueItemPreview}
-            contentType={item.file.type}
-            file={item.file}
-            size={i == 0 ? 128 : 64}
-        />
+        <div className={style.previewParent} key={item.file.name}>
+            <FilePreview
+                className={i == 0 ? style.queueTopPreview : style.queueItemPreview}
+                contentType={item.file.type}
+                file={item.file}
+                size={i == 0 ? 128 : 64}
+            />
+
+            {
+                item.encrypted &&
+                <div className={style.encryptedIconParent}>
+                    <Icon name='encrypted' fill width='0.5rem' height='0.5rem' color='var(--color-inner)' />
+                </div>
+            }
+        </div>
     ))
 
     return (

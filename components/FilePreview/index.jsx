@@ -1,61 +1,79 @@
-import Spinner from 'react-spinner-material'
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import Spinner from 'react-spinner-material';
+import { useDriveState } from '../../stores/DriveStore';
+import { useAppState, useAppStore } from '../../stores/AppStore';
+import Crypto from '../../lib/Crypto';
+import Utility from '../../lib/Utility';
 import Icon from '../Icon'
 
-export default function FilePreview({ src, file, contentType, className, enableControls, size }) {
-    const [localSrc, setLocalSrc] = useState(src)
+export default function FilePreview({ src, file, contentType, encryption, className, size }) {
+    const [localSrc, setLocalSrc] = useState(null)
+    const localSrcRef = useRef()
     
     const [loading, setLoading] = useState(
-        contentType.match('image/*') || (src && contentType.match('video/*'))
+        contentType.startsWith('image/')
     )
-    
+
+    const { contract } = useDriveState(state => ({
+        contract: state.contract
+    }))
+
+    const { cacheResource } = useAppState(state => ({
+        cacheResource: state.cacheResource
+    }))
+
+    useEffect(() => {
+        localSrcRef.current = localSrc
+    }, [localSrc])
+
     useEffect(() => {
         const init = async () => {
-            if (file && contentType.startsWith('image/')) {
-                setLocalSrc()
-                const reader = new FileReader()
+            if (contentType.startsWith('image/')) {
+                if (file) {
+                    setLocalSrc()
+                    const reader = new FileReader()
+    
+                    reader.onload = async () => {
+                        const resized = await Utility.resizeImage(reader.result, size)
 
-                reader.onload = () => {
-                    const image = new Image()
-                    image.src = reader.result
-
-                    image.onload = () => {
-                        let width = image.width 
-                        let height = image.height 
-
-                        if (width > height) {
-                            let tempWidth = width
-                            width = size 
-                            height = (size / tempWidth) * height
-                        }
-
-                        else {
-                            let tempHeight = height
-                            height = size
-                            width = (size / tempHeight) * width
-                        }
-
-                        const canvas = document.createElement('canvas')
-                        canvas.width = width
-                        canvas.height = height
-
-                        const ctx = canvas.getContext('2d')
-                        ctx.drawImage(image, 0, 0, width, height)
-
-                        setLocalSrc(canvas.toDataURL(file.type))
-                        setLoading(false)
+                        setLocalSrc(resized)
                     }
+    
+                    reader.readAsDataURL(file)
                 }
 
-                reader.readAsDataURL(file)
+                else if (src) {
+                    if (encryption) {
+                        const decrypted = await Crypto.decryptFromUrl(src, encryption, contract.internalWallet.privateKey)
+                        const resized = await Utility.resizeImage(decrypted, size)
+
+                        setLocalSrc(resized)
+                        cacheResource(src, resized)
+                    }
+
+                    else {
+                        const resized = await Utility.resizeImage(src, size)
+
+                        setLocalSrc(resized)
+                        cacheResource(src, resized)
+                    }
+                }
             }
         }
 
-        init()
+        const cache = useAppStore.getState().resourceCache
 
-        if (file) {
-            return () => {
-                URL.revokeObjectURL(localSrc)
+        if (src && src in cache) {
+            setLocalSrc(cache[src])
+        }
+
+        else {
+            init()
+        }
+
+        if (file && contentType.startsWith('image/')) {
+            return () => {  
+                URL.revokeObjectURL(localSrcRef.current)
             }
         }
     }, [file])
@@ -65,31 +83,13 @@ export default function FilePreview({ src, file, contentType, className, enableC
     if (!contentType) preview = <div className={className} />
 
     else if (contentType.match("image/*")) {
-        preview = <img src={localSrc} onLoad={() => setLoading(false)} className={className} width={size} height={size} />;
-    }
-
-    else if (src && contentType.match("video/*")) {
-        preview = (
-            <video  
-                onPause={(e) => {
-                    e.target.currentTime = 0
-                    e.target.play().catch(() => {})
-                }} 
-                onCanPlay={() => setLoading(false)}
-                autoPlay 
-                muted 
-                className={className} 
-                controls={enableControls}
-            >
-                <source src={localSrc + '#t=0,3'} />
-            </video>
-        )
+        preview = <img src={localSrc} className={className} onLoad={() => setLoading(false)} />;
     }
 
     else {
         preview = (
-            <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-primary-3)' }}>
-                <Icon name='file' width='2rem' height='2rem' fill />
+            <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Icon name='file' width='2.25rem' height='2.25rem' fill />
             </div>
         )
     }

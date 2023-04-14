@@ -1,7 +1,11 @@
+import { forwardRef } from 'react'
 import style from './style.module.css'
 
-export default function Input({...props}){
+// eslint-disable-next-line react/display-name
+const Input = forwardRef(({...props}, ref) => {
 	return (
-		<input {...props} className={style.input} />
+		<input ref={ref} {...props} className={style.input} />
 	)
-}
+})
+
+export default Input

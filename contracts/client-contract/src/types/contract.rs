@@ -11,7 +11,8 @@ pub struct Insert {
     pub parent_id: Option<String>,
     pub content_type: String,
     pub created_at: Option<u64>,
-    pub size: Option<u64>
+    pub size: Option<u64>,
+    pub encryption: Option<String>
 }
 
 #[derive(Debug, Deserialize)]
@@ -36,19 +37,12 @@ pub struct Evolve {
 }
 
 #[derive(Debug, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct SetInternalOwner {
-    pub value: String
-}
-
-#[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase", tag = "function")]
 pub enum ContractAction {
     Insert(Insert),
     Relocate(Relocate),
     Rename(Rename),
-    Evolve(Evolve),
-    SetInternalOwner(SetInternalOwner)
+    Evolve(Evolve)
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]

@@ -41,7 +41,7 @@
 
 .error {
   font-size: 0.8rem;
-  color: var(--color-secondary-7);
+  color: var(--color-error);
   padding-left: 10px;
 }
 

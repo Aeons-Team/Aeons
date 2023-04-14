@@ -2,7 +2,9 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMediaQuery } from "react-responsive";
+import Crypto from "../../lib/Crypto";
 import copy from "clipboard-copy";
+import { useSpring } from "framer-motion"
 import { useAppState, useAppStore } from "../../stores/AppStore";
 import { useDriveState } from "../../stores/DriveStore";
 import style from "./style.module.css";
@@ -11,21 +13,25 @@ import InputForm from "../InputForm";
 import Icon from '../Icon';
 
 export default function ContextMenu() {
+  const router = useRouter()
+  const { id: activeFileId } = router.query
+  const isMobile = useMediaQuery({ maxWidth: '550px' })
+  const isMobileSm = useMediaQuery({ maxWidth: '350px' })
+  const scale = isMobileSm ? 0.7 : (isMobile ? 0.85 : 1)
   const menuRef = useRef();
   const section1Ref = useRef()
   const section2Ref = useRef()
-  const router = useRouter()
-  const { id: activeFileId } = router.query
-  const isMobile = useMediaQuery({ maxWidth: '500px' })
-  const isMobileSm = useMediaQuery({ maxWidth: '350px' })
-  const scale = isMobileSm ? 0.7 : (isMobile ? 0.8 : 1)
+  const explorerFilesRef = useRef()
+  const x = useSpring(0, { stiffness: 200, damping: 24 })
+  const y = useSpring(0, { stiffness: 200, damping: 24 })
 
-  const { uploadFiles, renameFile, createFolder, contractState, relocateFiles } = useDriveState(state => ({
+  const { uploadFiles, renameFile, createFolder, contractState, relocateFiles, contract } = useDriveState(state => ({
     uploadFiles: state.uploadFiles,
     renameFile: state.renameFile,
     createFolder: state.createFolder,
     contractState: state.contractState,
-    relocateFiles: state.relocateFiles
+    relocateFiles: state.relocateFiles,
+    contract: state.contract
   }))
   
   const { contextMenuActivated, contextMenuPosition, contextMenuOpts, activateContextMenu, getSelection, contextMenuAction, clearSelection } = useAppState((state) => ({
@@ -42,6 +48,7 @@ export default function ContextMenu() {
   const contextMenuActivatedRef = useRef()
   const [height, setHeight] = useState(0)
   const [width, setWidth] = useState(0)
+  const dimsRef = useRef([0, 0])
 
   useEffect(() => {
     const onClick = (e) => {
@@ -53,30 +60,51 @@ export default function ContextMenu() {
 
     document.addEventListener("click", onClick);
 
+    explorerFilesRef.current = document.querySelector('#explorer-files')
+
     return () => {
       document.removeEventListener("click", onClick);
     };
   }, []);
 
   useEffect(() => {
-    contextMenuActivatedRef.current = contextMenuActivated
-  }, [contextMenuActivated])
-
-  useEffect(() => {
     if (contextMenuActivated) {
       const elem = !contextMenuAction ? section1Ref.current.children[0] : section2Ref.current.children[0]
       const bb = elem.getBoundingClientRect()
 
-      setHeight(bb.height / scale)
-      setWidth(bb.width / scale)
+      dimsRef.current = [bb.height, bb.width]
+      setHeight(dimsRef.current[0] / scale)
+      setWidth(dimsRef.current[1] / scale)
     }
 
     else {
       setHeight(0)
       setWidth(240)
     }
-
   }, [contextMenuAction, contextMenuOpts, isMobile])
+
+  useEffect(() => {
+    contextMenuActivatedRef.current = contextMenuActivated
+
+    if (contextMenuActivated) {
+      const left = Math.min(contextMenuPosition.x, explorerFilesBB?.right - explorerFilesBB?.left - dimsRef.current[1] - 8)
+      const top = Math.max(0, Math.min(contextMenuPosition.y, explorerFilesBB?.bottom + explorerFileScrollTop - explorerFilesBB?.top - dimsRef.current[0] - 8))
+
+      x.jump(left)
+      y.jump(top)
+    }
+
+  }, [contextMenuPosition.x, contextMenuPosition.y, contextMenuActivated])
+
+  useEffect(() => {
+    if (contextMenuActivated) {
+      const left = Math.min(contextMenuPosition.x, explorerFilesBB?.right - explorerFilesBB?.left - dimsRef.current[1] - 8)
+      const top = Math.max(0, Math.min(contextMenuPosition.y, explorerFilesBB?.bottom + explorerFileScrollTop - explorerFilesBB?.top - dimsRef.current[0] - 8))
+
+      x.set(left)
+      y.set(top)
+    }
+  }, [contextMenuAction])
 
   switch (contextMenuAction) {
     case "creatingFolder":
@@ -109,7 +137,7 @@ export default function ContextMenu() {
           <span>Move Files</span>
         </div>
 
-        <p>Select the folder to which you'd like move all the selected files to</p>
+        <p>Select the folder to which you would like move all the selected files to</p>
 
         <FolderSelect 
           itemDisabled={(id) => selection.includes(id)}
@@ -176,16 +204,17 @@ export default function ContextMenu() {
             }}
           />
 
-          <label
-            htmlFor='upload-file'
-            className={style.contextMenuButton}
-          >
-            <span>
-              <Icon width='1.5rem' height='1.5rem' name='upload-file' fill />
-            </span>
-
-            Upload File
-          </label>
+          <input 
+            id='upload-file-encrypted' 
+            type='file' 
+            multiple 
+            hidden 
+            onChange={(e) => {
+              uploadFiles(e.target.files, activeFileId, true)
+              e.target.value = null
+              activateContextMenu(false)
+            }}
+          />
 
           <div
             className={style.contextMenuButton}
@@ -195,11 +224,35 @@ export default function ContextMenu() {
             }}
           >
             <span>
-              <Icon width='1.55rem' height='1.55rem' name='create-folder' strokeWidth={1.25} />
+              <Icon width='1.35rem' height='1.35rem' name='create-folder' strokeWidth={1.25} />
             </span>
 
             Create Folder
           </div>
+
+          <div className={style.separator} />
+
+          <label
+            htmlFor='upload-file'
+            className={style.contextMenuButton}
+          >
+            <span>
+              <Icon width='1.3rem' height='1.3rem' name='upload-file' fill />
+            </span>
+
+            Upload Files
+          </label>
+
+          <label
+            htmlFor='upload-file-encrypted'
+            className={style.contextMenuButton}
+          >
+            <span>
+              <Icon width='1.2rem' height='1.2rem' name='encrypted' fill />
+            </span>
+
+            Upload Private Files
+          </label>
         </>
       );
 
@@ -209,14 +262,19 @@ export default function ContextMenu() {
       var contextMenuItems = (
         <>
           {     
-            selection.length < 2 &&           
+            selection.length == 1 &&           
             <div
               className={style.contextMenuButton}
-              onClick={() => {
-                if (contextMenuOpts.file.contentType == 'folder') {
+              onClick={async () => {
+                const file = contextMenuOpts.file
+                
+                if (file.contentType == 'folder') {
                   router.push(`/drive/${selection[0]}`)
                 }
-
+                else if(file.encryption) {
+                  const decryptedUrl = await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
+                  window.open(decryptedUrl)
+                }
                 else {
                   window.open(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${contextMenuOpts.file.id}`)
                 }
@@ -232,17 +290,17 @@ export default function ContextMenu() {
             </div>
           }
 
-          {contextMenuOpts.file.contentType != 'folder' && selection.length < 2 && (
+          {contextMenuOpts.file.contentType != 'folder' && selection.length == 1 && (
             <div
               className={style.contextMenuButton}
-              onClick={() => {
+              onClick={async () => {
                 activateContextMenu(false);
                 useAppStore.setState({ contextMenuAction: '' });
-                copy(
-                  `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${
-                    selection[0]
-                  }`
-                );
+                
+                const file = contextMenuOpts.file
+                const decryptedUrl = await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
+                
+                copy( file.encryption ? decryptedUrl : `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${selection[0]}`);
               }}
             >
               <span>
@@ -252,6 +310,37 @@ export default function ContextMenu() {
               Copy url
             </div>
           )}
+
+          {     
+            selection.length == 1 && contextMenuOpts.file.contentType != 'folder' &&       
+            <div
+              className={style.contextMenuButton}
+              onClick={async () => {
+                const file = contextMenuOpts.file
+                let src = `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`
+
+                if (file.encryption) {
+                  src = await Crypto.decryptContractFile(file, contract.internalWallet.privateKey)
+                }
+
+                const a = document.createElement('a')
+                a.download = file.name 
+                a.href = src
+
+                a.click()
+
+                URL.revokeObjectURL(src)
+
+                activateContextMenu(false)
+              }}
+            >
+              <span>
+                <Icon width='1.65rem' height='1.65rem' name='download' />
+              </span>
+
+              Download
+            </div>
+          }
 
           {
             selection.length == 1 &&
@@ -272,7 +361,7 @@ export default function ContextMenu() {
             Move
           </div>
 
-          {selection.length < 2 && (
+          {selection.length == 1 && (
             <div
               className={style.contextMenuButton}
               onClick={(e) => {
@@ -308,6 +397,9 @@ export default function ContextMenu() {
       break;
   }
 
+  const explorerFilesBB = explorerFilesRef.current?.getBoundingClientRect()
+  const explorerFileScrollTop = explorerFilesRef.current?.scrollTop
+
   return (
     <motion.div
       ref={menuRef}
@@ -318,8 +410,8 @@ export default function ContextMenu() {
       }}
       style={{
         pointerEvents: contextMenuActivated ? "auto" : "none",
-        left: contextMenuPosition.x + "px",
-        top: contextMenuPosition.y + "px",
+        left: x,
+        top: y
       }}
       onClick={(e) => e.stopPropagation()}
     >

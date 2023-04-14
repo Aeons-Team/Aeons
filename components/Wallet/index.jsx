@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import copy from 'clipboard-copy'
 import { useMediaQuery } from 'react-responsive';
 import { useDriveState } from '../../stores/DriveStore'
 import { useAppState } from '../../stores/AppStore';
 import Icon from '../Icon'
 import InputForm from '../InputForm'
 import style from './style.module.css';
+import CopyableText from '../CopyableText';
 
 export default function Wallet() {
 
-  const isMobile = useMediaQuery({ maxWidth: '500px' })
+  const isMobile = useMediaQuery({ maxWidth: '550px' })
   const isMobileSm = useMediaQuery({ maxWidth: '350px' })
   const scale = isMobileSm ? 0.7 : (isMobile ? 0.8 : 1)
 
@@ -22,14 +22,13 @@ export default function Wallet() {
     fetchWalletBalance: state.fetchWalletBalance
   }));
 
-  const { showWallet, setShowWallet } = useAppState(state => ({
+  const { showWallet, setShowWallet, funding, setFunding } = useAppState(state => ({
     showWallet: state.showWallet,
     setShowWallet: state.setShowWallet,
+    funding: state.funding,
+    setFunding: state.setFunding
   }));
 
-  const [funding, setFunding] = useState(false)
-  const [hoveringAddress, setHoveringAddress] = useState(false)
-  const [copyText, setCopyText] = useState('Copy address')
   const [height, setHeight] = useState(0)
   const section1Ref = useRef()
   const section2Ref = useRef()
@@ -117,24 +116,15 @@ export default function Wallet() {
                   {client.networkName}
                 </div>
                 
-                <div className={style.walletAddress}>                  
-                  <div className={style.address} 
-                    onClick={() => {
-                      setCopyText('Copied!')
-                      setTimeout(() => setCopyText('Copy address'), 2000)
-                      copy(client.address)
-                    }} 
-                    onMouseEnter={() => setHoveringAddress(true)} 
-                    onMouseLeave={() => setHoveringAddress(false)}
-                  >
-                    <div>{client.address.substring(0, 6) + '....' + client.address.substring(client.address.length - 4)}</div>
-                    <Icon name='copy-clipboard' fill width='1rem' height='1rem' />
-                  </div>
-
-                  <motion.div initial={{ opacity: 0 }} animate={ hoveringAddress ? { opacity: 1, top: '1.5rem' } : { opacity: 0, top: '1rem' }}>
-                    {copyText}
-                  </motion.div>
-                </div>
+                <CopyableText 
+                  name='address' 
+                  value={client.address} 
+                  displayValue={client.address.substring(0, 6) + '....' + client.address.substring(client.address.length - 4)} 
+                  fontSize='0.9rem'
+                  hoverFontSize='0.7rem'
+                  iconSize='1rem'
+                  floatOffset={24}
+                />
               </div>
     
               <div className={style.walletLower}>

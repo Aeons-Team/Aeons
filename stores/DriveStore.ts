@@ -8,10 +8,21 @@ import { ChunkingUploader } from "@bundlr-network/client/build/common/chunkingUp
 import BundlrClient from "../lib/BundlrClient";
 import UserContract from "../lib/UserContract";
 import ContractState from "../lib/ContractState";
+import Crypto from "../lib/Crypto";
+import { useAppStore } from "./AppStore";
 
 interface UploadQueueItem {
     file: File,
-    parentId: string
+    parentId: string,
+    encrypted?: boolean
+}
+
+export interface PromptArgs {
+    type: string,
+    value?: string,
+    resolve: Function,
+    reject?: Function,
+    errorMessage?: string
 }
 
 interface DriveStoreData {
@@ -31,16 +42,18 @@ interface DriveStoreData {
     loadingText: string,
     fetchWalletBalance: Function,
     fetchLoadedBalance: Function,
+    currentPrompt: PromptArgs | null,
+    initializeError: string | null,
     uploadNext: (name?: string) => Promise<void>,
-    initialize: (provider: ethers.providers.Web3Provider) => Promise<void>,
+    initialize: () => Promise<void>,
     uploadFiles: (files: File[], parentId: string) => void,
     createFolder: (name: string, parentId: string) => Promise<void>,
     renameFile: (id: string, newName: string) => Promise<void>,
     relocateFiles: (ids: string[], oldParentId: string, newParentId: string) => Promise<void>,
     removeFromUploadQueue: (i: number) => void,
-    pauseOrResume: Function
-    insufficentBalance: boolean,
-    setInsufficientBalance: Function
+    pauseOrResume: Function,
+    prompt: (args: PromptArgs) => void,
+    reinitialize: () => Promise<void>
 }
 
 export const useDriveStore = create(
@@ -59,8 +72,8 @@ export const useDriveStore = create(
         currentUploader: null,
         bytesUploaded: null,
         loadingText: 'Initializing',
-        insufficentBalance: false,
-        setInsufficientBalance: (value: boolean) => set({ insufficentBalance: value }),
+        initializeError: null,
+        currentPrompt: null,
         
         fetchWalletBalance: async () => {
             const walletBalance = await get().client.getWalletBalance();
@@ -72,18 +85,70 @@ export const useDriveStore = create(
             set({ loadedBalance })
         },
 
-        initialize: async (provider: ethers.providers.Web3Provider) => {
-            set({ initialized: false })
+        initialize: async () => {
+            const { client, contract, fetchWalletBalance, fetchLoadedBalance, reinitialize } = get();
 
-            const { client, contract, fetchWalletBalance, fetchLoadedBalance } = get()
+            const log = (text, error) => {
+                set({ loadingText: text, initializeError: error });
+            }
 
-            const log = (text) => set({ loadingText: text })
+            if (!window.ethereum) {
+                log('Metamask not installed', 'noMetamask')
+                return
+            }
 
-            await client.initialize(provider, log);
-            await contract.initialize(provider, client, log);
+            await window.ethereum.request({ method: "eth_requestAccounts" });
+			
+            window.ethereum.on('accountsChanged', reinitialize)
+            window.ethereum.on('chainChanged', reinitialize)
+
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+            try {
+                await client.initialize(provider, log);
+                await contract.initialize(provider, client, log, get().prompt);
+            }
+
+            catch (error) {
+                return
+            }
 
             contract.updateUIAction = () => set({ contractState: contract.state.copy() })
             
+            set({ 
+                initialized: true,
+                contractState: contract.state
+            })
+
+            fetchWalletBalance();
+            fetchLoadedBalance();
+        },
+
+        reinitialize: async () => {
+            const { client, contract, fetchWalletBalance, fetchLoadedBalance } = get()
+
+            set({ initialized: false })
+
+            const log = (text, error) => {
+                set({ loadingText: text, initializeError: error })
+            }
+
+            if (!window.ethereum) {
+                log('Metamask not installed', 'noMetamask')
+                return
+            }
+
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+            try {
+                await client.initialize(provider, log);
+                await contract.initialize(provider, client, log, get().prompt);
+            }
+
+            catch (error) {
+                return
+            }
+
             set({ 
                 initialized: true,
                 contractState: contract.state
@@ -112,8 +177,15 @@ export const useDriveStore = create(
             let nextChunk = batchSize + 1
             let index = 0
 
+            const key = await Crypto.aesGenKey()
+            const encryption = await Crypto.encryptKey(key, contract.internalWallet.publicKey.substring(2))
+
+            let data = first.encrypted 
+                ? await Crypto.aesEncryptFile(first.file, key, Buffer.from(encryption.iv, 'hex').buffer) 
+                : fileReaderStream(first.file) 
+
             const uploader = client.uploadChunked(
-                fileReaderStream(first.file), 
+                data, 
                 {
                     tags: [
                         { name: 'Content-Type', value: first.file.type }
@@ -156,13 +228,13 @@ export const useDriveStore = create(
                             name: name || first.file.name,
                             parentId: first.parentId,
                             size: first.file.size,
-                            createdAt: new Date().getTime()
+                            createdAt: new Date().getTime(),
+                            encryption: first.encrypted ? (encryption.iv + encryption.mac + encryption.ephemPublicKey + encryption.ciphertext) : undefined
                         })
                     },
                     error: (error) => {
-                        if(error.message == 'Not enough funds to send data') {
-                            set({ insufficentBalance: true })
-                        }
+                        useAppStore.setState({ errorMessage: error.message })
+                        set({ uploading: false, uploadQueue: uploadQueue.slice(1)})
                     }
                 }
             )
@@ -170,13 +242,14 @@ export const useDriveStore = create(
             set({ currentUploader: uploader })
         },
 
-        uploadFiles: async (files: File[], parentId: string) => {
+        uploadFiles: async (files: File[], parentId: string, encrypted: boolean = false) => {
             const { uploadQueue } = get()
 
             for (const file of files) {
                 uploadQueue.push({  
                     file,
-                    parentId
+                    parentId,
+                    encrypted
                 })
             }
 
@@ -232,6 +305,10 @@ export const useDriveStore = create(
             }
 
             set({ paused: !get().paused })
+        },
+
+        prompt: (args: PromptArgs) => {
+            set({ currentPrompt: args })
         }
     })
 ));

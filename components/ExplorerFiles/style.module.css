@@ -3,7 +3,7 @@
 }
 
 .sectionHeader {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 400;
   margin-bottom: 1rem;
   color: var(--color-secondary);
@@ -27,7 +27,7 @@
   background-color: var(--color-primary);
 }
 
-@media (max-width: 500px) {
+@media (max-width: 550px) {
   .folders {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

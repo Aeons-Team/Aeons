@@ -1,0 +1,24 @@
+.copyableText {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+  
+.copyableTextInner {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+}
+  
+.copyableText > *:nth-child(2) {
+    position: absolute;
+    text-align: center;
+    background-color: var(--color-primary-2);
+    color: var(--color-secondary);
+    padding: 0.35rem 0.8rem;
+    pointer-events: none;
+    border-radius: 4px;
+    box-shadow: 0 0 var(--shadow-blur) 0px var(--color-shadow);
+}
+  

@@ -17,6 +17,10 @@ export default class Vector {
     this.y = v.y;
   }
 
+  clone() {
+    return new Vector(this.x, this.y)
+  }
+
   sub(x: number, y: number): Vector {
     return new Vector(this.x - x, this.y - y);
   }

@@ -3,7 +3,7 @@ DApp for storing and managing files on Arweave using Bundlr.network and Warp sma
 
 ## Demo
 
-[![Aeons Demo](https://i.imgur.com/nkDedZN.png)](https://youtu.be/jzG8x5l3xf0)
+[![Aeons Demo](https://i.imgur.com/QUlseAN.png)](https://youtu.be/sz3LTJnXeNw)
 
 ## Run locally
 to test the full extent of the application, you need to run it locally on a secure context (access localhost over https)

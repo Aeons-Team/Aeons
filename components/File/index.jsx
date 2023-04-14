@@ -119,7 +119,8 @@ export default function File({ file }) {
     fileRef.current.classList.remove(style.dragEnter)
         
     if (e.dataTransfer.files.length) {
-      uploadFiles(e.dataTransfer.files, file.id);
+      const files = Object.values(e.dataTransfer.files).filter(file => file.size != 0)
+      uploadFiles(files, file.id);
     }
 
     else {

@@ -165,7 +165,7 @@ export default function Wallet() {
                 heading='Fund Bundlr'
                 icon='wallet'
                 type='number'
-                description='transfer funds to your internal bundlr wallet'
+                description='Transfer funds to your internal bundlr wallet'
                 onBack={() => {
                   setFunding(false)}
                 }

@@ -112,7 +112,7 @@ export default function ContextMenu() {
         heading='Create Folder'
         fillIcon={false}
         icon='create-folder'
-        description='create a folder with a name of your choice'
+        description='Create a folder with a name of your choice'
         onBack={() => {
           useAppStore.setState({ contextMenuAction: '' })
         }}
@@ -165,7 +165,7 @@ export default function ContextMenu() {
         heading='Rename'
         icon='rename'
         initialVal={contextMenuOpts.file.name}
-        description='change the name of the currently selected file'
+        description='Change the name of the currently selected file'
         onBack={() => {
           useAppStore.setState({ contextMenuAction: '' })
         }}
@@ -185,6 +185,7 @@ export default function ContextMenu() {
       />;
 
       break;
+
   }
 
   switch (contextMenuOpts.type) {
@@ -376,15 +377,20 @@ export default function ContextMenu() {
             </div>
           )}
 
-          <div
+          {/* <div
             className={style.contextMenuButton}
+            const onClick={async () => {
+              
+              activateContextMenu(false);
+              await relocateFiles(selection, activeFileId, "archive");
+            }}
           >
             <span>
               <Icon width='1.45rem' height='1.45rem' name='archive' strokeWidth={11} />
             </span>
             
             Archive
-          </div>
+          </div> */}
         </>
       );
 

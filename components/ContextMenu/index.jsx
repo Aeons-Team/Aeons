@@ -112,7 +112,7 @@ export default function ContextMenu() {
         heading='Create Folder'
         fillIcon={false}
         icon='create-folder'
-        description='create a folder with a name of your choice'
+        description='Create a folder with a name of your choice'
         onBack={() => {
           useAppStore.setState({ contextMenuAction: '' })
         }}

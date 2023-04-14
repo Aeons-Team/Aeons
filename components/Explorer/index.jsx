@@ -33,7 +33,8 @@ export default function Explorer() {
     useAppStore.getState().clearDragging();
 
     if (e.dataTransfer.files.length) {
-      uploadFiles(e.dataTransfer.files, activeFileId);
+      const files = Object.values(e.dataTransfer.files).filter(file => file.size != 0)
+      uploadFiles(files, activeFileId);
     }
   };
 

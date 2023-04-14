@@ -161,11 +161,12 @@ export default function Sidebar({ transition }) {
 
             <motion.span 
                 className={style.sidebarOption}
-                onClick={() => router.push('/drive/archive')}
+                //onClick={() => router.push('/drive/archive')}
                 initial='normal'
                 onMouseEnter={() => setHovering([false, false, true])}
                 onMouseLeave={() => setHovering([false, false, false])}
-                animate={router.pathname.startsWith('/archive') ? 'selected' : (hovering[2] ? 'hover' : 'normal')}
+                //animate={router.pathname.startsWith('/archive') ? 'selected' : (hovering[2] ? 'hover' : 'normal')}
+                animate='disabled'
             
             >
                 {

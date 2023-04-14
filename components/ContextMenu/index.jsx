@@ -377,7 +377,7 @@ export default function ContextMenu() {
             </div>
           )}
 
-          <div
+          {/* <div
             className={style.contextMenuButton}
             const onClick={async () => {
               
@@ -390,7 +390,7 @@ export default function ContextMenu() {
             </span>
             
             Archive
-          </div>
+          </div> */}
         </>
       );
 

@@ -264,11 +264,16 @@ export default function ContextMenu() {
             selection.length == 1 &&           
             <div
               className={style.contextMenuButton}
-              onClick={() => {
-                if (contextMenuOpts.file.contentType == 'folder') {
+              onClick={async () => {
+                const file = contextMenuOpts.file
+                
+                if (file.contentType == 'folder') {
                   router.push(`/drive/${selection[0]}`)
                 }
-
+                else if(file.encryption) {
+                  const decryptedUrl = await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
+                  window.open(decryptedUrl)
+                }
                 else {
                   window.open(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${contextMenuOpts.file.id}`)
                 }
@@ -292,15 +297,9 @@ export default function ContextMenu() {
                 useAppStore.setState({ contextMenuAction: '' });
                 
                 const file = contextMenuOpts.file
-                const decrypted = await Crypto.decrypt(file.encryption, contract.internalWallet.privateKey)
-                const fileKey = Buffer.from(decrypted.key).toString('hex')
-                const fileIv = Buffer.from(decrypted.iv).toString('hex')
+                const decryptedUrl = await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
                 
-                copy(
-                  file.encryption
-                  ? `https://${window.location.host}/file/${selection[0]}?key=${fileKey}&iv=${fileIv}&contentType=${file.contentType}` 
-                  : `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${selection[0]}`
-                );
+                copy( file.encryption ? decryptedUrl : `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${selection[0]}`);
               }}
             >
               <span>

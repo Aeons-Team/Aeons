@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { motion, useSpring } from "framer-motion";
 import { useAppState, useAppStore } from "../../stores/AppStore";
 import { useDriveState } from "../../stores/DriveStore";
+import Crypto from "../../lib/Crypto";
 import FileInfo from "../FileInfo";
 import FolderInfo from "../FolderInfo";
 import style from "./style.module.css";
@@ -29,10 +30,11 @@ export default function File({ file }) {
     dragged: state.beingDragged[file.id]
   }));
 
-  const { contractState, uploadFiles, relocateFiles } = useDriveState((state) => ({
+  const { contractState, uploadFiles, relocateFiles, contract } = useDriveState((state) => ({
     contractState: state.contractState,
     uploadFiles: state.uploadFiles,
-    relocateFiles: state.relocateFiles
+    relocateFiles: state.relocateFiles,
+    contract: state.contract
   }));
 
   const [moved, setMoved] = useState(false)
@@ -244,13 +246,16 @@ export default function File({ file }) {
     });
   };
 
-  const onFileDoubleClick = () => {
+  const onFileDoubleClick = async () => {
     if (file.pending) return
 
     if (file.contentType == 'folder') {
       router.push(`/drive/${file.id}`)
     }
-
+    else if(file.encryption) {
+      const decryptedUrl = await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
+      window.open(decryptedUrl)
+    }
     else {
       window.open(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`)
     }

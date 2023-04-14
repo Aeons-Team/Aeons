@@ -37,6 +37,15 @@ export default class Crypto {
         })
     }
 
+    static async decryptedFileUrl(id: string, encryption: string, privateKey: string, contentType: string): Promise<string> {
+        const decrypted = await Crypto.decrypt(encryption, privateKey)
+        const key = Buffer.from(decrypted.key).toString('hex')
+        const iv = Buffer.from(decrypted.iv).toString('hex')
+        const url = `https://${window.location.host}/file/${id}?key=${key}&iv=${iv}&contentType=${contentType}`
+
+        return url
+    }
+
     static async aesDecrypt(buffer: ArrayBuffer, key: CryptoKey, iv: ArrayBuffer): Promise<ArrayBuffer> {
         return crypto.subtle.decrypt({ name: 'aes-cbc', length: 256, iv }, key, buffer)
     }

@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
-import { useDriveStore } from "../../stores/DriveStore";
+import { useDriveStore, useDriveState } from "../../stores/DriveStore";
 import { useAppStore } from "../../stores/AppStore";
 import { motion } from "framer-motion";
+import Crypto from "../../lib/Crypto";
 import Icon from '../Icon'
 import style from "./style.module.css";
 
@@ -11,6 +12,7 @@ export default function Search() {
   const [inputValue, setInputValue] = useState("");
   const contractState = useDriveStore((state) => state.contractState);
   const searchActivated = useAppStore((state) => state.searchActivated)
+  const contract = useDriveState((state) => state.contract)
   const searchRef = useRef()
 
   const searchFiles = inputValue && contractState.searchFiles(inputValue)
@@ -82,14 +84,17 @@ export default function Search() {
               <div
                 key={file.id}
                 className={style.listItem}
-                onClick={() => {
+                onClick={async () => {
                   useAppStore.setState({ searchActivated: false })
                   setInputValue("")
 
                   if (file.contentType == 'folder') {
                     router.push(`/drive/${file.id}`)
                   }
-                  
+                  else if (file.encryption) {
+                    const decryptedUrl = await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
+                    window.open(decryptedUrl)
+                  }
                   else {
                     window.open(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`)
                   }

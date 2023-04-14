@@ -165,7 +165,7 @@ export default function ContextMenu() {
         heading='Rename'
         icon='rename'
         initialVal={contextMenuOpts.file.name}
-        description='change the name of the currently selected file'
+        description='Change the name of the currently selected file'
         onBack={() => {
           useAppStore.setState({ contextMenuAction: '' })
         }}

@@ -129,7 +129,7 @@ export default function Wallet() {
     
               <div className={style.walletLower}>
                 <div className={style.walletBalance}>
-                  <span>Metamask Wallet</span>
+                  <span>Connected Wallet</span>
                   <span>{Number(walletBalance).toFixed(6)} {client.networkCurrencySym}</span>
                 </div>
     

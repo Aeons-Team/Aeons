@@ -93,7 +93,7 @@ export const useDriveStore = create(
             }
 
             if (!window.ethereum) {
-                log('Metamask not installed', 'noMetamask')
+                log('No crypto wallet found', 'noWallet')
                 return
             }
 
@@ -134,7 +134,7 @@ export const useDriveStore = create(
             }
 
             if (!window.ethereum) {
-                log('Metamask not installed', 'noMetamask')
+                log('No crypto wallet found', 'noWallet')
                 return
             }
 

@@ -298,7 +298,7 @@ export default function ContextMenu() {
                 useAppStore.setState({ contextMenuAction: '' });
                 
                 const file = contextMenuOpts.file
-                const decryptedUrl = await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
+                const decryptedUrl = file.encryption && await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
                 
                 copy( file.encryption ? decryptedUrl : `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${selection[0]}`);
               }}

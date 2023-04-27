@@ -14,8 +14,8 @@ export default function FolderSelect({ disabled = () => false, itemDisabled = ()
     contractState: state.contractState
   }));
 
-  const [currentFileId, setCurrentFileId] = useState(activeFileId);
-  const [selectedFileId, setSelectedFileId] = useState(activeFileId);
+  const [currentFileId, setCurrentFileId] = useState(activeFileId == "archive" ? "root" : activeFileId);
+  const [selectedFileId, setSelectedFileId] = useState(activeFileId == "archive" ? "root" : activeFileId);
   const currentFile = contractState.getFile(currentFileId);
 
   const [loading, setLoading] = useState(false);

@@ -134,10 +134,15 @@ export default function ContextMenu() {
       var contextMenuInner = <div className={style.moveFile}>
         <div className={style.moveFileHeader}>
           <Icon name='move' fill width='1.6rem' height='1.6rem' />
-          <span>Move Files</span>
+          <span>{activeFileId == "archive"
+            ? "Restore Files" : "Move Files"}</span>
         </div>
 
-        <p>Select the folder to which you would like move all the selected files to</p>
+        {
+          activeFileId == "archive"
+            ? <p>Select the folder to which you would like to restore all the selected files</p>
+            : <p>Select the folder to which you would like to move all the selected files</p>
+        }
 
         <FolderSelect 
           itemDisabled={(id) => selection.includes(id)}
@@ -357,8 +362,7 @@ export default function ContextMenu() {
             <span>
               <Icon width='1.3rem' height='1.3rem' name='move' fill />
             </span>
-
-            Move
+            {activeFileId == "archive"? "Restore To" :"Move"}
           </div>
 
           {selection.length == 1 && (
@@ -377,10 +381,10 @@ export default function ContextMenu() {
             </div>
           )}
 
-          {/* <div
+          {<div
             className={style.contextMenuButton}
-            const onClick={async () => {
-              
+            onClick={async () => {
+            
               activateContextMenu(false);
               await relocateFiles(selection, activeFileId, "archive");
             }}
@@ -390,7 +394,7 @@ export default function ContextMenu() {
             </span>
             
             Archive
-          </div> */}
+          </div> }
         </>
       );
 

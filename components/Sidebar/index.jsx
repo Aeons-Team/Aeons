@@ -7,6 +7,7 @@ import style from './style.module.css'
 
 export default function Sidebar({ transition }) {
     const router = useRouter()
+    const { id: activeFileId } = router.query
     const [hovering, setHovering] = useState([false, false, false])
     const isMobile = useMediaQuery({ maxWidth: '820px' })
 
@@ -112,7 +113,8 @@ export default function Sidebar({ transition }) {
                 initial='normal'
                 onMouseEnter={() => setHovering([true, false, false])}
                 onMouseLeave={() => setHovering([false, false, false])}
-                animate={router.pathname.startsWith('/drive') ? 'selected' : (hovering[0] ? 'hover' : 'normal')}
+                //animate={router.pathname.startsWith('/drive') ? 'selected' : (hovering[0] ? 'hover' : 'normal')}
+                animate={activeFileId != "archive" ? 'selected' : (hovering[0] ? 'hover' : 'normal')}
             >
                 {
                     !isMobile 
@@ -161,12 +163,13 @@ export default function Sidebar({ transition }) {
 
             <motion.span 
                 className={style.sidebarOption}
-                //onClick={() => router.push('/drive/archive')}
+                onClick={() => router.push('/drive/archive')}
                 initial='normal'
                 onMouseEnter={() => setHovering([false, false, true])}
                 onMouseLeave={() => setHovering([false, false, false])}
                 //animate={router.pathname.startsWith('/archive') ? 'selected' : (hovering[2] ? 'hover' : 'normal')}
-                animate='disabled'
+                //animate='disabled'
+                animate={activeFileId == "archive" ? 'selected' : (hovering[2] ? 'hover' : 'normal')}
             
             >
                 {

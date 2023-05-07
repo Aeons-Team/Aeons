@@ -114,8 +114,6 @@ export default class UserContract {
     
             const edges = res.data.transactions.edges
 
-            console.log(edges)
-
             if (edges.length == 0) {
                 this.log('Searching for user contract in warp gateway')
 

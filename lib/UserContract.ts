@@ -114,6 +114,8 @@ export default class UserContract {
     
             const edges = res.data.transactions.edges
 
+            console.log(edges)
+
             if (edges.length == 0) {
                 this.log('Searching for user contract in warp gateway')
 
@@ -332,8 +334,13 @@ export default class UserContract {
                     })
                 })
         
-                this.internalWallet = ethers.Wallet.fromMnemonic(mnemonic)
-        
+                const internalWallet = ethers.Wallet.fromMnemonic(mnemonic)
+
+                if (internalWallet.address != this.state.data?.internalOwner) {
+                    throw new Error()
+                }
+
+                this.internalWallet = internalWallet         
                 await this.encryptAndStoreInternalWallet()
             }
 

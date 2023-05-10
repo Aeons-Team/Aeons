@@ -317,7 +317,7 @@ export default function ContextMenu() {
               className={style.contextMenuButton}
               onClick={async () => {
                 const file = contextMenuOpts.file
-                let src = `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`
+                let src = await fetch(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`).then((res) => res.blob()).then((blob) => URL.createObjectURL(blob))
 
                 if (file.encryption) {
                   src = await Crypto.decryptContractFile(file, contract.internalWallet.privateKey)
@@ -326,7 +326,6 @@ export default function ContextMenu() {
                 const a = document.createElement('a')
                 a.download = file.name 
                 a.href = src
-
                 a.click()
 
                 URL.revokeObjectURL(src)

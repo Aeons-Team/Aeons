@@ -75,7 +75,7 @@ export default class Crypto {
         }
     }
 
-    static async decryptFromUrl(url: string, encryption: string, privateKey: string): Promise<string> {
+    static async decryptFromUrl(url: string, encryption: string, privateKey: string, contentType: string): Promise<string> {
         const { key, iv } = await this.decrypt(encryption, privateKey)
 
         const encrypted = await fetch(url).then(res => res.arrayBuffer())
@@ -84,7 +84,7 @@ export default class Crypto {
 
         const decrypted = await this.aesDecrypt(encrypted, keyImported, iv)
 
-        const blob = new Blob([decrypted])
+        const blob = new Blob([decrypted], {type: contentType})
 
         return URL.createObjectURL(blob)
     }
@@ -92,6 +92,6 @@ export default class Crypto {
     static async decryptContractFile(file: ContractFile, privateKey: string): Promise<string> {
         if (!file.encryption) throw new Error('file is not encrypted') 
 
-        return this.decryptFromUrl(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`, file.encryption, privateKey)
+        return this.decryptFromUrl(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`, file.encryption, privateKey, file.contentType)
     }
 }

@@ -251,7 +251,9 @@ export default function File({ file }) {
     if (file.pending) return
 
     if (file.contentType == 'folder') {
-      router.push(`/drive/${file.id}`)
+      if(activeFileId != 'archive') {
+        router.push(`/drive/${file.id}`)
+      } 
     }
     else if(file.encryption) {
       const decryptedUrl = await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)

@@ -193,212 +193,242 @@ export default function ContextMenu() {
 
   }
 
-  switch (contextMenuOpts.type) {
-    case "explorer":
-      var contextMenuItems = (
-        <>
-          <input 
-            id='upload-file' 
-            type='file' 
-            multiple 
-            hidden 
-            onChange={(e) => {
-              uploadFiles(e.target.files, activeFileId)
-              e.target.value = null
-              activateContextMenu(false)
-            }}
-          />
-
-          <input 
-            id='upload-file-encrypted' 
-            type='file' 
-            multiple 
-            hidden 
-            onChange={(e) => {
-              uploadFiles(e.target.files, activeFileId, true)
-              e.target.value = null
-              activateContextMenu(false)
-            }}
-          />
-
-          <div
-            className={style.contextMenuButton}
-            onClick={(e) => {
-              e.stopPropagation()
-              useAppStore.setState({ contextMenuAction: "creatingFolder" })
-            }}
-          >
-            <span>
-              <Icon width='1.35rem' height='1.35rem' name='create-folder' strokeWidth={1.25} />
-            </span>
-
-            Create Folder
-          </div>
-
-          <div className={style.separator} />
-
-          <label
-            htmlFor='upload-file'
-            className={style.contextMenuButton}
-          >
-            <span>
-              <Icon width='1.3rem' height='1.3rem' name='upload-file' fill />
-            </span>
-
-            Upload Files
-          </label>
-
-          <label
-            htmlFor='upload-file-encrypted'
-            className={style.contextMenuButton}
-          >
-            <span>
-              <Icon width='1.2rem' height='1.2rem' name='encrypted' fill />
-            </span>
-
-            Upload Private Files
-          </label>
-        </>
-      );
-
-      break;
-
-    case "file":
-      var contextMenuItems = (
-        <>
-          {     
-            selection.length == 1 &&           
-            <div
-              className={style.contextMenuButton}
-              onClick={async () => {
-                const file = contextMenuOpts.file
-                
-                if (file.contentType == 'folder') {
-                  router.push(`/drive/${selection[0]}`)
-                }
-                else if(file.encryption) {
-                  const decryptedUrl = await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
-                  window.open(decryptedUrl)
-                }
-                else {
-                  window.open(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${contextMenuOpts.file.id}`)
-                }
-
+  if(activeFileId!="archive")
+  {
+    switch (contextMenuOpts.type) {
+      case "explorer":
+        var contextMenuItems = (
+          <>
+            <input 
+              id='upload-file' 
+              type='file' 
+              multiple 
+              hidden 
+              onChange={(e) => {
+                uploadFiles(e.target.files, activeFileId)
+                e.target.value = null
                 activateContextMenu(false)
               }}
-            >
-              <span>
-                <Icon transform='translate(-1 0)' width='1.65rem' height='1.65rem' name='open' />
-              </span>
+            />
 
-              Open
-            </div>
-          }
-
-          {contextMenuOpts.file.contentType != 'folder' && selection.length == 1 && (
-            <div
-              className={style.contextMenuButton}
-              onClick={async () => {
-                activateContextMenu(false);
-                useAppStore.setState({ contextMenuAction: '' });
-                
-                const file = contextMenuOpts.file
-                const decryptedUrl = file.encryption && await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
-                
-                copy( file.encryption ? decryptedUrl : `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${selection[0]}`);
-              }}
-            >
-              <span>
-                <Icon width='1.65rem' height='1.65rem' name='url' />
-              </span>
-
-              Copy url
-            </div>
-          )}
-
-          {     
-            selection.length == 1 && contextMenuOpts.file.contentType != 'folder' &&       
-            <div
-              className={style.contextMenuButton}
-              onClick={async () => {
-                const file = contextMenuOpts.file
-                let src = `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`
-
-                if (file.encryption) {
-                  src = await Crypto.decryptContractFile(file, contract.internalWallet.privateKey)
-                }
-
-                const a = document.createElement('a')
-                a.download = file.name 
-                a.href = src
-
-                a.click()
-
-                URL.revokeObjectURL(src)
-
+            <input 
+              id='upload-file-encrypted' 
+              type='file' 
+              multiple 
+              hidden 
+              onChange={(e) => {
+                uploadFiles(e.target.files, activeFileId, true)
+                e.target.value = null
                 activateContextMenu(false)
               }}
-            >
-              <span>
-                <Icon width='1.65rem' height='1.65rem' name='download' />
-              </span>
+            />
 
-              Download
-            </div>
-          }
-
-          {
-            selection.length == 1 &&
-            <div className={style.separator} />
-          }
-
-          <div
-            className={style.contextMenuButton}
-            onClick={(e) => {
-              e.stopPropagation()
-              useAppStore.setState({ contextMenuAction: "moveFile" });
-            }}
-          >
-            <span>
-              <Icon width='1.3rem' height='1.3rem' name='move' fill />
-            </span>
-            {activeFileId == "archive"? "Restore To" :"Move"}
-          </div>
-
-          {selection.length == 1 && (
             <div
               className={style.contextMenuButton}
               onClick={(e) => {
                 e.stopPropagation()
-                useAppStore.setState({ contextMenuAction: "rename" });
+                useAppStore.setState({ contextMenuAction: "creatingFolder" })
               }}
             >
               <span>
-                <Icon width='1.5rem' height='1.5rem' name='rename' fill />
+                <Icon width='1.35rem' height='1.35rem' name='create-folder' strokeWidth={1.25} />
               </span>
 
-              Rename
+              Create Folder
             </div>
-          )}
 
-          {<div
-            className={style.contextMenuButton}
-            onClick={async () => {
-            
-              activateContextMenu(false);
-              await relocateFiles(selection, activeFileId, "archive");
-            }}
-          >
-            <span>
-              <Icon width='1.45rem' height='1.45rem' name='archive' strokeWidth={11} />
-            </span>
-            
-            Archive
-          </div> }
+            <div className={style.separator} />
+
+            <label
+              htmlFor='upload-file'
+              className={style.contextMenuButton}
+            >
+              <span>
+                <Icon width='1.3rem' height='1.3rem' name='upload-file' fill />
+              </span>
+
+              Upload Files
+            </label>
+
+            <label
+              htmlFor='upload-file-encrypted'
+              className={style.contextMenuButton}
+            >
+              <span>
+                <Icon width='1.2rem' height='1.2rem' name='encrypted' fill />
+              </span>
+
+              Upload Private Files
+            </label>
+          </>
+        );
+
+        break;
+
+      case "file":
+        var contextMenuItems = (
+          <>
+            {     
+              selection.length == 1 &&           
+              <div
+                className={style.contextMenuButton}
+                onClick={async () => {
+                  const file = contextMenuOpts.file
+                  
+                  if (file.contentType == 'folder') {
+                    router.push(`/drive/${selection[0]}`)
+                  }
+                  else if(file.encryption) {
+                    const decryptedUrl = await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
+                    window.open(decryptedUrl)
+                  }
+                  else {
+                    window.open(`${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${contextMenuOpts.file.id}`)
+                  }
+
+                  activateContextMenu(false)
+                }}
+              >
+                <span>
+                  <Icon transform='translate(-1 0)' width='1.65rem' height='1.65rem' name='open' />
+                </span>
+
+                Open
+              </div>
+            }
+
+            {contextMenuOpts.file.contentType != 'folder' && selection.length == 1 && (
+              <div
+                className={style.contextMenuButton}
+                onClick={async () => {
+                  activateContextMenu(false);
+                  useAppStore.setState({ contextMenuAction: '' });
+                  
+                  const file = contextMenuOpts.file
+                  const decryptedUrl = file.encryption && await Crypto.decryptedFileUrl(file.id, file.encryption, contract.internalWallet.privateKey, file.contentType)
+                  
+                  copy( file.encryption ? decryptedUrl : `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${selection[0]}`);
+                }}
+              >
+                <span>
+                  <Icon width='1.65rem' height='1.65rem' name='url' />
+                </span>
+
+                Copy url
+              </div>
+            )}
+
+            {     
+              selection.length == 1 && contextMenuOpts.file.contentType != 'folder' &&       
+              <div
+                className={style.contextMenuButton}
+                onClick={async () => {
+                  const file = contextMenuOpts.file
+                  let src = `${process.env.NEXT_PUBLIC_ARWEAVE_URL}/${file.id}`
+
+                  if (file.encryption) {
+                    src = await Crypto.decryptContractFile(file, contract.internalWallet.privateKey)
+                  }
+
+                  const a = document.createElement('a')
+                  a.download = file.name 
+                  a.href = src
+
+                  a.click()
+
+                  URL.revokeObjectURL(src)
+
+                  activateContextMenu(false)
+                }}
+              >
+                <span>
+                  <Icon width='1.65rem' height='1.65rem' name='download' />
+                </span>
+
+                Download
+              </div>
+            }
+
+            {
+              selection.length == 1 &&
+              <div className={style.separator} />
+            }
+
+            <div
+              className={style.contextMenuButton}
+              onClick={(e) => {
+                e.stopPropagation()
+                useAppStore.setState({ contextMenuAction: "moveFile" });
+              }}
+            >
+              <span>
+                <Icon width='1.3rem' height='1.3rem' name='move' fill />
+              </span>
+              Move
+            </div>
+
+            {selection.length == 1 && (
+              <div
+                className={style.contextMenuButton}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  useAppStore.setState({ contextMenuAction: "rename" });
+                }}
+              >
+                <span>
+                  <Icon width='1.5rem' height='1.5rem' name='rename' fill />
+                </span>
+
+                Rename
+              </div>
+            )}
+
+            {<div
+              className={style.contextMenuButton}
+              onClick={async () => {
+              
+                activateContextMenu(false);
+                await relocateFiles(selection, activeFileId, "archive");
+              }}
+            >
+              <span>
+                <Icon width='1.45rem' height='1.45rem' name='archive' strokeWidth={11} />
+              </span>
+              
+              Archive
+            </div> }
+          </>
+        );
+
+        break;
+    }
+  }
+  else
+  {
+    if(contextMenuOpts.type=='file')
+    {
+      var contextMenuItems = (
+        <>
+        {
+              selection.length == 1 &&
+              <div className={style.separator} />
+            }
+
+            <div
+              className={style.contextMenuButton}
+              onClick={(e) => {
+                e.stopPropagation()
+                useAppStore.setState({ contextMenuAction: "moveFile" });
+              }}
+            >
+              <span>
+                <Icon width='1.3rem' height='1.3rem' name='move' fill />
+              </span>
+              Restore to
+            </div>
         </>
       );
-
-      break;
+    }
   }
 
   const explorerFilesBB = explorerFilesRef.current?.getBoundingClientRect()

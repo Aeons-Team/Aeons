@@ -42,7 +42,7 @@ export default function ExplorerBar() {
                     fontSize: isMobile ? '0.9rem' : '1rem',
                     minWidth: '3rem',
                     maxWidth: '10rem'
-                }}
+                }} 
             />
 
             <IconButton 
@@ -51,6 +51,7 @@ export default function ExplorerBar() {
                 height='1.5rem'
                 fill
                 color='var(--color-active)'
+                disabled = {activeFileId == 'archive'}
                 onClick={(e) => {
                     e.stopPropagation()
 

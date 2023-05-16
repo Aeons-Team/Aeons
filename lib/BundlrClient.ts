@@ -59,7 +59,7 @@ export default class BundlrClient {
 
     const networkInfo = networkInfos[this.network.chainId]
 
-    if (!networkInfo) {
+    if (!networkInfo || (process.env.NODE_ENV != 'development' && this.network.chainId == 80001)) {
       this.log('This network is not supported, switch to ethereum, boba-eth, arbitrum one, polygon or avalanche', 'networkNotSupported')
 
       throw new Error('Network not supported')
